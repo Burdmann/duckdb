@@ -24,6 +24,8 @@ namespace duckdb {
 // Create
 //===--------------------------------------------------------------------===//
 
+long long ColumnSegment::num_scans = 0;
+
 unique_ptr<ColumnSegment> ColumnSegment::CreatePersistentSegment(DatabaseInstance &db, BlockManager &block_manager,
                                                                  block_id_t block_id, idx_t offset,
                                                                  const LogicalType &type, idx_t start, idx_t count,
@@ -114,6 +116,7 @@ void ColumnSegment::InitializeScan(ColumnScanState &state) {
 
 void ColumnSegment::Scan(ColumnScanState &state, idx_t scan_count, Vector &result, idx_t result_offset,
                          ScanVectorType scan_type) {
+	ColumnSegment::num_scans++;
 	if (scan_type == ScanVectorType::SCAN_ENTIRE_VECTOR) {
 		D_ASSERT(result_offset == 0);
 		Scan(state, scan_count, result);

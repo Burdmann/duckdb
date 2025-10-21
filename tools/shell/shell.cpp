@@ -75,6 +75,8 @@
 #define _LARGEFILE_SOURCE 1
 #endif
 
+#include "duckdb/storage/table/column_segment.hpp"
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -4577,7 +4579,9 @@ int ShellState::ProcessInput(InputMode mode) {
 			nSql += nLine;
 		}
 		if (nSql && line_contains_semicolon(&zSql[nSqlPrior], nSql - nSqlPrior) && sqlite3_complete(zSql)) {
+			duckdb::ColumnSegment::num_scans = 0;
 			errCnt += RunOneSqlLine(mode, zSql);
+			printf("Number of partition scans: %lld\n",duckdb::ColumnSegment::num_scans);
 			nSql = 0;
 			if (outCount) {
 				ResetOutput();
