@@ -4481,6 +4481,11 @@ int ShellState::RunOneSqlLine(InputMode mode, char *zSql) {
 	return 0;
 }
 
+uint64_t timeSinceEpochNanosec() {
+	using namespace std::chrono;
+	return duration_cast<nanoseconds>(system_clock::now().time_since_epoch()).count();
+}
+
 /*
 ** Read input from *in and process it.  If *in==0 then input
 ** is interactive - the user is typing it it.  Otherwise, input
@@ -4583,7 +4588,10 @@ int ShellState::ProcessInput(InputMode mode) {
 			duckdb::ColumnSegment::rows_scanned = 0;
 			duckdb::BaseStatistics::stats_created = 0;
 			duckdb::BaseStatistics::bytes_used_on_stats = 0;
+			uint64_t start = timeSinceEpochNanosec();
 			errCnt += RunOneSqlLine(mode, zSql);
+			uint64_t end = timeSinceEpochNanosec();
+			printf("Query took %llu ns\n", end - start);
 			printf("Number of partition scans: %lld\n",duckdb::ColumnSegment::partitions_scanned);
 			printf("Number of row scans: %lld\n",duckdb::ColumnSegment::rows_scanned);
 			printf("Number of statistics created: %lld\n",duckdb::BaseStatistics::stats_created);
