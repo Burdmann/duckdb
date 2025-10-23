@@ -117,9 +117,10 @@ void ColumnSegment::InitializeScan(ColumnScanState &state) {
 
 void ColumnSegment::Scan(ColumnScanState &state, idx_t scan_count, Vector &result, idx_t result_offset,
                          ScanVectorType scan_type) {
-	// TODO: I think this should be moved, since this function only seems to scan 2048 rows at a time
-	ColumnSegment::partitions_scanned++;
-	ColumnSegment::rows_scanned += this->count;
+	if (state.segment_checked) {
+		ColumnSegment::partitions_scanned++;
+		ColumnSegment::rows_scanned += scan_count;
+	}
 
 	if (scan_type == ScanVectorType::SCAN_ENTIRE_VECTOR) {
 		D_ASSERT(result_offset == 0);
