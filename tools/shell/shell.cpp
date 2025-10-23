@@ -4481,6 +4481,11 @@ int ShellState::RunOneSqlLine(InputMode mode, char *zSql) {
 	return 0;
 }
 
+uint64_t timeSinceEpochNanosec() {
+	using namespace std::chrono;
+	return duration_cast<nanoseconds>(system_clock::now().time_since_epoch()).count();
+}
+
 /*
 ** Read input from *in and process it.  If *in==0 then input
 ** is interactive - the user is typing it it.  Otherwise, input
@@ -4580,8 +4585,11 @@ int ShellState::ProcessInput(InputMode mode) {
 		}
 		if (nSql && line_contains_semicolon(&zSql[nSqlPrior], nSql - nSqlPrior) && sqlite3_complete(zSql)) {
 			duckdb::ColumnSegment::num_scans = 0;
+			uint64_t start = timeSinceEpochNanosec();
 			errCnt += RunOneSqlLine(mode, zSql);
-			printf("Number of partition scans: %lld\n",duckdb::ColumnSegment::num_scans);
+			uint64_t end = timeSinceEpochNanosec();
+			printf("Query took %llu ns\n", end - start);
+			printf("Number of partition scans: %lld\n", duckdb::ColumnSegment::num_scans);
 			nSql = 0;
 			if (outCount) {
 				ResetOutput();
