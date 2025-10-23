@@ -4579,9 +4579,15 @@ int ShellState::ProcessInput(InputMode mode) {
 			nSql += nLine;
 		}
 		if (nSql && line_contains_semicolon(&zSql[nSqlPrior], nSql - nSqlPrior) && sqlite3_complete(zSql)) {
-			duckdb::ColumnSegment::num_scans = 0;
+			duckdb::ColumnSegment::partitions_scanned = 0;
+			duckdb::ColumnSegment::rows_scanned = 0;
+			duckdb::BaseStatistics::stats_created = 0;
+			duckdb::BaseStatistics::bytes_used_on_stats = 0;
 			errCnt += RunOneSqlLine(mode, zSql);
-			printf("Number of partition scans: %lld\n",duckdb::ColumnSegment::num_scans);
+			printf("Number of partition scans: %lld\n",duckdb::ColumnSegment::partitions_scanned);
+			printf("Number of row scans: %lld\n",duckdb::ColumnSegment::rows_scanned);
+			printf("Number of statistics created: %lld\n",duckdb::BaseStatistics::stats_created);
+			printf("Bytes used on statistics: %lld\n",duckdb::BaseStatistics::bytes_used_on_stats);
 			nSql = 0;
 			if (outCount) {
 				ResetOutput();

@@ -156,7 +156,8 @@ public:
 	//! The block that this segment relates to
 	shared_ptr<BlockHandle> block;
 
-	static long long num_scans;
+	static long long partitions_scanned;
+	static long long rows_scanned;
 
 private:
 	//! The compression function

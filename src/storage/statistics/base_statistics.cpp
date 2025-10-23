@@ -11,10 +11,14 @@
 
 namespace duckdb {
 
-BaseStatistics::BaseStatistics() : type(LogicalType::INVALID) {
-}
+long long BaseStatistics::stats_created = 0;
+long long BaseStatistics::bytes_used_on_stats = 0;
+
+BaseStatistics::BaseStatistics() : type(LogicalType::INVALID) {}
 
 BaseStatistics::BaseStatistics(LogicalType type) {
+	BaseStatistics::stats_created++;
+	BaseStatistics::bytes_used_on_stats += sizeof(*this);
 	Construct(*this, std::move(type));
 }
 

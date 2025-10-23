@@ -130,6 +130,9 @@ private:
 	static BaseStatistics CreateUnknownType(LogicalType type);
 	static BaseStatistics CreateEmptyType(LogicalType type);
 	static BaseStatistics FromConstantType(const Value &input);
+public:
+	static long long stats_created;
+	static long long bytes_used_on_stats;
 
 private:
 	//! The type of the logical segment

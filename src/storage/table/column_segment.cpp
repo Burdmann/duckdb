@@ -24,7 +24,8 @@ namespace duckdb {
 // Create
 //===--------------------------------------------------------------------===//
 
-long long ColumnSegment::num_scans = 0;
+long long ColumnSegment::partitions_scanned = 0;
+long long ColumnSegment::rows_scanned = 0;
 
 unique_ptr<ColumnSegment> ColumnSegment::CreatePersistentSegment(DatabaseInstance &db, BlockManager &block_manager,
                                                                  block_id_t block_id, idx_t offset,
@@ -116,7 +117,10 @@ void ColumnSegment::InitializeScan(ColumnScanState &state) {
 
 void ColumnSegment::Scan(ColumnScanState &state, idx_t scan_count, Vector &result, idx_t result_offset,
                          ScanVectorType scan_type) {
-	ColumnSegment::num_scans++;
+	// TODO: I think this should be moved, since this function only seems to scan 2048 rows at a time
+	ColumnSegment::partitions_scanned++;
+	ColumnSegment::rows_scanned += this->count;
+
 	if (scan_type == ScanVectorType::SCAN_ENTIRE_VECTOR) {
 		D_ASSERT(result_offset == 0);
 		Scan(state, scan_count, result);
