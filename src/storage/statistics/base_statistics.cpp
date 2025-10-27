@@ -14,7 +14,11 @@ namespace duckdb {
 long long BaseStatistics::stats_created = 0;
 long long BaseStatistics::bytes_used_on_stats = 0;
 
-BaseStatistics::BaseStatistics() : type(LogicalType::INVALID) {}
+BaseStatistics::BaseStatistics() {
+	type = LogicalType::INVALID;
+	BaseStatistics::stats_created++;
+	BaseStatistics::bytes_used_on_stats += sizeof(*this);
+}
 
 BaseStatistics::BaseStatistics(LogicalType type) {
 	BaseStatistics::stats_created++;
@@ -41,9 +45,13 @@ void BaseStatistics::Construct(BaseStatistics &stats, LogicalType type) {
 }
 
 BaseStatistics::~BaseStatistics() {
+	BaseStatistics::stats_created--;
+	BaseStatistics::bytes_used_on_stats -= sizeof(*this);
 }
 
 BaseStatistics::BaseStatistics(BaseStatistics &&other) noexcept {
+	BaseStatistics::stats_created++;
+	BaseStatistics::bytes_used_on_stats += sizeof(*this);
 	std::swap(type, other.type);
 	has_null = other.has_null;
 	has_no_null = other.has_no_null;
