@@ -75,8 +75,6 @@
 #define _LARGEFILE_SOURCE 1
 #endif
 
-#include "duckdb/storage/table/column_segment.hpp"
-
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -84,6 +82,7 @@
 #include "duckdb_shell_wrapper.h"
 #include "duckdb/common/box_renderer.hpp"
 #include "duckdb/parser/qualified_name.hpp"
+#include "duckdb/storage/statistics/util.hpp"
 #include "sqlite3.h"
 typedef sqlite3_int64 i64;
 typedef sqlite3_uint64 u64;
@@ -4481,11 +4480,6 @@ int ShellState::RunOneSqlLine(InputMode mode, char *zSql) {
 	return 0;
 }
 
-uint64_t timeSinceEpochNanosec() {
-	using namespace std::chrono;
-	return duration_cast<nanoseconds>(system_clock::now().time_since_epoch()).count();
-}
-
 /*
 ** Read input from *in and process it.  If *in==0 then input
 ** is interactive - the user is typing it it.  Otherwise, input
@@ -4584,21 +4578,9 @@ int ShellState::ProcessInput(InputMode mode) {
 			nSql += nLine;
 		}
 		if (nSql && line_contains_semicolon(&zSql[nSqlPrior], nSql - nSqlPrior) && sqlite3_complete(zSql)) {
-			duckdb::ColumnSegment::partitions_scanned = 0;
-			duckdb::ColumnSegment::rows_scanned = 0;
-			duckdb::BaseStatistics::stats_created = 0;
-			duckdb::BaseStatistics::bytes_used_on_stats = 0;
-			duckdb::RowGroup::scanned.clear();
-			duckdb::RowGroup::needed.clear();
-			uint64_t start = timeSinceEpochNanosec();
+			fprintf(stderr,"%llu,%llu,%s,%s,%lld,%lld,%p,%s\n",duckdb::Util::session_id, duckdb::Util::command_count,"SQL_COMMAND_RUN",0,0,0,zSql);
 			errCnt += RunOneSqlLine(mode, zSql);
-			uint64_t end = timeSinceEpochNanosec();
-			printf("Query took %llu ns\n", end - start);
-			printf("Number of partition scans: %lld\n", duckdb::RowGroup::scanned.size());
-			printf("Number of partition scans needed: %lld\n", duckdb::RowGroup::needed.size());
-			printf("Number of row scans: %lld\n", duckdb::ColumnSegment::rows_scanned);
-			printf("Number of statistics created: %lld\n", duckdb::BaseStatistics::stats_created);
-			printf("Bytes used on statistics: %lld\n", duckdb::BaseStatistics::bytes_used_on_stats);
+			duckdb::Util::command_count++;
 			nSql = 0;
 			if (outCount) {
 				ResetOutput();
@@ -4856,6 +4838,13 @@ int SQLITE_CDECL main(int argc, char **argv) {
 int SQLITE_CDECL wmain(int argc, wchar_t **wargv) {
 	char **argv;
 #endif
+	std::uniform_int_distribution<unsigned long long> dis(
+			std::numeric_limits<std::uint64_t>::min(),
+			std::numeric_limits<std::uint64_t>::max()
+		);
+	std::random_device rd;
+    std::mt19937 gen(rd());
+	duckdb::Util::session_id = dis(gen);
 	char *zErrMsg = nullptr;
 	ShellState data;
 	const char *zInitFile = nullptr;

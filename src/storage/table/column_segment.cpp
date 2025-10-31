@@ -15,6 +15,7 @@
 #include "duckdb/storage/table/update_segment.hpp"
 #include "duckdb/planner/table_filter_state.hpp"
 #include "duckdb/planner/filter/expression_filter.hpp"
+#include "duckdb/storage/statistics/util.hpp"
 
 #include <cstring>
 
@@ -23,9 +24,6 @@ namespace duckdb {
 //===--------------------------------------------------------------------===//
 // Create
 //===--------------------------------------------------------------------===//
-
-long long ColumnSegment::partitions_scanned = 0;
-long long ColumnSegment::rows_scanned = 0;
 
 unique_ptr<ColumnSegment> ColumnSegment::CreatePersistentSegment(DatabaseInstance &db, BlockManager &block_manager,
                                                                  block_id_t block_id, idx_t offset,
@@ -117,10 +115,8 @@ void ColumnSegment::InitializeScan(ColumnScanState &state) {
 
 void ColumnSegment::Scan(ColumnScanState &state, idx_t scan_count, Vector &result, idx_t result_offset,
                          ScanVectorType scan_type) {
-	if (state.segment_checked) {
-		ColumnSegment::partitions_scanned++;
-		ColumnSegment::rows_scanned += scan_count;
-	}
+	fprintf(stderr,"%llu,%llu,%s,%s,%lld,%lld,%p,%s\n",Util::session_id, Util::command_count,"SCANNED_ROWS",scan_count,0,this,"");
+	fprintf(stderr,"%llu,%llu,%s,%s,%lld,%lld,%p,%s\n",Util::session_id, Util::command_count,"SCANNED_ROWS_OFFSET",result_offset,0,this,"");
 
 	if (scan_type == ScanVectorType::SCAN_ENTIRE_VECTOR) {
 		D_ASSERT(result_offset == 0);

@@ -1,5 +1,6 @@
 #include "duckdb/common/exception.hpp"
 #include "duckdb/common/string_util.hpp"
+#include "duckdb/storage/statistics/util.hpp"
 #include "duckdb/common/types/vector.hpp"
 #include "duckdb/storage/statistics/base_statistics.hpp"
 #include "duckdb/storage/statistics/list_stats.hpp"
@@ -9,20 +10,17 @@
 #include "duckdb/common/serializer/serializer.hpp"
 #include "duckdb/common/serializer/deserializer.hpp"
 
-namespace duckdb {
+#include <ctime>
 
-long long BaseStatistics::stats_created = 0;
-long long BaseStatistics::bytes_used_on_stats = 0;
+namespace duckdb {
 
 BaseStatistics::BaseStatistics() {
 	type = LogicalType::INVALID;
-	BaseStatistics::stats_created++;
-	BaseStatistics::bytes_used_on_stats += sizeof(*this);
+	fprintf(stderr,"%llu,%llu,%s,%s,%lld,%lld,%p,%s\n",Util::session_id, Util::command_count,Util::GetTime(),"STAT_CREATED",sizeof(*this),0,this,"");
 }
 
 BaseStatistics::BaseStatistics(LogicalType type) {
-	BaseStatistics::stats_created++;
-	BaseStatistics::bytes_used_on_stats += sizeof(*this);
+	fprintf(stderr,"%llu,%llu,%s,%s,%lld,%lld,%p,%s\n",Util::session_id, Util::command_count,Util::GetTime(),"STAT_CREATED",sizeof(*this),0,this,"");
 	Construct(*this, std::move(type));
 }
 
@@ -30,28 +28,26 @@ void BaseStatistics::Construct(BaseStatistics &stats, LogicalType type) {
 	stats.distinct_count = 0;
 	stats.type = std::move(type);
 	switch (GetStatsType(stats.type)) {
-	case StatisticsType::LIST_STATS:
+		case StatisticsType::LIST_STATS:
 		ListStats::Construct(stats);
 		break;
-	case StatisticsType::STRUCT_STATS:
+		case StatisticsType::STRUCT_STATS:
 		StructStats::Construct(stats);
 		break;
-	case StatisticsType::ARRAY_STATS:
+		case StatisticsType::ARRAY_STATS:
 		ArrayStats::Construct(stats);
 		break;
-	default:
+		default:
 		break;
 	}
 }
 
 BaseStatistics::~BaseStatistics() {
-	BaseStatistics::stats_created--;
-	BaseStatistics::bytes_used_on_stats -= sizeof(*this);
+	fprintf(stderr,"%llu,%llu,%s,%s,%lld,%lld,%p,%s\n",Util::session_id, Util::command_count,Util::GetTime(),"STAT_DESTROYED",sizeof(*this),0,this,"");
 }
 
 BaseStatistics::BaseStatistics(BaseStatistics &&other) noexcept {
-	BaseStatistics::stats_created++;
-	BaseStatistics::bytes_used_on_stats += sizeof(*this);
+	fprintf(stderr,"%llu,%llu,%s,%s,%lld,%lld,%p,%s\n",Util::session_id, Util::command_count,Util::GetTime(),"STAT_CREATED",sizeof(*this),0,this,"");
 	std::swap(type, other.type);
 	has_null = other.has_null;
 	has_no_null = other.has_no_null;

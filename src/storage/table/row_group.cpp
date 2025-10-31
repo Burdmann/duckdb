@@ -24,9 +24,6 @@
 
 namespace duckdb {
 
-set<void *> RowGroup::needed;
-set<void *> RowGroup::scanned;
-
 RowGroup::RowGroup(RowGroupCollection &collection_p, idx_t start, idx_t count)
     : SegmentBase<RowGroup>(start, count), collection(collection_p), version_info(nullptr), allocation_size(0),
       row_id_is_loaded(false) {
@@ -616,10 +613,7 @@ void RowGroup::TemplatedScan(TransactionData transaction, CollectionScanState &s
 					auto &col_data = GetColumn(column_idx);
 					col_data.Filter(transaction, state.vector_index, state.column_scans[scan_idx], result_vector, sel,
 					                approved_tuple_count, filter.filter, table_filter_state);
-					scanned.insert((void *)state.column_scans[scan_idx].current);
-					if (approved_tuple_count > 0) {
-						needed.insert((void *)state.column_scans[scan_idx].current);
-					}
+					fprintf(stderr,"%llu,%llu,%s,%s,%lld,%lld,%p,%s\n",Util::session_id, Util::command_count,"PRODUCED_RESULT_COUNT",approved_tuple_count,0,state.column_scans[scan_idx].current,"");
 				}
 				for (auto &table_filter : filter_list) {
 					if (table_filter.IsAlwaysTrue()) {

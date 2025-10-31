@@ -227,9 +227,6 @@ private:
 	unique_ptr<ColumnData> row_id_column_data;
 	atomic<bool> row_id_is_loaded;
 
-public:
-	static set<void *> needed;
-	static set<void *> scanned;
 };
 
 } // namespace duckdb
