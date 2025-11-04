@@ -82,7 +82,7 @@
 #include "duckdb_shell_wrapper.h"
 #include "duckdb/common/box_renderer.hpp"
 #include "duckdb/parser/qualified_name.hpp"
-#include "duckdb/storage/statistics/util.hpp"
+#include "duckdb/util/util.hpp"
 #include "sqlite3.h"
 typedef sqlite3_int64 i64;
 typedef sqlite3_uint64 u64;
@@ -1827,6 +1827,8 @@ int ShellState::ExecuteSQL(const char *zSql, /* SQL to be evaluated */
 				cMode = RenderMode::EXPLAIN;
 			}
 
+			fprintf(stderr, "%llu,%llu,%s,DONE_PREPARING_SQL_STATEMENT,{\"command\":%s}\n", duckdb::Util::session_id,
+			        duckdb::Util::command_count, duckdb::Util::GetTime(), zSql);
 			ExecutePreparedStatement(pStmt);
 
 			/* Finalize the statement just executed. If this fails, save a
@@ -4578,9 +4580,11 @@ int ShellState::ProcessInput(InputMode mode) {
 			nSql += nLine;
 		}
 		if (nSql && line_contains_semicolon(&zSql[nSqlPrior], nSql - nSqlPrior) && sqlite3_complete(zSql)) {
-			fprintf(stderr, "%llu,%llu,%s,%s,%lld,%lld,%p,%s\n", duckdb::Util::session_id, duckdb::Util::command_count,
-			        duckdb::Util::GetTime(), "SQL_COMMAND_RUN", 0, 0, 0, zSql);
+			fprintf(stderr, "%llu,%llu,%s,SQL_COMMAND_RUN_START,{\"command\":%s}\n", duckdb::Util::session_id,
+			        duckdb::Util::command_count, duckdb::Util::GetTime(), zSql);
 			errCnt += RunOneSqlLine(mode, zSql);
+			fprintf(stderr, "%llu,%llu,%s,SQL_COMMAND_RUN_END,{\"command\":%s}\n", duckdb::Util::session_id,
+			        duckdb::Util::command_count, duckdb::Util::GetTime(), zSql);
 			duckdb::Util::command_count++;
 			nSql = 0;
 			if (outCount) {

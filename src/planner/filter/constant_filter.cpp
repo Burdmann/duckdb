@@ -4,6 +4,7 @@
 #include "duckdb/planner/expression/bound_constant_expression.hpp"
 #include "duckdb/common/value_operations/value_operations.hpp"
 #include "duckdb/common/enum_util.hpp"
+#include "duckdb/util/util.hpp"
 
 namespace duckdb {
 
@@ -35,8 +36,13 @@ bool ConstantFilter::Compare(const Value &value) const {
 }
 
 FilterPropagateResult ConstantFilter::CheckStatistics(BaseStatistics &stats) const {
+	fprintf(stderr, "%llu,%llu,%s,EVAL_STATISTICS_START,{\"statistic\":%p}\n", duckdb::Util::session_id,
+	        duckdb::Util::command_count, duckdb::Util::GetTime(), &stats);
 	if (!stats.CanHaveNoNull()) {
 		// no non-null values are possible: always false
+		fprintf(stderr, "%llu,%llu,%s,EVAL_STATISTICS_END,{\"statistic\":%p,\"filter_propagate_result\":%u}\n",
+		        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), &stats,
+		        FilterPropagateResult::FILTER_ALWAYS_FALSE);
 		return FilterPropagateResult::FILTER_ALWAYS_FALSE;
 	}
 	FilterPropagateResult result;
@@ -60,15 +66,23 @@ FilterPropagateResult ConstantFilter::CheckStatistics(BaseStatistics &stats) con
 		result = StringStats::CheckZonemap(stats, comparison_type, array_ptr<const Value>(&constant, 1));
 		break;
 	default:
+		fprintf(stderr, "%llu,%llu,%s,EVAL_STATISTICS_END,{\"statistic\":%p,\"filter_propagate_result\":%u}\n",
+		        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), &stats,
+		        FilterPropagateResult::NO_PRUNING_POSSIBLE);
 		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 	}
 	if (result == FilterPropagateResult::FILTER_ALWAYS_TRUE) {
 		// the numeric filter is always true, but the column can have NULL values
 		// we can't prune the filter
 		if (stats.CanHaveNull()) {
+			fprintf(stderr, "%llu,%llu,%s,EVAL_STATISTICS_END,{\"statistic\":%p,\"filter_propagate_result\":%u}\n",
+			        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), &stats,
+			        FilterPropagateResult::NO_PRUNING_POSSIBLE);
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		}
 	}
+	fprintf(stderr, "%llu,%llu,%s,EVAL_STATISTICS_END,{\"statistic\":%p,\"filter_propagate_result\":%u}\n",
+	        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), &stats, result);
 	return result;
 }
 
