@@ -1827,8 +1827,8 @@ int ShellState::ExecuteSQL(const char *zSql, /* SQL to be evaluated */
 				cMode = RenderMode::EXPLAIN;
 			}
 
-			fprintf(stderr, "%llu,%llu,%s,DONE_PREPARING_SQL_STATEMENT,{\"command\":%s}\n", duckdb::Util::session_id,
-			        duckdb::Util::command_count, duckdb::Util::GetTime(), zSql);
+			fprintf(stderr, "%llu,%llu,%s,DONE_PREPARING_SQL_STATEMENT,{\"command\":\"%s\"}\n",
+			        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), zSql);
 			ExecutePreparedStatement(pStmt);
 
 			/* Finalize the statement just executed. If this fails, save a
@@ -4580,10 +4580,10 @@ int ShellState::ProcessInput(InputMode mode) {
 			nSql += nLine;
 		}
 		if (nSql && line_contains_semicolon(&zSql[nSqlPrior], nSql - nSqlPrior) && sqlite3_complete(zSql)) {
-			fprintf(stderr, "%llu,%llu,%s,SQL_COMMAND_RUN_START,{\"command\":%s}\n", duckdb::Util::session_id,
+			fprintf(stderr, "%llu,%llu,%s,SQL_COMMAND_RUN_START,{\"command\":\"%s\"}\n", duckdb::Util::session_id,
 			        duckdb::Util::command_count, duckdb::Util::GetTime(), zSql);
 			errCnt += RunOneSqlLine(mode, zSql);
-			fprintf(stderr, "%llu,%llu,%s,SQL_COMMAND_RUN_END,{\"command\":%s}\n", duckdb::Util::session_id,
+			fprintf(stderr, "%llu,%llu,%s,SQL_COMMAND_RUN_END,{\"command\":\"%s\"}\n", duckdb::Util::session_id,
 			        duckdb::Util::command_count, duckdb::Util::GetTime(), zSql);
 			duckdb::Util::command_count++;
 			nSql = 0;
