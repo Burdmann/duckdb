@@ -115,8 +115,10 @@ void ColumnSegment::InitializeScan(ColumnScanState &state) {
 
 void ColumnSegment::Scan(ColumnScanState &state, idx_t scan_count, Vector &result, idx_t result_offset,
                          ScanVectorType scan_type) {
-	fprintf(stderr,"%llu,%llu,%s,%s,%lld,%lld,%p,%s\n",Util::session_id, Util::command_count,"SCANNED_ROWS",scan_count,0,this,"");
-	fprintf(stderr,"%llu,%llu,%s,%s,%lld,%lld,%p,%s\n",Util::session_id, Util::command_count,"SCANNED_ROWS_OFFSET",result_offset,0,this,"");
+	fprintf(stderr, "%llu,%llu,%s,%s,%lld,%lld,%p,%s\n", Util::session_id, Util::command_count, Util::GetTime(),
+	        "SCANNED_ROWS", scan_count, 0, this, "");
+	fprintf(stderr, "%llu,%llu,%s,%s,%lld,%lld,%p,%s\n", Util::session_id, Util::command_count, Util::GetTime(),
+	        "SCANNED_ROWS_OFFSET", result_offset, 0, this, "");
 
 	if (scan_type == ScanVectorType::SCAN_ENTIRE_VECTOR) {
 		D_ASSERT(result_offset == 0);

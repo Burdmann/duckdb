@@ -4578,7 +4578,8 @@ int ShellState::ProcessInput(InputMode mode) {
 			nSql += nLine;
 		}
 		if (nSql && line_contains_semicolon(&zSql[nSqlPrior], nSql - nSqlPrior) && sqlite3_complete(zSql)) {
-			fprintf(stderr,"%llu,%llu,%s,%s,%lld,%lld,%p,%s\n",duckdb::Util::session_id, duckdb::Util::command_count,"SQL_COMMAND_RUN",0,0,0,zSql);
+			fprintf(stderr, "%llu,%llu,%s,%s,%lld,%lld,%p,%s\n", duckdb::Util::session_id, duckdb::Util::command_count,
+			        duckdb::Util::GetTime(), "SQL_COMMAND_RUN", 0, 0, 0, zSql);
 			errCnt += RunOneSqlLine(mode, zSql);
 			duckdb::Util::command_count++;
 			nSql = 0;
@@ -4838,12 +4839,10 @@ int SQLITE_CDECL main(int argc, char **argv) {
 int SQLITE_CDECL wmain(int argc, wchar_t **wargv) {
 	char **argv;
 #endif
-	std::uniform_int_distribution<unsigned long long> dis(
-			std::numeric_limits<std::uint64_t>::min(),
-			std::numeric_limits<std::uint64_t>::max()
-		);
+	std::uniform_int_distribution<unsigned long long> dis(std::numeric_limits<std::uint64_t>::min(),
+	                                                      std::numeric_limits<std::uint64_t>::max());
 	std::random_device rd;
-    std::mt19937 gen(rd());
+	std::mt19937 gen(rd());
 	duckdb::Util::session_id = dis(gen);
 	char *zErrMsg = nullptr;
 	ShellState data;

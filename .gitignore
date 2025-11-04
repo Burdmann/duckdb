@@ -361,4 +361,3 @@ tools/pythonpkg/duckdb_build/
 
 test-big.csv
 lineitem-shuffled.csv
-test.txt

@@ -16,11 +16,13 @@ namespace duckdb {
 
 BaseStatistics::BaseStatistics() {
 	type = LogicalType::INVALID;
-	fprintf(stderr,"%llu,%llu,%s,%s,%lld,%lld,%p,%s\n",Util::session_id, Util::command_count,Util::GetTime(),"STAT_CREATED",sizeof(*this),0,this,"");
+	fprintf(stderr, "%llu,%llu,%s,%s,%lld,%lld,%p,%s\n", Util::session_id, Util::command_count, Util::GetTime(),
+	        "STAT_CREATED", sizeof(*this), 0, this, "");
 }
 
 BaseStatistics::BaseStatistics(LogicalType type) {
-	fprintf(stderr,"%llu,%llu,%s,%s,%lld,%lld,%p,%s\n",Util::session_id, Util::command_count,Util::GetTime(),"STAT_CREATED",sizeof(*this),0,this,"");
+	fprintf(stderr, "%llu,%llu,%s,%s,%lld,%lld,%p,%s\n", Util::session_id, Util::command_count, Util::GetTime(),
+	        "STAT_CREATED", sizeof(*this), 0, this, "");
 	Construct(*this, std::move(type));
 }
 
@@ -28,26 +30,28 @@ void BaseStatistics::Construct(BaseStatistics &stats, LogicalType type) {
 	stats.distinct_count = 0;
 	stats.type = std::move(type);
 	switch (GetStatsType(stats.type)) {
-		case StatisticsType::LIST_STATS:
+	case StatisticsType::LIST_STATS:
 		ListStats::Construct(stats);
 		break;
-		case StatisticsType::STRUCT_STATS:
+	case StatisticsType::STRUCT_STATS:
 		StructStats::Construct(stats);
 		break;
-		case StatisticsType::ARRAY_STATS:
+	case StatisticsType::ARRAY_STATS:
 		ArrayStats::Construct(stats);
 		break;
-		default:
+	default:
 		break;
 	}
 }
 
 BaseStatistics::~BaseStatistics() {
-	fprintf(stderr,"%llu,%llu,%s,%s,%lld,%lld,%p,%s\n",Util::session_id, Util::command_count,Util::GetTime(),"STAT_DESTROYED",sizeof(*this),0,this,"");
+	fprintf(stderr, "%llu,%llu,%s,%s,%lld,%lld,%p,%s\n", Util::session_id, Util::command_count, Util::GetTime(),
+	        "STAT_DESTROYED", sizeof(*this), 0, this, "");
 }
 
 BaseStatistics::BaseStatistics(BaseStatistics &&other) noexcept {
-	fprintf(stderr,"%llu,%llu,%s,%s,%lld,%lld,%p,%s\n",Util::session_id, Util::command_count,Util::GetTime(),"STAT_CREATED",sizeof(*this),0,this,"");
+	fprintf(stderr, "%llu,%llu,%s,%s,%lld,%lld,%p,%s\n", Util::session_id, Util::command_count, Util::GetTime(),
+	        "STAT_CREATED", sizeof(*this), 0, this, "");
 	std::swap(type, other.type);
 	has_null = other.has_null;
 	has_no_null = other.has_no_null;
