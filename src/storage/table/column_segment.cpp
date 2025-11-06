@@ -115,7 +115,8 @@ void ColumnSegment::InitializeScan(ColumnScanState &state) {
 
 void ColumnSegment::Scan(ColumnScanState &state, idx_t scan_count, Vector &result, idx_t result_offset,
                          ScanVectorType scan_type) {
-	fprintf(stderr, "%llu,%llu,%s,SCANNED_ROWS,{\"count\":%llu,\"offset\":%llu,\"partition\":\"%p\"}\n",
+	fprintf(stderr,
+	        "%llx,%llu,%lld,SCANNED_ROWS,\"{\"\"count\"\":%llu,\"\"offset\"\":%llu,\"\"partition\"\":\"\"%p\"\"}\"\n",
 	        Util::session_id, Util::command_count, Util::GetTime(), scan_count, result_offset, this);
 
 	if (scan_type == ScanVectorType::SCAN_ENTIRE_VECTOR) {
@@ -197,15 +198,17 @@ void ColumnSegment::InitializeAppend(ColumnAppendState &state) {
 }
 
 idx_t ColumnSegment::Append(ColumnAppendState &state, UnifiedVectorFormat &append_data, idx_t offset, idx_t count) {
-	fprintf(stderr, "%llu,%llu,%s,APPEND_START,{\"count\":%llu,\"offset\":%llu,\"partition\":\"%p\"}\n",
+	fprintf(stderr,
+	        "%llx,%llu,%lld,APPEND_START,\"{\"\"count\"\":%llu,\"\"offset\"\":%llu,\"\"partition\"\":\"\"%p\"\"}\"\n",
 	        Util::session_id, Util::command_count, Util::GetTime(), count, offset, this);
 	D_ASSERT(segment_type == ColumnSegmentType::TRANSIENT);
 	if (!function.get().append) {
 		throw InternalException("Attempting to append to a segment without append method");
 	}
 	return function.get().append(*state.append_state, *this, stats, append_data, offset, count);
-	fprintf(stderr, "%llu,%llu,%s,APPEND_END,{\"count\":%llu,\"offset\":%llu,\"partition\":\"%p\"}\n", Util::session_id,
-	        Util::command_count, Util::GetTime(), count, offset, this);
+	fprintf(stderr,
+	        "%llx,%llu,%lld,APPEND_END,\"{\"\"count\"\":%llu,\"\"offset\"\":%llu,\"\"partition\"\":\"\"%p\"\"}\"\n",
+	        Util::session_id, Util::command_count, Util::GetTime(), count, offset, this);
 }
 
 idx_t ColumnSegment::FinalizeAppend(ColumnAppendState &state) {

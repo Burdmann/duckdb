@@ -613,9 +613,11 @@ void RowGroup::TemplatedScan(TransactionData transaction, CollectionScanState &s
 					auto &col_data = GetColumn(column_idx);
 					col_data.Filter(transaction, state.vector_index, state.column_scans[scan_idx], result_vector, sel,
 					                approved_tuple_count, filter.filter, table_filter_state);
-					fprintf(stderr, "%llu,%llu,%s,PRODUCED_RESULT_COUNT,{\"count\":%llu,\"partition\":\"%p\"}\n",
-					        Util::session_id, Util::command_count, Util::GetTime(), approved_tuple_count,
-					        state.column_scans[scan_idx].current);
+					fprintf(
+					    stderr,
+					    "%llx,%llu,%lld,PRODUCED_RESULT_COUNT,\"{\"\"count\"\":%llu,\"\"partition\"\":\"\"%p\"\"}\"\n",
+					    Util::session_id, Util::command_count, Util::GetTime(), approved_tuple_count,
+					    state.column_scans[scan_idx].current);
 				}
 				for (auto &table_filter : filter_list) {
 					if (table_filter.IsAlwaysTrue()) {
