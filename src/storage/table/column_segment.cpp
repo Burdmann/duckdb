@@ -22,19 +22,20 @@
 namespace duckdb {
 
 // altp
-unordered_map<void*,AdditionalStat<uint8_t>> ColumnSegment::additional_stats_uint8;
-unordered_map<void*,AdditionalStat<uint16_t>> ColumnSegment::additional_stats_uint16;
-unordered_map<void*,AdditionalStat<uint32_t>> ColumnSegment::additional_stats_uint32;
-unordered_map<void*,AdditionalStat<uint64_t>> ColumnSegment::additional_stats_uint64;
-unordered_map<void*,AdditionalStat<uhugeint_t>> ColumnSegment::additional_stats_uhugeint;
-unordered_map<void*,AdditionalStat<int8_t>> ColumnSegment::additional_stats_int8;
-unordered_map<void*,AdditionalStat<int16_t>> ColumnSegment::additional_stats_int16;
-unordered_map<void*,AdditionalStat<int32_t>> ColumnSegment::additional_stats_int32;
-unordered_map<void*,AdditionalStat<int64_t>> ColumnSegment::additional_stats_int64;
-unordered_map<void*,AdditionalStat<hugeint_t>> ColumnSegment::additional_stats_hugeint;
-unordered_map<void*,AdditionalStat<float>> ColumnSegment::additional_stats_float;
-unordered_map<void*,AdditionalStat<double>> ColumnSegment::additional_stats_double;
-unordered_map<void*,AdditionalStat<string_t>> ColumnSegment::additional_stats_string;
+unordered_map<void *, AdditionalStats<bool> *> ColumnSegment::additional_stats_bool;
+unordered_map<void *, AdditionalStats<uint8_t> *> ColumnSegment::additional_stats_uint8;
+unordered_map<void *, AdditionalStats<uint16_t> *> ColumnSegment::additional_stats_uint16;
+unordered_map<void *, AdditionalStats<uint32_t> *> ColumnSegment::additional_stats_uint32;
+unordered_map<void *, AdditionalStats<uint64_t> *> ColumnSegment::additional_stats_uint64;
+unordered_map<void *, AdditionalStats<uhugeint_t> *> ColumnSegment::additional_stats_uhugeint;
+unordered_map<void *, AdditionalStats<int8_t> *> ColumnSegment::additional_stats_int8;
+unordered_map<void *, AdditionalStats<int16_t> *> ColumnSegment::additional_stats_int16;
+unordered_map<void *, AdditionalStats<int32_t> *> ColumnSegment::additional_stats_int32;
+unordered_map<void *, AdditionalStats<int64_t> *> ColumnSegment::additional_stats_int64;
+unordered_map<void *, AdditionalStats<hugeint_t> *> ColumnSegment::additional_stats_hugeint;
+unordered_map<void *, AdditionalStats<float> *> ColumnSegment::additional_stats_float;
+unordered_map<void *, AdditionalStats<double> *> ColumnSegment::additional_stats_double;
+unordered_map<void *, AdditionalStats<string_t> *> ColumnSegment::additional_stats_string;
 
 //===--------------------------------------------------------------------===//
 // Create

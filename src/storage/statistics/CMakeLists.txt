@@ -1,5 +1,3 @@
-add_subdirectory(additional)
-
 add_library_unity(
   duckdb_storage_statistics
   OBJECT

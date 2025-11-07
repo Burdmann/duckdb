@@ -160,19 +160,20 @@ public:
 	shared_ptr<BlockHandle> block;
 
 	// altp
-	static unordered_map<void*,AdditionalStat<uint8_t>> additional_stats_uint8;
-	static unordered_map<void*,AdditionalStat<uint16_t>> additional_stats_uint16;
-	static unordered_map<void*,AdditionalStat<uint32_t>> additional_stats_uint32;
-	static unordered_map<void*,AdditionalStat<uint64_t>> additional_stats_uint64;
-	static unordered_map<void*,AdditionalStat<uhugeint_t>> additional_stats_uhugeint;
-	static unordered_map<void*,AdditionalStat<int8_t>> additional_stats_int8;
-	static unordered_map<void*,AdditionalStat<int16_t>> additional_stats_int16;
-	static unordered_map<void*,AdditionalStat<int32_t>> additional_stats_int32;
-	static unordered_map<void*,AdditionalStat<int64_t>> additional_stats_int64;
-	static unordered_map<void*,AdditionalStat<hugeint_t>> additional_stats_hugeint;
-	static unordered_map<void*,AdditionalStat<float>> additional_stats_float;
-	static unordered_map<void*,AdditionalStat<double>> additional_stats_double;
-	static unordered_map<void*,AdditionalStat<string_t>> additional_stats_string;
+	static unordered_map<void *, AdditionalStats<bool> *> additional_stats_bool;
+	static unordered_map<void *, AdditionalStats<uint8_t> *> additional_stats_uint8;
+	static unordered_map<void *, AdditionalStats<uint16_t> *> additional_stats_uint16;
+	static unordered_map<void *, AdditionalStats<uint32_t> *> additional_stats_uint32;
+	static unordered_map<void *, AdditionalStats<uint64_t> *> additional_stats_uint64;
+	static unordered_map<void *, AdditionalStats<uhugeint_t> *> additional_stats_uhugeint;
+	static unordered_map<void *, AdditionalStats<int8_t> *> additional_stats_int8;
+	static unordered_map<void *, AdditionalStats<int16_t> *> additional_stats_int16;
+	static unordered_map<void *, AdditionalStats<int32_t> *> additional_stats_int32;
+	static unordered_map<void *, AdditionalStats<int64_t> *> additional_stats_int64;
+	static unordered_map<void *, AdditionalStats<hugeint_t> *> additional_stats_hugeint;
+	static unordered_map<void *, AdditionalStats<float> *> additional_stats_float;
+	static unordered_map<void *, AdditionalStats<double> *> additional_stats_double;
+	static unordered_map<void *, AdditionalStats<string_t> *> additional_stats_string;
 
 private:
 	//! The compression function
