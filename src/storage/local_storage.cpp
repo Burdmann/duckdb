@@ -456,6 +456,13 @@ void LocalTableStorage::AppendToDeleteIndexes(Vector &row_ids, DataChunk &delete
 	});
 }
 
+void LocalStorage::FinishInitialiseStats(LocalAppendState &state, DataChunk &table_chunk,
+                                         DataTableInfo &data_table_info) {
+	auto storage = state.storage;
+	state.append_state.row_group_append_state.row_group->InitStats(state.append_state.row_group_append_state,
+	                                                               table_chunk, 0);
+}
+
 void LocalStorage::Append(LocalAppendState &state, DataChunk &table_chunk, DataTableInfo &data_table_info) {
 	// Append to any unique indexes.
 	auto storage = state.storage;

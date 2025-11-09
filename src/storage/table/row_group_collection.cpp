@@ -398,6 +398,11 @@ bool RowGroupCollection::Append(DataChunk &chunk, TableAppendState &state) {
 		if (remaining > 0) {
 			// we expect max 1 iteration of this loop (i.e. a single chunk should never overflow more than one
 			// row_group)
+
+			// ColumnData::InitStats();
+			// printf("here\n");
+			current_row_group->InitStats(state.row_group_append_state, chunk, append_count);
+
 			D_ASSERT(chunk.size() == remaining + append_count);
 			// slice the input chunk
 			if (remaining < chunk.size()) {
@@ -434,6 +439,7 @@ void RowGroupCollection::FinalizeAppend(TransactionData transaction, TableAppend
 
 	auto remaining = state.total_append_count;
 	auto row_group = state.start_row_group;
+
 	while (remaining > 0) {
 		auto append_count = MinValue<idx_t>(remaining, row_group_size - row_group->count);
 		row_group->AppendVersionInfo(transaction, append_count);

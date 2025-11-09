@@ -16,10 +16,9 @@ namespace duckdb {
 template <class T>
 class EmptyAdditionalStats : public AdditionalStats<T> {
 public:
-	EmptyAdditionalStats(std::vector<T> &data) {
-		Initialise(*this, data);
-	}
+	using AdditionalStats<T>::AdditionalStats;
 	static void Initialise(AdditionalStats<T> &stats, std::vector<T> &data) {
+		printf("Init Empty stats\n");
 	}
 	FilterPropagateResult Query() {
 		return FilterPropagateResult::NO_PRUNING_POSSIBLE;

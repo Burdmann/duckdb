@@ -13,7 +13,7 @@ BaseStatistics NumericStats::CreateUnknown(LogicalType type) {
 	result.InitializeUnknown();
 	SetMin(result, Value(result.GetType()));
 	SetMax(result, Value(result.GetType()));
-	
+
 	return result;
 }
 

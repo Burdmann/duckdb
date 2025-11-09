@@ -195,6 +195,8 @@ public:
 
 	static FilterPropagateResult CheckRowIdFilter(const TableFilter &filter, idx_t beg_row, idx_t end_row);
 
+	virtual void InitStats(RowGroupAppendState &state, DataChunk &chunk, duckdb::idx_t count);
+
 private:
 	optional_ptr<RowVersionManager> GetVersionInfo();
 	shared_ptr<RowVersionManager> GetOrCreateVersionInfoPtr();
@@ -227,6 +229,9 @@ private:
 	unique_ptr<ColumnData> row_id_column_data;
 	atomic<bool> row_id_is_loaded;
 
+public:
+	static set<void *> needed;
+	static set<void *> scanned;
 };
 
 } // namespace duckdb

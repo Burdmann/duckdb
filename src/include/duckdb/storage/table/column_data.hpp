@@ -249,19 +249,19 @@ public:
 			AppendTemp(vdata, copied_elements, this->string_temp_vector);
 			break;
 		default:
-			throw InternalException("Unsupported type for appending to numeric cluster stats");
+			throw InternalException("Unsupported type for appending to additional stats");
 		}
 	}
 
 	template <class T>
 	void InitNumericStats(std::vector<T> &temp_storage,
-	                      std::unordered_map<void *, AdditionalStats<T> *> additional_stats, BaseStatistics &stats) {
-		additional_stats[&stats] = new NUMERIC_STATS<T>(temp_storage);
+	                      std::unordered_map<void *, AdditionalStats<T> *> &additional_stats, BaseStatistics &stats) {
+		additional_stats[&stats] = new ADDITIONAL_NUMERIC_STATS<T>(temp_storage);
 	}
 	void InitStringStats(std::vector<string_t> &temp_storage,
-	                     std::unordered_map<void *, AdditionalStats<string_t> *> additional_stats,
+	                     std::unordered_map<void *, AdditionalStats<string_t> *> &additional_stats,
 	                     BaseStatistics &stats) {
-		additional_stats[&stats] = new STRING_STATS<string_t>(temp_storage);
+		additional_stats[&stats] = new ADDITIONAL_STRING_STATS<string_t>(temp_storage);
 	}
 
 	void InitStats(BaseStatistics &stats, PhysicalType type) {

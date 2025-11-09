@@ -187,6 +187,8 @@ public:
 
 	void VerifyNewConstraint(DataTable &parent, const BoundConstraint &constraint);
 
+	static void FinishInitialiseStats(LocalAppendState &state, DataChunk &table_chunk, DataTableInfo &data_table_info);
+
 private:
 	ClientContext &context;
 	DuckTransaction &transaction;

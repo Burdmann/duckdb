@@ -24,6 +24,9 @@
 
 namespace duckdb {
 
+set<void *> RowGroup::needed;
+set<void *> RowGroup::scanned;
+
 RowGroup::RowGroup(RowGroupCollection &collection_p, idx_t start, idx_t count)
     : SegmentBase<RowGroup>(start, count), collection(collection_p), version_info(nullptr), allocation_size(0),
       row_id_is_loaded(false) {
@@ -613,11 +616,10 @@ void RowGroup::TemplatedScan(TransactionData transaction, CollectionScanState &s
 					auto &col_data = GetColumn(column_idx);
 					col_data.Filter(transaction, state.vector_index, state.column_scans[scan_idx], result_vector, sel,
 					                approved_tuple_count, filter.filter, table_filter_state);
-					fprintf(
-					    stderr,
-					    "%llx,%llu,%lld,PRODUCED_RESULT_COUNT,\"{\"\"count\"\":%llu,\"\"partition\"\":\"\"%p\"\"}\"\n",
-					    Util::session_id, Util::command_count, Util::GetTime(), approved_tuple_count,
-					    state.column_scans[scan_idx].current);
+					scanned.insert((void *)state.column_scans[scan_idx].current);
+					if (approved_tuple_count > 0) {
+						needed.insert((void *)state.column_scans[scan_idx].current);
+					}
 				}
 				for (auto &table_filter : filter_list) {
 					if (table_filter.IsAlwaysTrue()) {
@@ -843,8 +845,17 @@ void RowGroup::InitializeAppend(RowGroupAppendState &append_state) {
 	}
 }
 
+void RowGroup::InitStats(RowGroupAppendState &state, DataChunk &chunk, duckdb::idx_t count) {
+	for (idx_t i = 0; i < GetColumnCount(); i++) {
+		UnifiedVectorFormat vdata;
+		chunk.data[i].ToUnifiedFormat(count, vdata);
+		GetColumn(i).InitStats(state.states[i].current->stats.statistics, vdata.physical_type);
+	}
+}
+
 void RowGroup::Append(RowGroupAppendState &state, DataChunk &chunk, idx_t append_count) {
 	// append to the current row_group
+
 	D_ASSERT(chunk.ColumnCount() == GetColumnCount());
 	for (idx_t i = 0; i < GetColumnCount(); i++) {
 		auto &col_data = GetColumn(i);

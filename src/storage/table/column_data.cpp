@@ -500,6 +500,7 @@ void ColumnData::AppendData(BaseStatistics &append_stats, ColumnAppendState &sta
 		// append the data from the vector
 		idx_t copied_elements = state.current->Append(state, vdata, offset, append_count);
 		append_stats.Merge(state.current->stats.statistics);
+		AppendTemp(vdata, copied_elements);
 		if (copied_elements == append_count) {
 			// finished copying everything
 			break;
@@ -507,6 +508,8 @@ void ColumnData::AppendData(BaseStatistics &append_stats, ColumnAppendState &sta
 
 		// we couldn't fit everything we wanted in the current column segment, create a new one
 		{
+			InitStats(state.current->stats.statistics, vdata.physical_type);
+
 			auto l = data.Lock();
 			AppendTransientSegment(l, state.current->start + state.current->count);
 			state.current = data.GetLastSegment(l);
@@ -611,6 +614,7 @@ void ColumnData::AppendTransientSegment(SegmentLock &l, idx_t start_row) {
 
 	auto new_segment =
 	    ColumnSegment::CreateTransientSegment(db, *function, type, start_row, segment_size, block_manager);
+	// altp: segment has been created here
 	AppendSegment(l, std::move(new_segment));
 }
 

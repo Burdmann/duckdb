@@ -8,28 +8,29 @@
 
 #pragma once
 
-#define NUMERIC_STATS EmptyAdditionalStats
-#define STRING_STATS  EmptyAdditionalStats
+#define ADDITIONAL_NUMERIC_STATS EmptyAdditionalStats
+#define ADDITIONAL_STRING_STATS  EmptyAdditionalStats
 
 namespace duckdb {
+template <class T>
 class EmptyAdditionalStats;
 
 template <class T>
 class AdditionalStats {
 public:
 	AdditionalStats(std::vector<T> &data) {
-		Initialise(*this, data);
+		this->Initialise(data);
 	}
 	// init
-	virtual static void Initialise(AdditionalStats &stat, std::vector<T> &data);
+	void Initialise(std::vector<T> &data);
 	// query
-	virtual FilterPropagateResult Query();
+	FilterPropagateResult Query();
 	// size
-	virtual size_t Size();
+	size_t Size();
 	// serialise
-	virtual void Serialise();
+	void Serialise();
 	// deserialise
-	virtual void Deserialise();
+	void Deserialise();
 };
 
 } // namespace duckdb
