@@ -19,6 +19,7 @@
 #include "duckdb/common/enums/scan_vector_type.hpp"
 #include "duckdb/common/serializer/serialization_traits.hpp"
 #include "duckdb/common/atomic_ptr.hpp"
+#include "duckdb/util/util.hpp"
 
 #include "duckdb/storage/statistics/additional/empty_additional_stats.hpp"
 
@@ -204,49 +205,49 @@ public:
 		}
 	}
 
-	void AppendTemp(UnifiedVectorFormat &vdata, idx_t copied_elements) {
+	void AppendTemp(UnifiedVectorFormat &vdata, idx_t copied_elements, BaseStatistics &stats) {
 		switch (vdata.physical_type) {
 		case PhysicalType::BOOL:
-			AppendTemp(vdata, copied_elements, this->bool_temp_vector);
+			AppendTemp(vdata, copied_elements, this->bool_temp_vectors[&stats]);
 			break;
 		case PhysicalType::INT8:
-			AppendTemp(vdata, copied_elements, this->int8_temp_vector);
+			AppendTemp(vdata, copied_elements, this->int8_temp_vectors[&stats]);
 			break;
 		case PhysicalType::INT16:
-			AppendTemp(vdata, copied_elements, this->int16_temp_vector);
+			AppendTemp(vdata, copied_elements, this->int16_temp_vectors[&stats]);
 			break;
 		case PhysicalType::INT32:
-			AppendTemp(vdata, copied_elements, this->int32_temp_vector);
+			AppendTemp(vdata, copied_elements, this->int32_temp_vectors[&stats]);
 			break;
 		case PhysicalType::INT64:
-			AppendTemp(vdata, copied_elements, this->int64_temp_vector);
+			AppendTemp(vdata, copied_elements, this->int64_temp_vectors[&stats]);
 			break;
 		case PhysicalType::UINT8:
-			AppendTemp(vdata, copied_elements, this->uint8_temp_vector);
+			AppendTemp(vdata, copied_elements, this->uint8_temp_vectors[&stats]);
 			break;
 		case PhysicalType::UINT16:
-			AppendTemp(vdata, copied_elements, this->uint16_temp_vector);
+			AppendTemp(vdata, copied_elements, this->uint16_temp_vectors[&stats]);
 			break;
 		case PhysicalType::UINT32:
-			AppendTemp(vdata, copied_elements, this->uint32_temp_vector);
+			AppendTemp(vdata, copied_elements, this->uint32_temp_vectors[&stats]);
 			break;
 		case PhysicalType::UINT64:
-			AppendTemp(vdata, copied_elements, this->uint64_temp_vector);
+			AppendTemp(vdata, copied_elements, this->uint64_temp_vectors[&stats]);
 			break;
 		case PhysicalType::INT128:
-			AppendTemp(vdata, copied_elements, this->hugeint_temp_vector);
+			AppendTemp(vdata, copied_elements, this->hugeint_temp_vectors[&stats]);
 			break;
 		case PhysicalType::UINT128:
-			AppendTemp(vdata, copied_elements, this->uhugeint_temp_vector);
+			AppendTemp(vdata, copied_elements, this->uhugeint_temp_vectors[&stats]);
 			break;
 		case PhysicalType::FLOAT:
-			AppendTemp(vdata, copied_elements, this->float_temp_vector);
+			AppendTemp(vdata, copied_elements, this->float_temp_vectors[&stats]);
 			break;
 		case PhysicalType::DOUBLE:
-			AppendTemp(vdata, copied_elements, this->double_temp_vector);
+			AppendTemp(vdata, copied_elements, this->double_temp_vectors[&stats]);
 			break;
 		case PhysicalType::VARCHAR:
-			AppendTemp(vdata, copied_elements, this->string_temp_vector);
+			AppendTemp(vdata, copied_elements, this->string_temp_vectors[&stats]);
 			break;
 		default:
 			throw InternalException("Unsupported type for appending to additional stats");
@@ -256,57 +257,69 @@ public:
 	template <class T>
 	void InitNumericStats(std::vector<T> &temp_storage,
 	                      std::unordered_map<void *, AdditionalStats<T> *> &additional_stats, BaseStatistics &stats) {
+		fprintf(stderr,
+			"%llx,%llu,%lld,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":%p,\"\"type\"\":\"\"%s\"\"}\"\n",
+			Util::session_id, Util::command_count, Util::GetTime(), &stats, ADDITIONAL_NUMERIC_STATS<T>::name);
 		additional_stats[&stats] = new ADDITIONAL_NUMERIC_STATS<T>(temp_storage);
+		temp_storage.clear();
+		fprintf(stderr,
+			"%llx,%llu,%lld,END_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":%p,\"\"type\"\":\"\"%s\"\"}\"\n",
+			Util::session_id, Util::command_count, Util::GetTime(), &stats, ADDITIONAL_NUMERIC_STATS<T>::name);
 	}
-	void InitStringStats(std::vector<string_t> &temp_storage,
-	                     std::unordered_map<void *, AdditionalStats<string_t> *> &additional_stats,
-	                     BaseStatistics &stats) {
+	void InitStringStats(std::vector<string_t> &temp_storage,std::unordered_map<void *, AdditionalStats<string_t> *> &additional_stats,BaseStatistics &stats) {
+		fprintf(stderr,
+			"%llx,%llu,%lld,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":%p,\"\"type\"\":\"\"%s\"\"}\"\n",
+			Util::session_id, Util::command_count, Util::GetTime(), &stats, ADDITIONAL_STRING_STATS<string_t>::name);
 		additional_stats[&stats] = new ADDITIONAL_STRING_STATS<string_t>(temp_storage);
+		temp_storage.clear();
+		fprintf(stderr,
+			"%llx,%llu,%lld,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":%p,\"\"type\"\":\"\"%s\"\"}\"\n",
+			Util::session_id, Util::command_count, Util::GetTime(), &stats, ADDITIONAL_STRING_STATS<string_t>::name);
 	}
 
 	void InitStats(BaseStatistics &stats, PhysicalType type) {
 		switch (type) {
 		case PhysicalType::BOOL:
-			InitNumericStats(this->bool_temp_vector, ColumnSegment::additional_stats_bool, stats);
+			InitNumericStats(this->bool_temp_vectors[&stats], ColumnSegment::additional_stats_bool, stats);
 			break;
 		case PhysicalType::INT8:
-			InitNumericStats(this->int8_temp_vector, ColumnSegment::additional_stats_int8, stats);
+			InitNumericStats(this->int8_temp_vectors[&stats], ColumnSegment::additional_stats_int8, stats);
 			break;
 		case PhysicalType::INT16:
-			InitNumericStats(this->int16_temp_vector, ColumnSegment::additional_stats_int16, stats);
+			InitNumericStats(this->int16_temp_vectors[&stats], ColumnSegment::additional_stats_int16, stats);
 			break;
 		case PhysicalType::INT32:
-			InitNumericStats(this->int32_temp_vector, ColumnSegment::additional_stats_int32, stats);
+			InitNumericStats(this->int32_temp_vectors[&stats], ColumnSegment::additional_stats_int32, stats);
 			break;
 		case PhysicalType::INT64:
-			InitNumericStats(this->int64_temp_vector, ColumnSegment::additional_stats_int64, stats);
+			InitNumericStats(this->int64_temp_vectors[&stats], ColumnSegment::additional_stats_int64, stats);
 			break;
 		case PhysicalType::INT128:
-			InitNumericStats(this->hugeint_temp_vector, ColumnSegment::additional_stats_hugeint, stats);
+			InitNumericStats(this->hugeint_temp_vectors[&stats], ColumnSegment::additional_stats_hugeint, stats);
 			break;
 		case PhysicalType::UINT8:
-			InitNumericStats(this->uint8_temp_vector, ColumnSegment::additional_stats_uint8, stats);
+			InitNumericStats(this->uint8_temp_vectors[&stats], ColumnSegment::additional_stats_uint8, stats);
 			break;
 		case PhysicalType::UINT16:
-			InitNumericStats(this->uint16_temp_vector, ColumnSegment::additional_stats_uint16, stats);
+			InitNumericStats(this->uint16_temp_vectors[&stats], ColumnSegment::additional_stats_uint16, stats);
 			break;
 		case PhysicalType::UINT32:
-			InitNumericStats(this->uint32_temp_vector, ColumnSegment::additional_stats_uint32, stats);
+			InitNumericStats(this->uint32_temp_vectors[&stats], ColumnSegment::additional_stats_uint32, stats);
 			break;
 		case PhysicalType::UINT64:
-			InitNumericStats(this->uint64_temp_vector, ColumnSegment::additional_stats_uint64, stats);
+			InitNumericStats(this->uint64_temp_vectors[&stats], ColumnSegment::additional_stats_uint64, stats);
 			break;
 		case PhysicalType::UINT128:
-			InitNumericStats(this->uhugeint_temp_vector, ColumnSegment::additional_stats_uhugeint, stats);
+			InitNumericStats(this->uhugeint_temp_vectors[&stats], ColumnSegment::additional_stats_uhugeint, stats);
 			break;
 		case PhysicalType::FLOAT:
-			InitNumericStats(this->float_temp_vector, ColumnSegment::additional_stats_float, stats);
+			InitNumericStats(this->float_temp_vectors[&stats], ColumnSegment::additional_stats_float, stats);
 			break;
 		case PhysicalType::DOUBLE:
-			InitNumericStats(this->double_temp_vector, ColumnSegment::additional_stats_double, stats);
+			InitNumericStats(this->double_temp_vectors[&stats], ColumnSegment::additional_stats_double, stats);
 			break;
 		case PhysicalType::VARCHAR:
-			InitStringStats(this->string_temp_vector, ColumnSegment::additional_stats_string, stats);
+			InitStringStats(this->string_temp_vectors[&stats], ColumnSegment::additional_stats_string, stats);
 			break;
 		default:
 			throw InternalException("Unsupported type for appending to numeric cluster stats");
@@ -367,20 +380,20 @@ private:
 	atomic_ptr<const CompressionFunction> compression;
 
 	//! altp: temporary storage for data between calls to append
-	std::vector<bool> bool_temp_vector;
-	std::vector<int8_t> int8_temp_vector;
-	std::vector<int16_t> int16_temp_vector;
-	std::vector<int32_t> int32_temp_vector;
-	std::vector<int64_t> int64_temp_vector;
-	std::vector<uint8_t> uint8_temp_vector;
-	std::vector<uint16_t> uint16_temp_vector;
-	std::vector<uint32_t> uint32_temp_vector;
-	std::vector<uint64_t> uint64_temp_vector;
-	std::vector<hugeint_t> hugeint_temp_vector;
-	std::vector<uhugeint_t> uhugeint_temp_vector;
-	std::vector<float> float_temp_vector;
-	std::vector<double> double_temp_vector;
-	std::vector<string_t> string_temp_vector;
+	static std::unordered_map<void*,std::vector<bool>> bool_temp_vectors;
+	static std::unordered_map<void*,std::vector<int8_t>> int8_temp_vectors;
+	static std::unordered_map<void*,std::vector<int16_t>> int16_temp_vectors;
+	static std::unordered_map<void*,std::vector<int32_t>> int32_temp_vectors;
+	static std::unordered_map<void*,std::vector<int64_t>> int64_temp_vectors;
+	static std::unordered_map<void*,std::vector<uint8_t>> uint8_temp_vectors;
+	static std::unordered_map<void*,std::vector<uint16_t>> uint16_temp_vectors;
+	static std::unordered_map<void*,std::vector<uint32_t>> uint32_temp_vectors;
+	static std::unordered_map<void*,std::vector<uint64_t>> uint64_temp_vectors;
+	static std::unordered_map<void*,std::vector<hugeint_t>> hugeint_temp_vectors;
+	static std::unordered_map<void*,std::vector<uhugeint_t>> uhugeint_temp_vectors;
+	static std::unordered_map<void*,std::vector<float>> float_temp_vectors;
+	static std::unordered_map<void*,std::vector<double>> double_temp_vectors;
+	static std::unordered_map<void*,std::vector<string_t>> string_temp_vectors;
 };
 
 struct PersistentColumnData {

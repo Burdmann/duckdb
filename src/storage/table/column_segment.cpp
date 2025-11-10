@@ -215,16 +215,16 @@ void ColumnSegment::InitializeAppend(ColumnAppendState &state) {
 
 idx_t ColumnSegment::Append(ColumnAppendState &state, UnifiedVectorFormat &append_data, idx_t offset, idx_t count) {
 	fprintf(stderr,
-	        "%llx,%llu,%lld,APPEND_START,\"{\"\"count\"\":%llu,\"\"offset\"\":%llu,\"\"partition\"\":\"\"%p\"\"}\"\n",
-	        Util::session_id, Util::command_count, Util::GetTime(), count, offset, this);
+	        "%llx,%llu,%lld,APPEND_START,\"{\"\"count\"\":%llu,\"\"offset\"\":%llu,\"\"column_id\"\":%lu,\"\"partition\"\":\"\"%p\"\"}\"\n",
+	        Util::session_id, Util::command_count, Util::GetTime(), count, offset, this->index, this);
 	D_ASSERT(segment_type == ColumnSegmentType::TRANSIENT);
 	if (!function.get().append) {
 		throw InternalException("Attempting to append to a segment without append method");
 	}
 	return function.get().append(*state.append_state, *this, stats, append_data, offset, count);
 	fprintf(stderr,
-	        "%llx,%llu,%lld,APPEND_END,\"{\"\"count\"\":%llu,\"\"offset\"\":%llu,\"\"partition\"\":\"\"%p\"\"}\"\n",
-	        Util::session_id, Util::command_count, Util::GetTime(), count, offset, this);
+	        "%llx,%llu,%lld,APPEND_END,\"{\"\"count\"\":%llu,\"\"offset\"\":%llu,\"\"column_id\"\":%lu,\"\"partition\"\":\"\"%p\"\"}\"\n",
+	        Util::session_id, Util::command_count, Util::GetTime(), count, offset, this->index, this);
 }
 
 idx_t ColumnSegment::FinalizeAppend(ColumnAppendState &state) {

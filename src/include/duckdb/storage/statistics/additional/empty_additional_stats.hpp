@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <functional>
 #include "duckdb/storage/statistics/additional/additional_stats.hpp"
 #include "duckdb/common/enums/filter_propagate_result.hpp"
 
@@ -16,19 +17,27 @@ namespace duckdb {
 template <class T>
 class EmptyAdditionalStats : public AdditionalStats<T> {
 public:
-	using AdditionalStats<T>::AdditionalStats;
-	static void Initialise(AdditionalStats<T> &stats, std::vector<T> &data) {
+	static constexpr char* name = "empty";
+	inline EmptyAdditionalStats(std::vector<T> &data) {
+		this->Initialise = &Initialise_implementation;
+		this->Query = &Query_implementation;
+		this->Size = &Size_implementation;
+		this->Serialise = &Serialise_implementation;
+		this->Deserialise = &Deserialise_implementation;
+		this->Initialise(data,this);
+	}
+	inline static void Initialise_implementation(std::vector<T> &data, AdditionalStats<T>* stats) {
 		printf("Init Empty stats\n");
 	}
-	FilterPropagateResult Query() {
+	inline static FilterPropagateResult Query_implementation(AdditionalStats<T>* stats) {
 		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 	}
-	size_t Size() {
+	inline static size_t Size_implementation(AdditionalStats<T>* stats) {
 		return 0;
 	}
-	void Serialise() {
+	inline static void Serialise_implementation(AdditionalStats<T>* stats) {
 	}
-	void Deserialise() {
+	inline static void Deserialise_implementation(AdditionalStats<T>* stats) {
 	}
 };
 
