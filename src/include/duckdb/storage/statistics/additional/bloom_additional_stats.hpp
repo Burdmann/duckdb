@@ -15,10 +15,10 @@
 namespace duckdb {
 
 template <class T>
-class EmptyAdditionalStats : public AdditionalStats<T> {
+class BloomAdditionalStats : public AdditionalStats<T> {
 public:
-	static constexpr char* name = "empty";
-	inline EmptyAdditionalStats(std::vector<T> &data) {
+	static constexpr char* name = "bloom";
+	inline BloomAdditionalStats(std::vector<T> &data) {
 		this->Initialise = &Initialise_implementation;
 		this->Query = &Query_implementation;
 		this->Size = &Size_implementation;

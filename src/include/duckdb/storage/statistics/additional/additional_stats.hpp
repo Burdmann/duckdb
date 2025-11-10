@@ -10,18 +10,23 @@
 
 #include <functional>
 
-#define ADDITIONAL_NUMERIC_STATS EmptyAdditionalStats
-#define ADDITIONAL_STRING_STATS  EmptyAdditionalStats
+#define ADDITIONAL_NUMERIC_STATS ClusterAdditionalStats
+#define ADDITIONAL_STRING_STATS  StringClusterAdditionalStats
 
 namespace duckdb {
 template <class T>
 class EmptyAdditionalStats;
+template <class T>
+class ClusterAdditionalStats;
+class StringClusterAdditionalStats;
+template <class T>
+class BloomAdditionalStats;
 
 template <class T>
 class AdditionalStats {
 public:
 	std::function<void(std::vector<T>&,AdditionalStats<T>*)> Initialise;
-	std::function<FilterPropagateResult(AdditionalStats<T>*)> Query;
+	std::function<FilterPropagateResult(AdditionalStats<T>*, ExpressionType, T)> Query;
 	std::function<size_t(AdditionalStats<T>*)> Size;
 	std::function<void(AdditionalStats<T>*)> Serialise;
 	std::function<void(AdditionalStats<T>*)> Deserialise;

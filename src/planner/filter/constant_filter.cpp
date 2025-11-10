@@ -5,6 +5,7 @@
 #include "duckdb/common/value_operations/value_operations.hpp"
 #include "duckdb/common/enum_util.hpp"
 #include "duckdb/util/util.hpp"
+#include "duckdb/storage/table/column_data.hpp"
 
 namespace duckdb {
 
@@ -87,6 +88,8 @@ FilterPropagateResult ConstantFilter::CheckStatistics(BaseStatistics &stats) con
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		}
 	}
+	if (result == FilterPropagateResult::NO_PRUNING_POSSIBLE)
+		result = ColumnData::QueryAdditionalStats(stats,comparison_type,constant.type().InternalType(),constant);
 	fprintf(
 	    stderr,
 	    "%llx,%llu,%lld,EVAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"filter_propagate_result\"\":%u}\"\n",

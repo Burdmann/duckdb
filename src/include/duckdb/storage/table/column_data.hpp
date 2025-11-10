@@ -20,8 +20,12 @@
 #include "duckdb/common/serializer/serialization_traits.hpp"
 #include "duckdb/common/atomic_ptr.hpp"
 #include "duckdb/util/util.hpp"
+#include "duckdb/common/types/value.hpp"
 
 #include "duckdb/storage/statistics/additional/empty_additional_stats.hpp"
+#include "duckdb/storage/statistics/additional/cluster_additional_stats.hpp"
+#include "duckdb/storage/statistics/additional/string_cluster_additional_stats.hpp"
+#include "duckdb/storage/statistics/additional/bloom_additional_stats.hpp"
 
 namespace duckdb {
 class ColumnData;
@@ -258,23 +262,23 @@ public:
 	void InitNumericStats(std::vector<T> &temp_storage,
 	                      std::unordered_map<void *, AdditionalStats<T> *> &additional_stats, BaseStatistics &stats) {
 		fprintf(stderr,
-			"%llx,%llu,%lld,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":%p,\"\"type\"\":\"\"%s\"\"}\"\n",
+			"%llx,%llu,%lld,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\"}\"\n",
 			Util::session_id, Util::command_count, Util::GetTime(), &stats, ADDITIONAL_NUMERIC_STATS<T>::name);
 		additional_stats[&stats] = new ADDITIONAL_NUMERIC_STATS<T>(temp_storage);
 		temp_storage.clear();
 		fprintf(stderr,
-			"%llx,%llu,%lld,END_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":%p,\"\"type\"\":\"\"%s\"\"}\"\n",
-			Util::session_id, Util::command_count, Util::GetTime(), &stats, ADDITIONAL_NUMERIC_STATS<T>::name);
+			"%llx,%llu,%lld,END_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\",\"\"size\"\":%lu}\"\n",
+			Util::session_id, Util::command_count, Util::GetTime(), &stats, ADDITIONAL_NUMERIC_STATS<T>::name,additional_stats[&stats]->Size(additional_stats[&stats]));
 	}
 	void InitStringStats(std::vector<string_t> &temp_storage,std::unordered_map<void *, AdditionalStats<string_t> *> &additional_stats,BaseStatistics &stats) {
 		fprintf(stderr,
-			"%llx,%llu,%lld,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":%p,\"\"type\"\":\"\"%s\"\"}\"\n",
-			Util::session_id, Util::command_count, Util::GetTime(), &stats, ADDITIONAL_STRING_STATS<string_t>::name);
-		additional_stats[&stats] = new ADDITIONAL_STRING_STATS<string_t>(temp_storage);
+			"%llx,%llu,%lld,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\"}\"\n",
+			Util::session_id, Util::command_count, Util::GetTime(), &stats, ADDITIONAL_STRING_STATS::name);
+		additional_stats[&stats] = new ADDITIONAL_STRING_STATS(temp_storage);
 		temp_storage.clear();
 		fprintf(stderr,
-			"%llx,%llu,%lld,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":%p,\"\"type\"\":\"\"%s\"\"}\"\n",
-			Util::session_id, Util::command_count, Util::GetTime(), &stats, ADDITIONAL_STRING_STATS<string_t>::name);
+			"%llx,%llu,%lld,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\",\"\"size\"\":%lu}\"\n",
+			Util::session_id, Util::command_count, Util::GetTime(), &stats, ADDITIONAL_STRING_STATS::name,additional_stats[&stats]->Size(additional_stats[&stats]));
 	}
 
 	void InitStats(BaseStatistics &stats, PhysicalType type) {
@@ -323,6 +327,54 @@ public:
 			break;
 		default:
 			throw InternalException("Unsupported type for appending to numeric cluster stats");
+		}
+	}
+
+	template <class T>
+	static inline FilterPropagateResult QueryAdditionalStats(unordered_map<void*,AdditionalStats<T>*> additional_stats_map, BaseStatistics* key, ExpressionType comparison_type, const T constant) {
+		if (additional_stats_map.count(key) == 0)
+			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+		AdditionalStats<T>* stats = additional_stats_map[key];
+		fprintf(stderr, "%llx,%llu,%lld,EVAL_ADDITIONAL_STATISTICS_START,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\"type:\"\"%s\"\"}\"\n",
+	        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), key, stats->name);
+		FilterPropagateResult result = stats->Query(stats,comparison_type,constant);
+		fprintf(stderr, "%llx,%llu,%lld,EVAL_ADDITIONAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\"type:\"\"%s\"\"}\"\n",
+			duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), key, stats->name);
+		return result;
+	}
+
+	static inline FilterPropagateResult QueryAdditionalStats(BaseStatistics &stats, ExpressionType comparison_type, PhysicalType type, const Value constant) {
+		switch (type) {
+		case PhysicalType::BOOL:
+			return QueryAdditionalStats(ColumnSegment::additional_stats_bool, &stats, comparison_type, constant.GetValueUnsafe<bool>());
+		case PhysicalType::INT8:
+			return QueryAdditionalStats(ColumnSegment::additional_stats_int8,&stats, comparison_type, constant.GetValueUnsafe<int8_t>());
+		case PhysicalType::INT16:
+			return QueryAdditionalStats(ColumnSegment::additional_stats_int16,&stats, comparison_type, constant.GetValueUnsafe<int16_t>());
+		case PhysicalType::INT32:
+			return QueryAdditionalStats(ColumnSegment::additional_stats_int32,&stats, comparison_type, constant.GetValueUnsafe<int32_t>());
+		case PhysicalType::INT64:
+			return QueryAdditionalStats(ColumnSegment::additional_stats_int64,&stats, comparison_type, constant.GetValueUnsafe<int64_t>());
+		case PhysicalType::INT128:
+			return QueryAdditionalStats(ColumnSegment::additional_stats_hugeint,&stats, comparison_type, constant.GetValueUnsafe<hugeint_t>());
+		case PhysicalType::UINT8:
+			return QueryAdditionalStats(ColumnSegment::additional_stats_uint8,&stats, comparison_type, constant.GetValueUnsafe<uint8_t>());
+		case PhysicalType::UINT16:
+			return QueryAdditionalStats(ColumnSegment::additional_stats_uint16,&stats, comparison_type, constant.GetValueUnsafe<uint16_t>());
+		case PhysicalType::UINT32:
+			return QueryAdditionalStats(ColumnSegment::additional_stats_uint32,&stats, comparison_type, constant.GetValueUnsafe<uint32_t>());
+		case PhysicalType::UINT64:
+			return QueryAdditionalStats(ColumnSegment::additional_stats_uint64,&stats, comparison_type, constant.GetValueUnsafe<uint64_t>());
+		case PhysicalType::UINT128:
+			return QueryAdditionalStats(ColumnSegment::additional_stats_uhugeint,&stats, comparison_type, constant.GetValueUnsafe<uhugeint_t>());
+		case PhysicalType::FLOAT:
+			return QueryAdditionalStats(ColumnSegment::additional_stats_float,&stats, comparison_type, constant.GetValueUnsafe<float>());
+		case PhysicalType::DOUBLE:
+			return QueryAdditionalStats(ColumnSegment::additional_stats_double,&stats, comparison_type, constant.GetValueUnsafe<double>());
+		case PhysicalType::VARCHAR:
+			return QueryAdditionalStats(ColumnSegment::additional_stats_string,&stats, comparison_type, constant.GetValueUnsafe<string_t>());
+		default:
+			throw InternalException("Unsupported type querying additional stats");
 		}
 	}
 
