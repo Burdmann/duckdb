@@ -30,24 +30,25 @@ private:
 	static bool ConstantValueInRange(T min, T max, T constant) {
 		return !(LessThan::Operation(constant, min) || GreaterThan::Operation(constant, max));
 	}
+
 public:
-	static constexpr char* name = "cluster";
+	static constexpr char *static_name = "cluster";
 	inline ClusterAdditionalStats(std::vector<T> &data) {
+		this->name = static_name;
 		this->Initialise = &Initialise_implementation;
 		this->Query = &Query_implementation;
 		this->Size = &Size_implementation;
 		this->Serialise = &Serialise_implementation;
 		this->Deserialise = &Deserialise_implementation;
-		this->Initialise(data,this);
+		this->Initialise(data, this);
 	}
 
-
-	inline static void Initialise_implementation(std::vector<T> &data, AdditionalStats<T>* stats) {
+	inline static void Initialise_implementation(std::vector<T> &data, AdditionalStats<T> *stats) {
 		int size = data.size();
 		if (size == 0)
 			return;
 
-		ClusterAdditionalStats<T>* nstats = static_cast<ClusterAdditionalStats<T>*>(stats);
+		ClusterAdditionalStats<T> *nstats = static_cast<ClusterAdditionalStats<T> *>(stats);
 
 		// sort the data
 		std::sort(data.begin(), data.end());
@@ -63,8 +64,7 @@ public:
 		std::vector<int> idxs;
 		std::sort(gaps.begin(), gaps.end(), std::greater<std::pair<T, int>>());
 
-		for (int i = 0; i < std::min((unsigned long)gaps.size(), (unsigned long)(MAX_NUMBER_OF_CLUSTERS - 1));
-		     i++) {
+		for (int i = 0; i < std::min((unsigned long)gaps.size(), (unsigned long)(MAX_NUMBER_OF_CLUSTERS - 1)); i++) {
 			if (gaps[i].first == zero)
 				break;
 			idxs.push_back(gaps[i].second);
@@ -85,7 +85,8 @@ public:
 		nstats->cluster_count++;
 	}
 
-	inline static FilterPropagateResult Query_inner(T min_value, T max_value, ExpressionType comparison_type, T constant) {
+	inline static FilterPropagateResult Query_inner(T min_value, T max_value, ExpressionType comparison_type,
+	                                                T constant) {
 		switch (comparison_type) {
 		case ExpressionType::COMPARE_EQUAL:
 		case ExpressionType::COMPARE_NOT_DISTINCT_FROM:
@@ -153,24 +154,26 @@ public:
 			throw InternalException("Expression type in zonemap check not implemented");
 		}
 	}
-	inline static FilterPropagateResult Query_implementation(AdditionalStats<T>* stats, ExpressionType comparison_type, T constant) {
-		ClusterAdditionalStats<T>* nstats = static_cast<ClusterAdditionalStats<T>*>(stats);
+	inline static FilterPropagateResult Query_implementation(AdditionalStats<T> *stats, ExpressionType comparison_type,
+	                                                         T constant) {
+		ClusterAdditionalStats<T> *nstats = static_cast<ClusterAdditionalStats<T> *>(stats);
 		for (int i = 0; i < nstats->min_values.size(); i++) {
-			FilterPropagateResult result = Query_inner(nstats->min_values[i], nstats->max_values[i], comparison_type, constant);
+			FilterPropagateResult result =
+			    Query_inner(nstats->min_values[i], nstats->max_values[i], comparison_type, constant);
 			if (result == FilterPropagateResult::FILTER_ALWAYS_TRUE) {
 				return FilterPropagateResult::FILTER_ALWAYS_TRUE;
 			} else if (result == FilterPropagateResult::NO_PRUNING_POSSIBLE)
-			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		}
 		return FilterPropagateResult::FILTER_ALWAYS_FALSE;
 	}
-	inline static size_t Size_implementation(AdditionalStats<T>* stats) {
-		ClusterAdditionalStats<T>* nstats = static_cast<ClusterAdditionalStats<T>*>(stats);
-		return 2*sizeof(T)*nstats->cluster_count;
+	inline static size_t Size_implementation(AdditionalStats<T> *stats) {
+		ClusterAdditionalStats<T> *nstats = static_cast<ClusterAdditionalStats<T> *>(stats);
+		return 2 * sizeof(T) * nstats->cluster_count + sizeof(*stats);
 	}
-	inline static void Serialise_implementation(AdditionalStats<T>* stats) {
+	inline static void Serialise_implementation(AdditionalStats<T> *stats) {
 	}
-	inline static void Deserialise_implementation(AdditionalStats<T>* stats) {
+	inline static void Deserialise_implementation(AdditionalStats<T> *stats) {
 	}
 };
 

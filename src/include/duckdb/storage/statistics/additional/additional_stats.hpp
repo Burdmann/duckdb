@@ -10,8 +10,8 @@
 
 #include <functional>
 
-#define ADDITIONAL_NUMERIC_STATS ClusterAdditionalStats
-#define ADDITIONAL_STRING_STATS  StringClusterAdditionalStats
+#define ADDITIONAL_NUMERIC_STATS BloomAdditionalStats
+#define ADDITIONAL_STRING_STATS  BloomAdditionalStats<string_t>
 
 namespace duckdb {
 template <class T>
@@ -25,14 +25,17 @@ class BloomAdditionalStats;
 template <class T>
 class AdditionalStats {
 public:
-	std::function<void(std::vector<T>&,AdditionalStats<T>*)> Initialise;
-	std::function<FilterPropagateResult(AdditionalStats<T>*, ExpressionType, T)> Query;
-	std::function<size_t(AdditionalStats<T>*)> Size;
-	std::function<void(AdditionalStats<T>*)> Serialise;
-	std::function<void(AdditionalStats<T>*)> Deserialise;
-	static constexpr char* name = "error";
+	std::function<void(std::vector<T> &, AdditionalStats<T> *)> Initialise;
+	std::function<FilterPropagateResult(AdditionalStats<T> *, ExpressionType, T)> Query;
+	std::function<size_t(AdditionalStats<T> *)> Size;
+	std::function<void(AdditionalStats<T> *)> Serialise;
+	std::function<void(AdditionalStats<T> *)> Deserialise;
+	static constexpr char *static_name = "error";
+	const char *name;
 
-	AdditionalStats() {}
+	AdditionalStats() {
+		this->name = static_name;
+	}
 	// init
 	// void Initialise(std::vector<T> &data) {
 

@@ -32,37 +32,40 @@ private:
 	}
 	static inline unsigned long long StringToLong(const string_t str) {
 		unsigned long long res = 0;
-		const char* data = str.GetData();
+		const char *data = str.GetData();
 		for (int i = 0; i < str.GetSize(); i++) {
 			res <<= 7;
 			res += data[i];
 		}
 		return res;
 	}
+
 public:
-	static constexpr char* name = "string cluster";
+	static constexpr char *static_name = "string cluster";
 	inline StringClusterAdditionalStats(std::vector<string_t> &data) {
+		this->name = static_name;
 		this->Initialise = &Initialise_implementation;
 		this->Query = &Query_implementation;
 		this->Size = &Size_implementation;
 		this->Serialise = &Serialise_implementation;
 		this->Deserialise = &Deserialise_implementation;
-		this->Initialise(data,this);
+		this->Initialise(data, this);
 	}
 
-	inline static void Initialise_implementation(std::vector<string_t> &data, AdditionalStats<string_t>* stats) {
+	inline static void Initialise_implementation(std::vector<string_t> &data, AdditionalStats<string_t> *stats) {
 		int size = data.size();
 		if (size == 0)
 			return;
 
-		StringClusterAdditionalStats* nstats = static_cast<StringClusterAdditionalStats*>(stats);
+		StringClusterAdditionalStats *nstats = static_cast<StringClusterAdditionalStats *>(stats);
 		nstats->cluster_count = 0;
 
 		// sort the data
 		std::sort(data.begin(), data.end());
 
 		// compute gap sizes
-		std::vector<std::pair<unsigned long long, int>> gaps; // first element of each pair stores the gap, second is the index
+		std::vector<std::pair<unsigned long long, int>>
+		    gaps; // first element of each pair stores the gap, second is the index
 		for (int i = 0; i < size - 1; i++) {
 			gaps.push_back({StringToLong(data[i + 1]) - StringToLong(data[i]), i});
 		}
@@ -71,8 +74,7 @@ public:
 		std::vector<int> idxs;
 		std::sort(gaps.begin(), gaps.end(), std::greater<std::pair<unsigned long long, int>>());
 
-		for (int i = 0; i < std::min((unsigned long)gaps.size(), (unsigned long)(MAX_NUMBER_OF_CLUSTERS - 1));
-				i++) {
+		for (int i = 0; i < std::min((unsigned long)gaps.size(), (unsigned long)(MAX_NUMBER_OF_CLUSTERS - 1)); i++) {
 			if (gaps[i].first == 0)
 				break;
 			idxs.push_back(gaps[i].second);
@@ -93,8 +95,8 @@ public:
 		nstats->cluster_count++;
 	}
 
-
-	inline static FilterPropagateResult Query_inner(string_t min_value, string_t max_value, ExpressionType comparison_type, string_t constant) {
+	inline static FilterPropagateResult Query_inner(string_t min_value, string_t max_value,
+	                                                ExpressionType comparison_type, string_t constant) {
 		switch (comparison_type) {
 		case ExpressionType::COMPARE_EQUAL:
 		case ExpressionType::COMPARE_NOT_DISTINCT_FROM:
@@ -162,24 +164,26 @@ public:
 			throw InternalException("Expression type in zonemap check not implemented");
 		}
 	}
-	inline static FilterPropagateResult Query_implementation(AdditionalStats<string_t>* stats, ExpressionType comparison_type, string_t constant) {
-		StringClusterAdditionalStats* nstats = static_cast<StringClusterAdditionalStats*>(stats);
+	inline static FilterPropagateResult Query_implementation(AdditionalStats<string_t> *stats,
+	                                                         ExpressionType comparison_type, string_t constant) {
+		StringClusterAdditionalStats *nstats = static_cast<StringClusterAdditionalStats *>(stats);
 		for (int i = 0; i < nstats->min_values.size(); i++) {
-			FilterPropagateResult result = Query_inner(nstats->min_values[i], nstats->min_values[i], comparison_type, constant);
+			FilterPropagateResult result =
+			    Query_inner(nstats->min_values[i], nstats->min_values[i], comparison_type, constant);
 			if (result == FilterPropagateResult::FILTER_ALWAYS_TRUE) {
 				return FilterPropagateResult::FILTER_ALWAYS_TRUE;
 			} else if (result == FilterPropagateResult::NO_PRUNING_POSSIBLE)
-			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		}
 		return FilterPropagateResult::FILTER_ALWAYS_FALSE;
 	}
-	inline static size_t Size_implementation(AdditionalStats<string_t>* stats) {
-		StringClusterAdditionalStats* nstats = static_cast<StringClusterAdditionalStats*>(stats);
-		return 2*sizeof(string_t)*nstats->cluster_count;
+	inline static size_t Size_implementation(AdditionalStats<string_t> *stats) {
+		StringClusterAdditionalStats *nstats = static_cast<StringClusterAdditionalStats *>(stats);
+		return 2 * sizeof(string_t) * nstats->cluster_count + sizeof(*stats);
 	}
-	inline static void Serialise_implementation(AdditionalStats<string_t>* stats) {
+	inline static void Serialise_implementation(AdditionalStats<string_t> *stats) {
 	}
-	inline static void Deserialise_implementation(AdditionalStats<string_t>* stats) {
+	inline static void Deserialise_implementation(AdditionalStats<string_t> *stats) {
 	}
 };
 

@@ -261,24 +261,32 @@ public:
 	template <class T>
 	void InitNumericStats(std::vector<T> &temp_storage,
 	                      std::unordered_map<void *, AdditionalStats<T> *> &additional_stats, BaseStatistics &stats) {
-		fprintf(stderr,
-			"%llx,%llu,%lld,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\"}\"\n",
-			Util::session_id, Util::command_count, Util::GetTime(), &stats, ADDITIONAL_NUMERIC_STATS<T>::name);
+		fprintf(
+		    stderr,
+		    "%llx,%llu,%lld,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\"}\"\n",
+		    Util::session_id, Util::command_count, Util::GetTime(), &stats, ADDITIONAL_NUMERIC_STATS<T>::static_name);
 		additional_stats[&stats] = new ADDITIONAL_NUMERIC_STATS<T>(temp_storage);
 		temp_storage.clear();
 		fprintf(stderr,
-			"%llx,%llu,%lld,END_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\",\"\"size\"\":%lu}\"\n",
-			Util::session_id, Util::command_count, Util::GetTime(), &stats, ADDITIONAL_NUMERIC_STATS<T>::name,additional_stats[&stats]->Size(additional_stats[&stats]));
+		        "%llx,%llu,%lld,END_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
+		        "\"\"size\"\":%lu}\"\n",
+		        Util::session_id, Util::command_count, Util::GetTime(), &stats,
+		        ADDITIONAL_NUMERIC_STATS<T>::static_name, additional_stats[&stats]->Size(additional_stats[&stats]));
 	}
-	void InitStringStats(std::vector<string_t> &temp_storage,std::unordered_map<void *, AdditionalStats<string_t> *> &additional_stats,BaseStatistics &stats) {
-		fprintf(stderr,
-			"%llx,%llu,%lld,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\"}\"\n",
-			Util::session_id, Util::command_count, Util::GetTime(), &stats, ADDITIONAL_STRING_STATS::name);
+	void InitStringStats(std::vector<string_t> &temp_storage,
+	                     std::unordered_map<void *, AdditionalStats<string_t> *> &additional_stats,
+	                     BaseStatistics &stats) {
+		fprintf(
+		    stderr,
+		    "%llx,%llu,%lld,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\"}\"\n",
+		    Util::session_id, Util::command_count, Util::GetTime(), &stats, ADDITIONAL_STRING_STATS::static_name);
 		additional_stats[&stats] = new ADDITIONAL_STRING_STATS(temp_storage);
 		temp_storage.clear();
 		fprintf(stderr,
-			"%llx,%llu,%lld,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\",\"\"size\"\":%lu}\"\n",
-			Util::session_id, Util::command_count, Util::GetTime(), &stats, ADDITIONAL_STRING_STATS::name,additional_stats[&stats]->Size(additional_stats[&stats]));
+		        "%llx,%llu,%lld,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
+		        "\"\"size\"\":%lu}\"\n",
+		        Util::session_id, Util::command_count, Util::GetTime(), &stats, ADDITIONAL_STRING_STATS::static_name,
+		        additional_stats[&stats]->Size(additional_stats[&stats]));
 	}
 
 	void InitStats(BaseStatistics &stats, PhysicalType type) {
@@ -331,48 +339,69 @@ public:
 	}
 
 	template <class T>
-	static inline FilterPropagateResult QueryAdditionalStats(unordered_map<void*,AdditionalStats<T>*> additional_stats_map, BaseStatistics* key, ExpressionType comparison_type, const T constant) {
+	static inline FilterPropagateResult
+	QueryAdditionalStats(unordered_map<void *, AdditionalStats<T> *> additional_stats_map, BaseStatistics *key,
+	                     ExpressionType comparison_type, const T constant) {
 		if (additional_stats_map.count(key) == 0)
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
-		AdditionalStats<T>* stats = additional_stats_map[key];
-		fprintf(stderr, "%llx,%llu,%lld,EVAL_ADDITIONAL_STATISTICS_START,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\"type:\"\"%s\"\"}\"\n",
-	        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), key, stats->name);
-		FilterPropagateResult result = stats->Query(stats,comparison_type,constant);
-		fprintf(stderr, "%llx,%llu,%lld,EVAL_ADDITIONAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\"type:\"\"%s\"\"}\"\n",
-			duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), key, stats->name);
+		AdditionalStats<T> *stats = additional_stats_map[key];
+		fprintf(stderr,
+		        "%llx,%llu,%lld,EVAL_ADDITIONAL_STATISTICS_START,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\"type:\"\"%"
+		        "s\"\"}\"\n",
+		        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), key, stats->name);
+		FilterPropagateResult result = stats->Query(stats, comparison_type, constant);
+		fprintf(stderr,
+		        "%llx,%llu,%lld,EVAL_ADDITIONAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\"type:\"\"%"
+		        "s\"\"}\"\n",
+		        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), key, stats->name);
 		return result;
 	}
 
-	static inline FilterPropagateResult QueryAdditionalStats(BaseStatistics &stats, ExpressionType comparison_type, PhysicalType type, const Value constant) {
+	static inline FilterPropagateResult QueryAdditionalStats(BaseStatistics &stats, ExpressionType comparison_type,
+	                                                         PhysicalType type, const Value constant) {
 		switch (type) {
 		case PhysicalType::BOOL:
-			return QueryAdditionalStats(ColumnSegment::additional_stats_bool, &stats, comparison_type, constant.GetValueUnsafe<bool>());
+			return QueryAdditionalStats(ColumnSegment::additional_stats_bool, &stats, comparison_type,
+			                            constant.GetValueUnsafe<bool>());
 		case PhysicalType::INT8:
-			return QueryAdditionalStats(ColumnSegment::additional_stats_int8,&stats, comparison_type, constant.GetValueUnsafe<int8_t>());
+			return QueryAdditionalStats(ColumnSegment::additional_stats_int8, &stats, comparison_type,
+			                            constant.GetValueUnsafe<int8_t>());
 		case PhysicalType::INT16:
-			return QueryAdditionalStats(ColumnSegment::additional_stats_int16,&stats, comparison_type, constant.GetValueUnsafe<int16_t>());
+			return QueryAdditionalStats(ColumnSegment::additional_stats_int16, &stats, comparison_type,
+			                            constant.GetValueUnsafe<int16_t>());
 		case PhysicalType::INT32:
-			return QueryAdditionalStats(ColumnSegment::additional_stats_int32,&stats, comparison_type, constant.GetValueUnsafe<int32_t>());
+			return QueryAdditionalStats(ColumnSegment::additional_stats_int32, &stats, comparison_type,
+			                            constant.GetValueUnsafe<int32_t>());
 		case PhysicalType::INT64:
-			return QueryAdditionalStats(ColumnSegment::additional_stats_int64,&stats, comparison_type, constant.GetValueUnsafe<int64_t>());
+			return QueryAdditionalStats(ColumnSegment::additional_stats_int64, &stats, comparison_type,
+			                            constant.GetValueUnsafe<int64_t>());
 		case PhysicalType::INT128:
-			return QueryAdditionalStats(ColumnSegment::additional_stats_hugeint,&stats, comparison_type, constant.GetValueUnsafe<hugeint_t>());
+			return QueryAdditionalStats(ColumnSegment::additional_stats_hugeint, &stats, comparison_type,
+			                            constant.GetValueUnsafe<hugeint_t>());
 		case PhysicalType::UINT8:
-			return QueryAdditionalStats(ColumnSegment::additional_stats_uint8,&stats, comparison_type, constant.GetValueUnsafe<uint8_t>());
+			return QueryAdditionalStats(ColumnSegment::additional_stats_uint8, &stats, comparison_type,
+			                            constant.GetValueUnsafe<uint8_t>());
 		case PhysicalType::UINT16:
-			return QueryAdditionalStats(ColumnSegment::additional_stats_uint16,&stats, comparison_type, constant.GetValueUnsafe<uint16_t>());
+			return QueryAdditionalStats(ColumnSegment::additional_stats_uint16, &stats, comparison_type,
+			                            constant.GetValueUnsafe<uint16_t>());
 		case PhysicalType::UINT32:
-			return QueryAdditionalStats(ColumnSegment::additional_stats_uint32,&stats, comparison_type, constant.GetValueUnsafe<uint32_t>());
+			return QueryAdditionalStats(ColumnSegment::additional_stats_uint32, &stats, comparison_type,
+			                            constant.GetValueUnsafe<uint32_t>());
 		case PhysicalType::UINT64:
-			return QueryAdditionalStats(ColumnSegment::additional_stats_uint64,&stats, comparison_type, constant.GetValueUnsafe<uint64_t>());
+			return QueryAdditionalStats(ColumnSegment::additional_stats_uint64, &stats, comparison_type,
+			                            constant.GetValueUnsafe<uint64_t>());
 		case PhysicalType::UINT128:
-			return QueryAdditionalStats(ColumnSegment::additional_stats_uhugeint,&stats, comparison_type, constant.GetValueUnsafe<uhugeint_t>());
+			return QueryAdditionalStats(ColumnSegment::additional_stats_uhugeint, &stats, comparison_type,
+			                            constant.GetValueUnsafe<uhugeint_t>());
 		case PhysicalType::FLOAT:
-			return QueryAdditionalStats(ColumnSegment::additional_stats_float,&stats, comparison_type, constant.GetValueUnsafe<float>());
+			return QueryAdditionalStats(ColumnSegment::additional_stats_float, &stats, comparison_type,
+			                            constant.GetValueUnsafe<float>());
 		case PhysicalType::DOUBLE:
-			return QueryAdditionalStats(ColumnSegment::additional_stats_double,&stats, comparison_type, constant.GetValueUnsafe<double>());
+			return QueryAdditionalStats(ColumnSegment::additional_stats_double, &stats, comparison_type,
+			                            constant.GetValueUnsafe<double>());
 		case PhysicalType::VARCHAR:
-			return QueryAdditionalStats(ColumnSegment::additional_stats_string,&stats, comparison_type, constant.GetValueUnsafe<string_t>());
+			return QueryAdditionalStats(ColumnSegment::additional_stats_string, &stats, comparison_type,
+			                            constant.GetValueUnsafe<string_t>());
 		default:
 			throw InternalException("Unsupported type querying additional stats");
 		}
@@ -432,20 +461,20 @@ private:
 	atomic_ptr<const CompressionFunction> compression;
 
 	//! altp: temporary storage for data between calls to append
-	static std::unordered_map<void*,std::vector<bool>> bool_temp_vectors;
-	static std::unordered_map<void*,std::vector<int8_t>> int8_temp_vectors;
-	static std::unordered_map<void*,std::vector<int16_t>> int16_temp_vectors;
-	static std::unordered_map<void*,std::vector<int32_t>> int32_temp_vectors;
-	static std::unordered_map<void*,std::vector<int64_t>> int64_temp_vectors;
-	static std::unordered_map<void*,std::vector<uint8_t>> uint8_temp_vectors;
-	static std::unordered_map<void*,std::vector<uint16_t>> uint16_temp_vectors;
-	static std::unordered_map<void*,std::vector<uint32_t>> uint32_temp_vectors;
-	static std::unordered_map<void*,std::vector<uint64_t>> uint64_temp_vectors;
-	static std::unordered_map<void*,std::vector<hugeint_t>> hugeint_temp_vectors;
-	static std::unordered_map<void*,std::vector<uhugeint_t>> uhugeint_temp_vectors;
-	static std::unordered_map<void*,std::vector<float>> float_temp_vectors;
-	static std::unordered_map<void*,std::vector<double>> double_temp_vectors;
-	static std::unordered_map<void*,std::vector<string_t>> string_temp_vectors;
+	static std::unordered_map<void *, std::vector<bool>> bool_temp_vectors;
+	static std::unordered_map<void *, std::vector<int8_t>> int8_temp_vectors;
+	static std::unordered_map<void *, std::vector<int16_t>> int16_temp_vectors;
+	static std::unordered_map<void *, std::vector<int32_t>> int32_temp_vectors;
+	static std::unordered_map<void *, std::vector<int64_t>> int64_temp_vectors;
+	static std::unordered_map<void *, std::vector<uint8_t>> uint8_temp_vectors;
+	static std::unordered_map<void *, std::vector<uint16_t>> uint16_temp_vectors;
+	static std::unordered_map<void *, std::vector<uint32_t>> uint32_temp_vectors;
+	static std::unordered_map<void *, std::vector<uint64_t>> uint64_temp_vectors;
+	static std::unordered_map<void *, std::vector<hugeint_t>> hugeint_temp_vectors;
+	static std::unordered_map<void *, std::vector<uhugeint_t>> uhugeint_temp_vectors;
+	static std::unordered_map<void *, std::vector<float>> float_temp_vectors;
+	static std::unordered_map<void *, std::vector<double>> double_temp_vectors;
+	static std::unordered_map<void *, std::vector<string_t>> string_temp_vectors;
 };
 
 struct PersistentColumnData {
