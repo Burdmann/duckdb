@@ -28,7 +28,6 @@ public:
 		this->Initialise(data, this);
 	}
 	inline static void Initialise_implementation(std::vector<T> &data, AdditionalStats<T> *stats) {
-		printf("Init Empty stats\n");
 	}
 	inline static FilterPropagateResult Query_implementation(AdditionalStats<T> *stats, ExpressionType comparison_type,
 	                                                         T constant) {
