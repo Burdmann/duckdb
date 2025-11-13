@@ -195,6 +195,8 @@ public:
 	//! Whether operator caching is allowed in the current execution context
 	static bool OperatorCachingAllowed(ExecutionContext &context);
 
+	virtual void FinishInitialiseStats(ExecutionContext &context, DataChunk &insert_chunk, OperatorSinkInput &input) const;
+
 	virtual bool IsSink() const {
 		return false;
 	}

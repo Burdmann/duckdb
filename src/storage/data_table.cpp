@@ -893,6 +893,15 @@ void DataTable::LocalAppend(LocalAppendState &state, ClientContext &context, Dat
 	LocalStorage::Append(state, chunk, *data_table_info);
 }
 
+void DataTable::FinishInitialiseStats(TableCatalogEntry &table, ClientContext &context, DataChunk &chunk,
+                            const vector<unique_ptr<BoundConstraint>> &bound_constraints) {
+	LocalAppendState append_state;
+	InitializeLocalAppend(append_state, table, context, bound_constraints);
+	auto data_table_info = GetDataTableInfo();
+	LocalStorage::FinishInitialiseStats(append_state,chunk,*data_table_info);
+	FinalizeLocalAppend(append_state);
+}
+
 void DataTable::LocalAppend(TableCatalogEntry &table, ClientContext &context, DataChunk &chunk,
                             const vector<unique_ptr<BoundConstraint>> &bound_constraints) {
 	LocalAppendState append_state;

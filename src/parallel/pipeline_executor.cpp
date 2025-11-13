@@ -231,6 +231,13 @@ PipelineExecuteResult PipelineExecutor::Execute(idx_t max_chunks) {
 				}
 				if (source_result == SourceResultType::FINISHED) {
 					exhausted_source = true;
+					// altp
+					OperatorSinkInput sink_input {*pipeline.sink->sink_state, *local_sink_state, interrupt_state};
+					try {
+						pipeline.sink->FinishInitialiseStats(context, final_chunk, sink_input);
+					} catch (std::exception &ex) {
+						// do nothing
+					}
 				}
 			}
 

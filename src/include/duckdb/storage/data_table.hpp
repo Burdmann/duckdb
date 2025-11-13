@@ -279,6 +279,10 @@ public:
 	//! Returns a list of the partition stats
 	vector<PartitionStatistics> GetPartitionStats(ClientContext &context);
 
+	// altp
+	void FinishInitialiseStats(TableCatalogEntry &table, ClientContext &context, DataChunk &chunk,
+                            const vector<unique_ptr<BoundConstraint>> &bound_constraints);
+
 private:
 	//! Verify the new added constraints against current persistent&local data
 	void VerifyNewConstraint(LocalStorage &local_storage, DataTable &parent, const BoundConstraint &constraint);
