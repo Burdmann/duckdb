@@ -17,12 +17,12 @@ namespace duckdb {
 BaseStatistics::BaseStatistics() {
 	type = LogicalType::INVALID;
 	fprintf(stderr, "%llx,%llu,%lld,STAT_CREATED,\"{\"\"size\"\":%llu,\"\"address\"\":\"\"%p\"\"}\"\n",
-	        Util::session_id, Util::command_count, Util::GetTime(), sizeof(*this), this);
+	        Util::session_id, Util::command_count, Util::GetTime().count(), sizeof(*this), this);
 }
 
 BaseStatistics::BaseStatistics(LogicalType type) {
 	fprintf(stderr, "%llx,%llu,%lld,STAT_CREATED,\"{\"\"size\"\":%llu,\"\"address\"\":\"\"%p\"\"}\"\n",
-	        Util::session_id, Util::command_count, Util::GetTime(), sizeof(*this), this);
+	        Util::session_id, Util::command_count, Util::GetTime().count(), sizeof(*this), this);
 	Construct(*this, std::move(type));
 }
 
@@ -46,12 +46,12 @@ void BaseStatistics::Construct(BaseStatistics &stats, LogicalType type) {
 
 BaseStatistics::~BaseStatistics() {
 	fprintf(stderr, "%llx,%llu,%lld,STAT_DESTROYED,\"{\"\"size\"\":%llu,\"\"address\"\":\"\"%p\"\"}\"\n",
-	        Util::session_id, Util::command_count, Util::GetTime(), sizeof(*this), this);
+	        Util::session_id, Util::command_count, Util::GetTime().count(), sizeof(*this), this);
 }
 
 BaseStatistics::BaseStatistics(BaseStatistics &&other) noexcept {
 	fprintf(stderr, "%llx,%llu,%lld,STAT_CREATED,\"{\"\"size\"\":%llu,\"\"address\"\":\"\"%p\"\"}\"\n",
-	        Util::session_id, Util::command_count, Util::GetTime(), sizeof(*this), this);
+	        Util::session_id, Util::command_count, Util::GetTime().count(), sizeof(*this), this);
 	std::swap(type, other.type);
 	has_null = other.has_null;
 	has_no_null = other.has_no_null;

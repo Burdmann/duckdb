@@ -1,0 +1,4 @@
+name,size,rowgroups_scanned,rows_scanned,additional_stat_processing_time,stat_processing_time,production_time,ingestion_time,total_build_time,avg_query_time
+"empty",11540424,83759,226191115362,12.986,207.521,5.164,191.459,44.594,4.436
+"cluster",158498568,84893,226190058252,13.102,208.386,116.11,186.256,50.87,4.454
+"bloom",11583264,81557,178717432788,15.529,213.874,20.348,194.282,48.142,3.559

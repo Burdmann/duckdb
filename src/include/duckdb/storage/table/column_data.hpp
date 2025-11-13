@@ -261,32 +261,34 @@ public:
 	template <class T>
 	void InitNumericStats(std::vector<T> &temp_storage,
 	                      std::unordered_map<void *, AdditionalStats<T> *> &additional_stats, BaseStatistics &stats) {
+		long long start_time = Util::GetTime().count();
 		fprintf(
 		    stderr,
 		    "%llx,%llu,%lld,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\"}\"\n",
-		    Util::session_id, Util::command_count, Util::GetTime(), &stats, ADDITIONAL_NUMERIC_STATS<T>::static_name);
+		    Util::session_id, Util::command_count, start_time, &stats, ADDITIONAL_NUMERIC_STATS<T>::static_name);
 		additional_stats[&stats] = new ADDITIONAL_NUMERIC_STATS<T>(temp_storage);
 		temp_storage.clear();
 		fprintf(stderr,
 		        "%llx,%llu,%lld,END_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
-		        "\"\"size\"\":%lu}\"\n",
-		        Util::session_id, Util::command_count, Util::GetTime(), &stats,
-		        ADDITIONAL_NUMERIC_STATS<T>::static_name, additional_stats[&stats]->Size(additional_stats[&stats]));
+		        "\"\"size\"\":%lu,\"\"start_time\"\":%lld}\"\n",
+		        Util::session_id, Util::command_count, Util::GetTime().count(), &stats,
+		        ADDITIONAL_NUMERIC_STATS<T>::static_name, additional_stats[&stats]->Size(additional_stats[&stats]),start_time);
 	}
 	void InitStringStats(std::vector<string_t> &temp_storage,
 	                     std::unordered_map<void *, AdditionalStats<string_t> *> &additional_stats,
 	                     BaseStatistics &stats) {
+		long long start_time = Util::GetTime().count();
 		fprintf(
 		    stderr,
 		    "%llx,%llu,%lld,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\"}\"\n",
-		    Util::session_id, Util::command_count, Util::GetTime(), &stats, ADDITIONAL_STRING_STATS::static_name);
+		    Util::session_id, Util::command_count, start_time, &stats, ADDITIONAL_STRING_STATS::static_name);
 		additional_stats[&stats] = new ADDITIONAL_STRING_STATS(temp_storage);
 		temp_storage.clear();
 		fprintf(stderr,
-		        "%llx,%llu,%lld,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
-		        "\"\"size\"\":%lu}\"\n",
-		        Util::session_id, Util::command_count, Util::GetTime(), &stats, ADDITIONAL_STRING_STATS::static_name,
-		        additional_stats[&stats]->Size(additional_stats[&stats]));
+		        "%llx,%llu,%lld,END_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
+		        "\"\"size\"\":%lu,\"\"start_time\"\":%lld}\"\n",
+		        Util::session_id, Util::command_count, Util::GetTime().count(), &stats, ADDITIONAL_STRING_STATS::static_name,
+		        additional_stats[&stats]->Size(additional_stats[&stats]),start_time);
 	}
 
 	void InitStats(BaseStatistics &stats, PhysicalType type) {
@@ -345,15 +347,15 @@ public:
 		if (additional_stats_map.count(key) == 0)
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		AdditionalStats<T> *stats = additional_stats_map[key];
+		long long start_time = Util::GetTime().count();
 		fprintf(stderr,
 		        "%llx,%llu,%lld,EVAL_ADDITIONAL_STATISTICS_START,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\"type:\"\"%"
 		        "s\"\"}\"\n",
-		        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), key, stats->name);
+		        duckdb::Util::session_id, duckdb::Util::command_count, start_time, key, stats->name);
 		FilterPropagateResult result = stats->Query(stats, comparison_type, constant);
 		fprintf(stderr,
-		        "%llx,%llu,%lld,EVAL_ADDITIONAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\"type:\"\"%"
-		        "s\"\"}\"\n",
-		        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), key, stats->name);
+		        "%llx,%llu,%lld,EVAL_ADDITIONAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\",\"\"start_time\"\":%lld}\"\n",
+		        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime().count(), key, stats->name, start_time);
 		return result;
 	}
 

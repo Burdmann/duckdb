@@ -133,7 +133,7 @@ void ColumnSegment::Scan(ColumnScanState &state, idx_t scan_count, Vector &resul
                          ScanVectorType scan_type) {
 	fprintf(stderr,
 	        "%llx,%llu,%lld,SCANNED_ROWS,\"{\"\"count\"\":%llu,\"\"offset\"\":%llu,\"\"partition\"\":\"\"%p\"\"}\"\n",
-	        Util::session_id, Util::command_count, Util::GetTime(), scan_count, result_offset, this);
+	        Util::session_id, Util::command_count, Util::GetTime().count(), scan_count, result_offset, this);
 
 	if (scan_type == ScanVectorType::SCAN_ENTIRE_VECTOR) {
 		D_ASSERT(result_offset == 0);
@@ -214,17 +214,19 @@ void ColumnSegment::InitializeAppend(ColumnAppendState &state) {
 }
 
 idx_t ColumnSegment::Append(ColumnAppendState &state, UnifiedVectorFormat &append_data, idx_t offset, idx_t count) {
+	long long start_time = Util::GetTime().count();
 	fprintf(stderr,
 	        "%llx,%llu,%lld,APPEND_START,\"{\"\"count\"\":%llu,\"\"offset\"\":%llu,\"\"column_id\"\":%lu,\"\"partition\"\":\"\"%p\"\"}\"\n",
-	        Util::session_id, Util::command_count, Util::GetTime(), count, offset, this->index, this);
+	        Util::session_id, Util::command_count, start_time, count, offset, this->index, this);
 	D_ASSERT(segment_type == ColumnSegmentType::TRANSIENT);
 	if (!function.get().append) {
 		throw InternalException("Attempting to append to a segment without append method");
 	}
-	return function.get().append(*state.append_state, *this, stats, append_data, offset, count);
+	idx_t res = function.get().append(*state.append_state, *this, stats, append_data, offset, count);
 	fprintf(stderr,
-	        "%llx,%llu,%lld,APPEND_END,\"{\"\"count\"\":%llu,\"\"offset\"\":%llu,\"\"column_id\"\":%lu,\"\"partition\"\":\"\"%p\"\"}\"\n",
-	        Util::session_id, Util::command_count, Util::GetTime(), count, offset, this->index, this);
+	        "%llx,%llu,%lld,APPEND_END,\"{\"\"count\"\":%llu,\"\"offset\"\":%llu,\"\"column_id\"\":%lu,\"\"partition\"\":\"\"%p\"\",\"\"start_time\"\":%lld}\"\n",
+	        Util::session_id, Util::command_count, Util::GetTime().count(), count, offset, this->index, this,start_time);
+	return res;
 }
 
 idx_t ColumnSegment::FinalizeAppend(ColumnAppendState &state) {

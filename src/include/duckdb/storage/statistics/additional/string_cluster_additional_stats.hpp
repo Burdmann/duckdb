@@ -41,7 +41,7 @@ private:
 	}
 
 public:
-	static constexpr char *static_name = "string cluster";
+	static constexpr char *static_name = "cluster";
 	inline StringClusterAdditionalStats(std::vector<string_t> &data) {
 		this->name = static_name;
 		this->Initialise = &Initialise_implementation;
