@@ -86,12 +86,12 @@ public:
 		}
 	}
 
-	inline static FilterPropagateResult Query_implementation(AdditionalStats<T> *stats, ExpressionType comparison_type,
-	                                                         T constant) {
+	inline static FilterPropagateResult Query_implementation(std::shared_ptr<AdditionalStats<T>> stats,
+	                                                         ExpressionType comparison_type, T constant) {
 		switch (comparison_type) {
 		case ExpressionType::COMPARE_EQUAL:
 		case ExpressionType::COMPARE_NOT_DISTINCT_FROM: {
-			BloomAdditionalStats<T> *nstats = static_cast<BloomAdditionalStats<T> *>(stats);
+			BloomAdditionalStats<T> *nstats = std::static_pointer_cast<BloomAdditionalStats<T>>(stats);
 			if (QueryUtil(constant, nstats->bit_array))
 				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 
@@ -101,12 +101,12 @@ public:
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		}
 	}
-	inline static size_t Size_implementation(AdditionalStats<T> *stats) {
-		return sizeof(*stats);
+	inline static size_t Size_implementation(std::shared_ptr<AdditionalStats<T>> stats) {
+		return sizeof(*stats.get());
 	}
-	inline static void Serialise_implementation(AdditionalStats<T> *stats) {
+	inline static void Serialise_implementation(std::shared_ptr<AdditionalStats<T>> stats) {
 	}
-	inline static void Deserialise_implementation(AdditionalStats<T> *stats) {
+	inline static void Deserialise_implementation(std::shared_ptr<AdditionalStats<T>> stats) {
 	}
 };
 

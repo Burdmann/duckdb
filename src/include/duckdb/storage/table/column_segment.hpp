@@ -19,6 +19,7 @@
 #include "duckdb/storage/storage_lock.hpp"
 #include "duckdb/storage/table/segment_base.hpp"
 #include "duckdb/storage/statistics/additional/additional_stats.hpp"
+#include <memory>
 
 #include <unordered_map>
 
@@ -160,20 +161,20 @@ public:
 	shared_ptr<BlockHandle> block;
 
 	// altp
-	static unordered_map<void *, AdditionalStats<bool> *> additional_stats_bool;
-	static unordered_map<void *, AdditionalStats<uint8_t> *> additional_stats_uint8;
-	static unordered_map<void *, AdditionalStats<uint16_t> *> additional_stats_uint16;
-	static unordered_map<void *, AdditionalStats<uint32_t> *> additional_stats_uint32;
-	static unordered_map<void *, AdditionalStats<uint64_t> *> additional_stats_uint64;
-	static unordered_map<void *, AdditionalStats<uhugeint_t> *> additional_stats_uhugeint;
-	static unordered_map<void *, AdditionalStats<int8_t> *> additional_stats_int8;
-	static unordered_map<void *, AdditionalStats<int16_t> *> additional_stats_int16;
-	static unordered_map<void *, AdditionalStats<int32_t> *> additional_stats_int32;
-	static unordered_map<void *, AdditionalStats<int64_t> *> additional_stats_int64;
-	static unordered_map<void *, AdditionalStats<hugeint_t> *> additional_stats_hugeint;
-	static unordered_map<void *, AdditionalStats<float> *> additional_stats_float;
-	static unordered_map<void *, AdditionalStats<double> *> additional_stats_double;
-	static unordered_map<void *, AdditionalStats<string_t> *> additional_stats_string;
+	static std::unordered_map<void *, std::shared_ptr<AdditionalStats<bool>>> additional_stats_bool;
+	static std::unordered_map<void *, std::shared_ptr<AdditionalStats<uint8_t>>> additional_stats_uint8;
+	static std::unordered_map<void *, std::shared_ptr<AdditionalStats<uint16_t>>> additional_stats_uint16;
+	static std::unordered_map<void *, std::shared_ptr<AdditionalStats<uint32_t>>> additional_stats_uint32;
+	static std::unordered_map<void *, std::shared_ptr<AdditionalStats<uint64_t>>> additional_stats_uint64;
+	static std::unordered_map<void *, std::shared_ptr<AdditionalStats<uhugeint_t>>> additional_stats_uhugeint;
+	static std::unordered_map<void *, std::shared_ptr<AdditionalStats<int8_t>>> additional_stats_int8;
+	static std::unordered_map<void *, std::shared_ptr<AdditionalStats<int16_t>>> additional_stats_int16;
+	static std::unordered_map<void *, std::shared_ptr<AdditionalStats<int32_t>>> additional_stats_int32;
+	static std::unordered_map<void *, std::shared_ptr<AdditionalStats<int64_t>>> additional_stats_int64;
+	static std::unordered_map<void *, std::shared_ptr<AdditionalStats<hugeint_t>>> additional_stats_hugeint;
+	static std::unordered_map<void *, std::shared_ptr<AdditionalStats<float>>> additional_stats_float;
+	static std::unordered_map<void *, std::shared_ptr<AdditionalStats<double>>> additional_stats_double;
+	static std::unordered_map<void *, std::shared_ptr<AdditionalStats<string_t>>> additional_stats_string;
 
 private:
 	//! The compression function

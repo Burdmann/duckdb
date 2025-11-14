@@ -22,6 +22,8 @@
 #include "duckdb/util/util.hpp"
 #include "duckdb/common/types/value.hpp"
 
+#include <mutex>
+#include <memory>
 #include "duckdb/storage/statistics/additional/empty_additional_stats.hpp"
 #include "duckdb/storage/statistics/additional/cluster_additional_stats.hpp"
 #include "duckdb/storage/statistics/additional/string_cluster_additional_stats.hpp"
@@ -210,6 +212,7 @@ public:
 	}
 
 	void AppendTemp(UnifiedVectorFormat &vdata, idx_t copied_elements, BaseStatistics &stats) {
+		map_mutex.lock();
 		switch (vdata.physical_type) {
 		case PhysicalType::BOOL:
 			AppendTemp(vdata, copied_elements, this->bool_temp_vectors[&stats]);
@@ -256,42 +259,47 @@ public:
 		default:
 			throw InternalException("Unsupported type for appending to additional stats");
 		}
+		map_mutex.unlock();
 	}
 
 	template <class T>
 	void InitNumericStats(std::vector<T> &temp_storage,
-	                      std::unordered_map<void *, AdditionalStats<T> *> &additional_stats, BaseStatistics &stats) {
+	                      std::unordered_map<void *, std::shared_ptr<AdditionalStats<T>>> &additional_stats,
+	                      BaseStatistics &stats) {
 		long long start_time = Util::GetTime().count();
 		fprintf(
 		    stderr,
 		    "%llx,%llu,%lld,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\"}\"\n",
 		    Util::session_id, Util::command_count, start_time, &stats, ADDITIONAL_NUMERIC_STATS<T>::static_name);
-		additional_stats[&stats] = new ADDITIONAL_NUMERIC_STATS<T>(temp_storage);
+		additional_stats[&stats].reset(new ADDITIONAL_NUMERIC_STATS<T>(temp_storage));
 		temp_storage.clear();
 		fprintf(stderr,
 		        "%llx,%llu,%lld,END_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
 		        "\"\"size\"\":%lu,\"\"start_time\"\":%lld}\"\n",
 		        Util::session_id, Util::command_count, Util::GetTime().count(), &stats,
-		        ADDITIONAL_NUMERIC_STATS<T>::static_name, additional_stats[&stats]->Size(additional_stats[&stats]),start_time);
+		        ADDITIONAL_NUMERIC_STATS<T>::static_name, additional_stats[&stats]->Size(additional_stats[&stats]),
+		        start_time);
 	}
 	void InitStringStats(std::vector<string_t> &temp_storage,
-	                     std::unordered_map<void *, AdditionalStats<string_t> *> &additional_stats,
+	                     std::unordered_map<void *, std::shared_ptr<AdditionalStats<string_t>>> &additional_stats,
 	                     BaseStatistics &stats) {
 		long long start_time = Util::GetTime().count();
 		fprintf(
 		    stderr,
 		    "%llx,%llu,%lld,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\"}\"\n",
 		    Util::session_id, Util::command_count, start_time, &stats, ADDITIONAL_STRING_STATS::static_name);
-		additional_stats[&stats] = new ADDITIONAL_STRING_STATS(temp_storage);
+		additional_stats[&stats].reset(new ADDITIONAL_STRING_STATS(temp_storage));
 		temp_storage.clear();
 		fprintf(stderr,
 		        "%llx,%llu,%lld,END_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
 		        "\"\"size\"\":%lu,\"\"start_time\"\":%lld}\"\n",
-		        Util::session_id, Util::command_count, Util::GetTime().count(), &stats, ADDITIONAL_STRING_STATS::static_name,
-		        additional_stats[&stats]->Size(additional_stats[&stats]),start_time);
+		        Util::session_id, Util::command_count, Util::GetTime().count(), &stats,
+		        ADDITIONAL_STRING_STATS::static_name, additional_stats[&stats]->Size(additional_stats[&stats]),
+		        start_time);
 	}
 
 	void InitStats(BaseStatistics &stats, PhysicalType type) {
+		map_mutex.lock();
 		switch (type) {
 		case PhysicalType::BOOL:
 			InitNumericStats(this->bool_temp_vectors[&stats], ColumnSegment::additional_stats_bool, stats);
@@ -338,15 +346,16 @@ public:
 		default:
 			throw InternalException("Unsupported type for appending to numeric cluster stats");
 		}
+		map_mutex.unlock();
 	}
 
 	template <class T>
 	static inline FilterPropagateResult
-	QueryAdditionalStats(unordered_map<void *, AdditionalStats<T> *> additional_stats_map, BaseStatistics *key,
-	                     ExpressionType comparison_type, const T constant) {
+	QueryAdditionalStats(unordered_map<void *, std::shared_ptr<AdditionalStats<T>>> additional_stats_map,
+	                     BaseStatistics *key, ExpressionType comparison_type, const T constant) {
 		if (additional_stats_map.count(key) == 0)
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
-		AdditionalStats<T> *stats = additional_stats_map[key];
+		std::shared_ptr<AdditionalStats<T>> stats = additional_stats_map[key];
 		long long start_time = Util::GetTime().count();
 		fprintf(stderr,
 		        "%llx,%llu,%lld,EVAL_ADDITIONAL_STATISTICS_START,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\"type:\"\"%"
@@ -354,8 +363,10 @@ public:
 		        duckdb::Util::session_id, duckdb::Util::command_count, start_time, key, stats->name);
 		FilterPropagateResult result = stats->Query(stats, comparison_type, constant);
 		fprintf(stderr,
-		        "%llx,%llu,%lld,EVAL_ADDITIONAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\",\"\"start_time\"\":%lld}\"\n",
-		        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime().count(), key, stats->name, start_time);
+		        "%llx,%llu,%lld,EVAL_ADDITIONAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
+		        "\"\"start_time\"\":%lld}\"\n",
+		        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime().count(), key,
+		        stats->name, start_time);
 		return result;
 	}
 
@@ -477,6 +488,7 @@ private:
 	static std::unordered_map<void *, std::vector<float>> float_temp_vectors;
 	static std::unordered_map<void *, std::vector<double>> double_temp_vectors;
 	static std::unordered_map<void *, std::vector<string_t>> string_temp_vectors;
+	static std::mutex map_mutex;
 };
 
 struct PersistentColumnData {

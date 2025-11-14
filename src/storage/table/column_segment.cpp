@@ -22,20 +22,20 @@
 namespace duckdb {
 
 // altp
-unordered_map<void *, AdditionalStats<bool> *> ColumnSegment::additional_stats_bool;
-unordered_map<void *, AdditionalStats<uint8_t> *> ColumnSegment::additional_stats_uint8;
-unordered_map<void *, AdditionalStats<uint16_t> *> ColumnSegment::additional_stats_uint16;
-unordered_map<void *, AdditionalStats<uint32_t> *> ColumnSegment::additional_stats_uint32;
-unordered_map<void *, AdditionalStats<uint64_t> *> ColumnSegment::additional_stats_uint64;
-unordered_map<void *, AdditionalStats<uhugeint_t> *> ColumnSegment::additional_stats_uhugeint;
-unordered_map<void *, AdditionalStats<int8_t> *> ColumnSegment::additional_stats_int8;
-unordered_map<void *, AdditionalStats<int16_t> *> ColumnSegment::additional_stats_int16;
-unordered_map<void *, AdditionalStats<int32_t> *> ColumnSegment::additional_stats_int32;
-unordered_map<void *, AdditionalStats<int64_t> *> ColumnSegment::additional_stats_int64;
-unordered_map<void *, AdditionalStats<hugeint_t> *> ColumnSegment::additional_stats_hugeint;
-unordered_map<void *, AdditionalStats<float> *> ColumnSegment::additional_stats_float;
-unordered_map<void *, AdditionalStats<double> *> ColumnSegment::additional_stats_double;
-unordered_map<void *, AdditionalStats<string_t> *> ColumnSegment::additional_stats_string;
+std::unordered_map<void *, std::shared_ptr<AdditionalStats<bool>>> ColumnSegment::additional_stats_bool;
+std::unordered_map<void *, std::shared_ptr<AdditionalStats<uint8_t>>> ColumnSegment::additional_stats_uint8;
+std::unordered_map<void *, std::shared_ptr<AdditionalStats<uint16_t>>> ColumnSegment::additional_stats_uint16;
+std::unordered_map<void *, std::shared_ptr<AdditionalStats<uint32_t>>> ColumnSegment::additional_stats_uint32;
+std::unordered_map<void *, std::shared_ptr<AdditionalStats<uint64_t>>> ColumnSegment::additional_stats_uint64;
+std::unordered_map<void *, std::shared_ptr<AdditionalStats<uhugeint_t>>> ColumnSegment::additional_stats_uhugeint;
+std::unordered_map<void *, std::shared_ptr<AdditionalStats<int8_t>>> ColumnSegment::additional_stats_int8;
+std::unordered_map<void *, std::shared_ptr<AdditionalStats<int16_t>>> ColumnSegment::additional_stats_int16;
+std::unordered_map<void *, std::shared_ptr<AdditionalStats<int32_t>>> ColumnSegment::additional_stats_int32;
+std::unordered_map<void *, std::shared_ptr<AdditionalStats<int64_t>>> ColumnSegment::additional_stats_int64;
+std::unordered_map<void *, std::shared_ptr<AdditionalStats<hugeint_t>>> ColumnSegment::additional_stats_hugeint;
+std::unordered_map<void *, std::shared_ptr<AdditionalStats<float>>> ColumnSegment::additional_stats_float;
+std::unordered_map<void *, std::shared_ptr<AdditionalStats<double>>> ColumnSegment::additional_stats_double;
+std::unordered_map<void *, std::shared_ptr<AdditionalStats<string_t>>> ColumnSegment::additional_stats_string;
 
 //===--------------------------------------------------------------------===//
 // Create
@@ -131,9 +131,9 @@ void ColumnSegment::InitializeScan(ColumnScanState &state) {
 
 void ColumnSegment::Scan(ColumnScanState &state, idx_t scan_count, Vector &result, idx_t result_offset,
                          ScanVectorType scan_type) {
-	fprintf(stderr,
-	        "%llx,%llu,%lld,SCANNED_ROWS,\"{\"\"count\"\":%llu,\"\"offset\"\":%llu,\"\"partition\"\":\"\"%p\"\"}\"\n",
-	        Util::session_id, Util::command_count, Util::GetTime().count(), scan_count, result_offset, this);
+	// fprintf(stderr,
+	//         "%llx,%llu,%lld,SCANNED_ROWS,\"{\"\"count\"\":%llu,\"\"offset\"\":%llu,\"\"partition\"\":\"\"%p\"\"}\"\n",
+	//         Util::session_id, Util::command_count, Util::GetTime().count(), scan_count, result_offset, this);
 
 	if (scan_type == ScanVectorType::SCAN_ENTIRE_VECTOR) {
 		D_ASSERT(result_offset == 0);
@@ -216,7 +216,8 @@ void ColumnSegment::InitializeAppend(ColumnAppendState &state) {
 idx_t ColumnSegment::Append(ColumnAppendState &state, UnifiedVectorFormat &append_data, idx_t offset, idx_t count) {
 	long long start_time = Util::GetTime().count();
 	fprintf(stderr,
-	        "%llx,%llu,%lld,APPEND_START,\"{\"\"count\"\":%llu,\"\"offset\"\":%llu,\"\"column_id\"\":%lu,\"\"partition\"\":\"\"%p\"\"}\"\n",
+	        "%llx,%llu,%lld,APPEND_START,\"{\"\"count\"\":%llu,\"\"offset\"\":%llu,\"\"column_id\"\":%lu,"
+	        "\"\"partition\"\":\"\"%p\"\"}\"\n",
 	        Util::session_id, Util::command_count, start_time, count, offset, this->index, this);
 	D_ASSERT(segment_type == ColumnSegmentType::TRANSIENT);
 	if (!function.get().append) {
@@ -224,8 +225,10 @@ idx_t ColumnSegment::Append(ColumnAppendState &state, UnifiedVectorFormat &appen
 	}
 	idx_t res = function.get().append(*state.append_state, *this, stats, append_data, offset, count);
 	fprintf(stderr,
-	        "%llx,%llu,%lld,APPEND_END,\"{\"\"count\"\":%llu,\"\"offset\"\":%llu,\"\"column_id\"\":%lu,\"\"partition\"\":\"\"%p\"\",\"\"start_time\"\":%lld}\"\n",
-	        Util::session_id, Util::command_count, Util::GetTime().count(), count, offset, this->index, this,start_time);
+	        "%llx,%llu,%lld,APPEND_END,\"{\"\"count\"\":%llu,\"\"offset\"\":%llu,\"\"column_id\"\":%lu,"
+	        "\"\"partition\"\":\"\"%p\"\",\"\"start_time\"\":%lld}\"\n",
+	        Util::session_id, Util::command_count, Util::GetTime().count(), count, offset, this->index, this,
+	        start_time);
 	return res;
 }
 

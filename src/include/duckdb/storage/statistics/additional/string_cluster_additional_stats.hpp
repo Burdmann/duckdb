@@ -164,9 +164,10 @@ public:
 			throw InternalException("Expression type in zonemap check not implemented");
 		}
 	}
-	inline static FilterPropagateResult Query_implementation(AdditionalStats<string_t> *stats,
+	inline static FilterPropagateResult Query_implementation(std::shared_ptr<AdditionalStats<string_t>> stats,
 	                                                         ExpressionType comparison_type, string_t constant) {
-		StringClusterAdditionalStats *nstats = static_cast<StringClusterAdditionalStats *>(stats);
+		std::shared_ptr<StringClusterAdditionalStats> nstats =
+		    std::static_pointer_cast<StringClusterAdditionalStats>(stats);
 		for (int i = 0; i < nstats->min_values.size(); i++) {
 			FilterPropagateResult result =
 			    Query_inner(nstats->min_values[i], nstats->min_values[i], comparison_type, constant);
@@ -177,13 +178,14 @@ public:
 		}
 		return FilterPropagateResult::FILTER_ALWAYS_FALSE;
 	}
-	inline static size_t Size_implementation(AdditionalStats<string_t> *stats) {
-		StringClusterAdditionalStats *nstats = static_cast<StringClusterAdditionalStats *>(stats);
+	inline static size_t Size_implementation(std::shared_ptr<AdditionalStats<string_t>> stats) {
+		std::shared_ptr<StringClusterAdditionalStats> nstats =
+		    std::static_pointer_cast<StringClusterAdditionalStats>(stats);
 		return 2 * sizeof(string_t) * nstats->cluster_count + sizeof(*stats);
 	}
-	inline static void Serialise_implementation(AdditionalStats<string_t> *stats) {
+	inline static void Serialise_implementation(std::shared_ptr<AdditionalStats<string_t>> stats) {
 	}
-	inline static void Deserialise_implementation(AdditionalStats<string_t> *stats) {
+	inline static void Deserialise_implementation(std::shared_ptr<AdditionalStats<string_t>> stats) {
 	}
 };
 

@@ -154,26 +154,30 @@ public:
 			throw InternalException("Expression type in zonemap check not implemented");
 		}
 	}
-	inline static FilterPropagateResult Query_implementation(AdditionalStats<T> *stats, ExpressionType comparison_type,
-	                                                         T constant) {
-		ClusterAdditionalStats<T> *nstats = static_cast<ClusterAdditionalStats<T> *>(stats);
+	inline static FilterPropagateResult Query_implementation(std::shared_ptr<AdditionalStats<T>> stats,
+	                                                         ExpressionType comparison_type, T constant) {
+		ClusterAdditionalStats<T> *nstats = std::static_pointer_cast<ClusterAdditionalStats<T>>(stats);
 		for (int i = 0; i < nstats->min_values.size(); i++) {
 			FilterPropagateResult result =
 			    Query_inner(nstats->min_values[i], nstats->max_values[i], comparison_type, constant);
 			if (result == FilterPropagateResult::FILTER_ALWAYS_TRUE) {
-				return FilterPropagateResult::FILTER_ALWAYS_TRUE;
+				// if there is only one cluster, that means there is only one value, so filter is always true in this
+				// case
+				if (nstats->min_values.size() == 1)
+					return FilterPropagateResult::FILTER_ALWAYS_TRUE;
+				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 			} else if (result == FilterPropagateResult::NO_PRUNING_POSSIBLE)
 				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		}
 		return FilterPropagateResult::FILTER_ALWAYS_FALSE;
 	}
-	inline static size_t Size_implementation(AdditionalStats<T> *stats) {
-		ClusterAdditionalStats<T> *nstats = static_cast<ClusterAdditionalStats<T> *>(stats);
+	inline static size_t Size_implementation(std::shared_ptr<AdditionalStats<T>> stats) {
+		ClusterAdditionalStats<T> *nstats = std::static_pointer_cast<ClusterAdditionalStats<T>>(stats);
 		return 2 * sizeof(T) * nstats->cluster_count + sizeof(*stats);
 	}
-	inline static void Serialise_implementation(AdditionalStats<T> *stats) {
+	inline static void Serialise_implementation(std::shared_ptr<AdditionalStats<T>> stats) {
 	}
-	inline static void Deserialise_implementation(AdditionalStats<T> *stats) {
+	inline static void Deserialise_implementation(std::shared_ptr<AdditionalStats<T>> stats) {
 	}
 };
 

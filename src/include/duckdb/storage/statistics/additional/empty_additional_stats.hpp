@@ -29,16 +29,16 @@ public:
 	}
 	inline static void Initialise_implementation(std::vector<T> &data, AdditionalStats<T> *stats) {
 	}
-	inline static FilterPropagateResult Query_implementation(AdditionalStats<T> *stats, ExpressionType comparison_type,
-	                                                         T constant) {
+	inline static FilterPropagateResult Query_implementation(std::shared_ptr<AdditionalStats<T>> stats,
+	                                                         ExpressionType comparison_type, T constant) {
 		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 	}
-	inline static size_t Size_implementation(AdditionalStats<T> *stats) {
+	inline static size_t Size_implementation(std::shared_ptr<AdditionalStats<T>> stats) {
 		return sizeof(*stats);
 	}
-	inline static void Serialise_implementation(AdditionalStats<T> *stats) {
+	inline static void Serialise_implementation(std::shared_ptr<AdditionalStats<T>> stats) {
 	}
-	inline static void Deserialise_implementation(AdditionalStats<T> *stats) {
+	inline static void Deserialise_implementation(std::shared_ptr<AdditionalStats<T>> stats) {
 	}
 };
 

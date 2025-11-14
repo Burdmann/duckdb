@@ -9,6 +9,7 @@
 #pragma once
 
 #include <functional>
+#include <memory>
 
 #define ADDITIONAL_NUMERIC_STATS EmptyAdditionalStats
 #define ADDITIONAL_STRING_STATS  EmptyAdditionalStats<string_t>
@@ -26,10 +27,10 @@ template <class T>
 class AdditionalStats {
 public:
 	std::function<void(std::vector<T> &, AdditionalStats<T> *)> Initialise;
-	std::function<FilterPropagateResult(AdditionalStats<T> *, ExpressionType, T)> Query;
-	std::function<size_t(AdditionalStats<T> *)> Size;
-	std::function<void(AdditionalStats<T> *)> Serialise;
-	std::function<void(AdditionalStats<T> *)> Deserialise;
+	std::function<FilterPropagateResult(std::shared_ptr<AdditionalStats<T>>, ExpressionType, T)> Query;
+	std::function<size_t(std::shared_ptr<AdditionalStats<T>>)> Size;
+	std::function<void(std::shared_ptr<AdditionalStats<T>>)> Serialise;
+	std::function<void(std::shared_ptr<AdditionalStats<T>>)> Deserialise;
 	static constexpr char *static_name = "error";
 	const char *name;
 
