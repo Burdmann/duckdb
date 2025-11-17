@@ -20,7 +20,7 @@ namespace duckdb {
 class StringClusterAdditionalStats : public AdditionalStats<string_t> {
 private:
 	constexpr static uint32_t MAX_STRING_MINMAX_SIZE = 8;
-	constexpr static uint32_t MAX_NUMBER_OF_CLUSTERS = 200;
+	constexpr static uint32_t MAX_NUMBER_OF_CLUSTERS = 2000;
 	unsigned int cluster_count = 0;
 	std::vector<string_t> min_values;
 	std::vector<string_t> max_values;
@@ -181,7 +181,7 @@ public:
 	inline static size_t Size_implementation(std::shared_ptr<AdditionalStats<string_t>> stats) {
 		std::shared_ptr<StringClusterAdditionalStats> nstats =
 		    std::static_pointer_cast<StringClusterAdditionalStats>(stats);
-		return 2 * sizeof(string_t) * nstats->cluster_count + sizeof(*stats);
+		return 2 * sizeof(string_t) * nstats->cluster_count + sizeof(*nstats);
 	}
 	inline static void Serialise_implementation(std::shared_ptr<AdditionalStats<string_t>> stats) {
 	}

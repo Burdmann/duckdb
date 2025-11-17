@@ -91,7 +91,7 @@ public:
 		switch (comparison_type) {
 		case ExpressionType::COMPARE_EQUAL:
 		case ExpressionType::COMPARE_NOT_DISTINCT_FROM: {
-			BloomAdditionalStats<T> *nstats = std::static_pointer_cast<BloomAdditionalStats<T>>(stats);
+			std::shared_ptr<BloomAdditionalStats<T>> nstats = std::static_pointer_cast<BloomAdditionalStats<T>>(stats);
 			if (QueryUtil(constant, nstats->bit_array))
 				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 
@@ -102,7 +102,8 @@ public:
 		}
 	}
 	inline static size_t Size_implementation(std::shared_ptr<AdditionalStats<T>> stats) {
-		return sizeof(*stats.get());
+		std::shared_ptr<BloomAdditionalStats<T>> nstats = std::static_pointer_cast<BloomAdditionalStats<T>>(stats);
+		return sizeof(*nstats.get());
 	}
 	inline static void Serialise_implementation(std::shared_ptr<AdditionalStats<T>> stats) {
 	}

@@ -36,6 +36,7 @@ std::unordered_map<void *, std::shared_ptr<AdditionalStats<hugeint_t>>> ColumnSe
 std::unordered_map<void *, std::shared_ptr<AdditionalStats<float>>> ColumnSegment::additional_stats_float;
 std::unordered_map<void *, std::shared_ptr<AdditionalStats<double>>> ColumnSegment::additional_stats_double;
 std::unordered_map<void *, std::shared_ptr<AdditionalStats<string_t>>> ColumnSegment::additional_stats_string;
+std::unordered_map<std::thread::id, uint64_t> ColumnSegment::scanned_count;
 
 //===--------------------------------------------------------------------===//
 // Create
@@ -134,7 +135,9 @@ void ColumnSegment::Scan(ColumnScanState &state, idx_t scan_count, Vector &resul
 	// fprintf(stderr,
 	//         "%llx,%llu,%lld,SCANNED_ROWS,\"{\"\"count\"\":%llu,\"\"offset\"\":%llu,\"\"partition\"\":\"\"%p\"\"}\"\n",
 	//         Util::session_id, Util::command_count, Util::GetTime().count(), scan_count, result_offset, this);
-
+	if (ColumnSegment::scanned_count.count(std::this_thread::get_id()) == 0)
+		ColumnSegment::scanned_count[std::this_thread::get_id()] = 0;
+	ColumnSegment::scanned_count[std::this_thread::get_id()] += scan_count;
 	if (scan_type == ScanVectorType::SCAN_ENTIRE_VECTOR) {
 		D_ASSERT(result_offset == 0);
 		Scan(state, scan_count, result);

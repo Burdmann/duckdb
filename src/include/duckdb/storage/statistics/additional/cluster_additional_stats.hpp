@@ -21,7 +21,7 @@ template <class T>
 class ClusterAdditionalStats : public AdditionalStats<T> {
 private:
 	unsigned int cluster_count = 0;
-	constexpr static uint32_t MAX_NUMBER_OF_CLUSTERS = 200;
+	constexpr static uint32_t MAX_NUMBER_OF_CLUSTERS = 2000;
 	std::vector<T> min_values;
 	std::vector<T> max_values;
 	static bool ConstantExactRange(T min, T max, T constant) {
@@ -156,7 +156,7 @@ public:
 	}
 	inline static FilterPropagateResult Query_implementation(std::shared_ptr<AdditionalStats<T>> stats,
 	                                                         ExpressionType comparison_type, T constant) {
-		ClusterAdditionalStats<T> *nstats = std::static_pointer_cast<ClusterAdditionalStats<T>>(stats);
+		std::shared_ptr<ClusterAdditionalStats<T>> nstats = std::static_pointer_cast<ClusterAdditionalStats<T>>(stats);
 		for (int i = 0; i < nstats->min_values.size(); i++) {
 			FilterPropagateResult result =
 			    Query_inner(nstats->min_values[i], nstats->max_values[i], comparison_type, constant);
@@ -172,8 +172,8 @@ public:
 		return FilterPropagateResult::FILTER_ALWAYS_FALSE;
 	}
 	inline static size_t Size_implementation(std::shared_ptr<AdditionalStats<T>> stats) {
-		ClusterAdditionalStats<T> *nstats = std::static_pointer_cast<ClusterAdditionalStats<T>>(stats);
-		return 2 * sizeof(T) * nstats->cluster_count + sizeof(*stats);
+		std::shared_ptr<ClusterAdditionalStats<T>> nstats = std::static_pointer_cast<ClusterAdditionalStats<T>>(stats);
+		return 2 * sizeof(T) * nstats->cluster_count + sizeof(*nstats);
 	}
 	inline static void Serialise_implementation(std::shared_ptr<AdditionalStats<T>> stats) {
 	}

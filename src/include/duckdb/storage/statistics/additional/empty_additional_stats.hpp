@@ -34,7 +34,8 @@ public:
 		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 	}
 	inline static size_t Size_implementation(std::shared_ptr<AdditionalStats<T>> stats) {
-		return sizeof(*stats);
+		std::shared_ptr<EmptyAdditionalStats<T>> nstats = std::static_pointer_cast<EmptyAdditionalStats<T>>(stats);
+		return sizeof(*nstats);
 	}
 	inline static void Serialise_implementation(std::shared_ptr<AdditionalStats<T>> stats) {
 	}

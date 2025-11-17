@@ -20,6 +20,7 @@
 #include "duckdb/storage/table/segment_base.hpp"
 #include "duckdb/storage/statistics/additional/additional_stats.hpp"
 #include <memory>
+#include <thread>
 
 #include <unordered_map>
 
@@ -175,6 +176,7 @@ public:
 	static std::unordered_map<void *, std::shared_ptr<AdditionalStats<float>>> additional_stats_float;
 	static std::unordered_map<void *, std::shared_ptr<AdditionalStats<double>>> additional_stats_double;
 	static std::unordered_map<void *, std::shared_ptr<AdditionalStats<string_t>>> additional_stats_string;
+	static std::unordered_map<std::thread::id, uint64_t> scanned_count;
 
 private:
 	//! The compression function
