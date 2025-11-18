@@ -11,8 +11,8 @@
 #include <functional>
 #include <memory>
 
-#define ADDITIONAL_NUMERIC_STATS EmptyAdditionalStats
-#define ADDITIONAL_STRING_STATS  EmptyAdditionalStats<string_t>
+#define ADDITIONAL_NUMERIC_STATS BloomAdditionalStats
+#define ADDITIONAL_STRING_STATS  BloomAdditionalStats<string_t>
 
 namespace duckdb {
 template <class T>

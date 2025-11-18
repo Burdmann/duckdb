@@ -85,91 +85,87 @@ public:
 		nstats->cluster_count++;
 	}
 
-	inline static FilterPropagateResult Query_inner(T min_value, T max_value, ExpressionType comparison_type,
-	                                                T constant) {
-		switch (comparison_type) {
-		case ExpressionType::COMPARE_EQUAL:
-		case ExpressionType::COMPARE_NOT_DISTINCT_FROM:
-			if (ConstantExactRange(min_value, max_value, constant)) {
-				return FilterPropagateResult::FILTER_ALWAYS_TRUE;
-			}
-			if (ConstantValueInRange(min_value, max_value, constant)) {
-				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
-			}
-			return FilterPropagateResult::FILTER_ALWAYS_FALSE;
-		case ExpressionType::COMPARE_NOTEQUAL:
-		case ExpressionType::COMPARE_DISTINCT_FROM:
-			if (!ConstantValueInRange(min_value, max_value, constant)) {
-				return FilterPropagateResult::FILTER_ALWAYS_TRUE;
-			} else if (ConstantExactRange(min_value, max_value, constant)) {
-				// corner case of a cluster with one numeric equal to the target constant
-				return FilterPropagateResult::FILTER_ALWAYS_FALSE;
-			}
-			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
-		case ExpressionType::COMPARE_GREATERTHANOREQUALTO:
-			// GreaterThanEquals::Operation(X, C)
-			// this can be true only if max(X) >= C
-			// if min(X) >= C, then this is always true
-			if (GreaterThanEquals::Operation(min_value, constant)) {
-				return FilterPropagateResult::FILTER_ALWAYS_TRUE;
-			} else if (GreaterThanEquals::Operation(max_value, constant)) {
-				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+	inline static idx_t FindLastIndexBeforePoint_Binary(std::vector<T> min_values, T constant) {
+		idx_t lo = 0;
+		idx_t hi = min_values.size() - 1;
+		idx_t mid;
+		while (lo < hi) {
+			mid = (lo + hi + 1) / 2;
+			if (min_values[mid] > constant) {
+				hi = mid - 1;
+			} else if (min_values[mid] < constant) {
+				lo = mid;
 			} else {
-				return FilterPropagateResult::FILTER_ALWAYS_FALSE;
+				// min_values[mid] = constant
+				return mid;
 			}
-		case ExpressionType::COMPARE_GREATERTHAN:
-			// GreaterThan::Operation(X, C)
-			// this can be true only if max(X) > C
-			// if min(X) > C, then this is always true
-			if (GreaterThan::Operation(min_value, constant)) {
-				return FilterPropagateResult::FILTER_ALWAYS_TRUE;
-			} else if (GreaterThan::Operation(max_value, constant)) {
-				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
-			} else {
-				return FilterPropagateResult::FILTER_ALWAYS_FALSE;
-			}
-		case ExpressionType::COMPARE_LESSTHANOREQUALTO:
-			// LessThanEquals::Operation(X, C)
-			// this can be true only if min(X) <= C
-			// if max(X) <= C, then this is always true
-			if (LessThanEquals::Operation(max_value, constant)) {
-				return FilterPropagateResult::FILTER_ALWAYS_TRUE;
-			} else if (LessThanEquals::Operation(min_value, constant)) {
-				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
-			} else {
-				return FilterPropagateResult::FILTER_ALWAYS_FALSE;
-			}
-		case ExpressionType::COMPARE_LESSTHAN:
-			// LessThan::Operation(X, C)
-			// this can be true only if min(X) < C
-			// if max(X) < C, then this is always true
-			if (LessThan::Operation(max_value, constant)) {
-				return FilterPropagateResult::FILTER_ALWAYS_TRUE;
-			} else if (LessThan::Operation(min_value, constant)) {
-				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
-			} else {
-				return FilterPropagateResult::FILTER_ALWAYS_FALSE;
-			}
-		default:
-			throw InternalException("Expression type in zonemap check not implemented");
 		}
+		if (min_values[mid] > constant)
+			return -1;
+		return mid;
+	}
+	inline static idx_t FindLastIndexBeforePoint_Linear(std::vector<T> min_values, T constant) {
+		for (int i = 0; i < min_values.size(); i++) {
+			if (min_values[i] > constant) {
+				return i - 1;
+			}
+		}
+		return min_values.size() - 1;
+	}
+
+	inline static FilterPropagateResult Query_Equal(std::shared_ptr<ClusterAdditionalStats<T>> nstats, T constant) {
+		int idx = FindLastIndexBeforePoint_Linear(nstats->min_values, constant);
+		if (idx == -1) {
+			return FilterPropagateResult::FILTER_ALWAYS_FALSE;
+		} else if (nstats->min_values.size() == 1 &&
+		           ConstantExactRange(nstats->min_values[idx], nstats->max_values[idx], constant)) {
+			return FilterPropagateResult::FILTER_ALWAYS_TRUE;
+		} else if (nstats->max_values[idx] >= constant) {
+			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+		} else {
+			return FilterPropagateResult::FILTER_ALWAYS_FALSE;
+		}
+	}
+
+	inline static FilterPropagateResult Query_NotEqual(std::shared_ptr<ClusterAdditionalStats<T>> nstats, T constant) {
+		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+	}
+	inline static FilterPropagateResult Query_GreaterThanEqual(std::shared_ptr<ClusterAdditionalStats<T>> nstats,
+	                                                           T constant) {
+		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+	}
+	inline static FilterPropagateResult Query_GreaterThan(std::shared_ptr<ClusterAdditionalStats<T>> nstats,
+	                                                      T constant) {
+		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+	}
+	inline static FilterPropagateResult Query_LessThanEqual(std::shared_ptr<ClusterAdditionalStats<T>> nstats,
+	                                                        T constant) {
+		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+	}
+	inline static FilterPropagateResult Query_LessThan(std::shared_ptr<ClusterAdditionalStats<T>> nstats, T constant) {
+		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 	}
 	inline static FilterPropagateResult Query_implementation(std::shared_ptr<AdditionalStats<T>> stats,
 	                                                         ExpressionType comparison_type, T constant) {
 		std::shared_ptr<ClusterAdditionalStats<T>> nstats = std::static_pointer_cast<ClusterAdditionalStats<T>>(stats);
-		for (int i = 0; i < nstats->min_values.size(); i++) {
-			FilterPropagateResult result =
-			    Query_inner(nstats->min_values[i], nstats->max_values[i], comparison_type, constant);
-			if (result == FilterPropagateResult::FILTER_ALWAYS_TRUE) {
-				// if there is only one cluster, that means there is only one value, so filter is always true in this
-				// case
-				if (nstats->min_values.size() == 1)
-					return FilterPropagateResult::FILTER_ALWAYS_TRUE;
-				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
-			} else if (result == FilterPropagateResult::NO_PRUNING_POSSIBLE)
-				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+		switch (comparison_type) {
+		case ExpressionType::COMPARE_EQUAL:
+		case ExpressionType::COMPARE_NOT_DISTINCT_FROM:
+			return Query_Equal(nstats, constant);
+		case ExpressionType::COMPARE_NOTEQUAL:
+		case ExpressionType::COMPARE_DISTINCT_FROM:
+			return Query_NotEqual(nstats, constant);
+		case ExpressionType::COMPARE_GREATERTHANOREQUALTO:
+			return Query_GreaterThanEqual(nstats, constant);
+		case ExpressionType::COMPARE_GREATERTHAN:
+			return Query_GreaterThan(nstats, constant);
+		case ExpressionType::COMPARE_LESSTHANOREQUALTO:
+			return Query_LessThanEqual(nstats, constant);
+		case ExpressionType::COMPARE_LESSTHAN:
+			return Query_LessThan(nstats, constant);
+		default:
+			throw InternalException("Expression type in zonemap check not implemented");
 		}
-		return FilterPropagateResult::FILTER_ALWAYS_FALSE;
 	}
 	inline static size_t Size_implementation(std::shared_ptr<AdditionalStats<T>> stats) {
 		std::shared_ptr<ClusterAdditionalStats<T>> nstats = std::static_pointer_cast<ClusterAdditionalStats<T>>(stats);
