@@ -368,3 +368,11 @@ raw_data_test.csv
 raw_data_bloom_only.csv
 raw_data_cluster_only.csv
 raw_data_min_max_2.csv
+customer.csv
+lineitem.csv
+nation.csv
+orders.csv
+part.csv
+partsupp.csv
+region.csv
+supplier.csv

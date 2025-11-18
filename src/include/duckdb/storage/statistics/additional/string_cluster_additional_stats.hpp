@@ -172,7 +172,7 @@ public:
 			FilterPropagateResult result =
 			    Query_inner(nstats->min_values[i], nstats->min_values[i], comparison_type, constant);
 			if (result == FilterPropagateResult::FILTER_ALWAYS_TRUE) {
-				return FilterPropagateResult::FILTER_ALWAYS_TRUE;
+				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 			} else if (result == FilterPropagateResult::NO_PRUNING_POSSIBLE)
 				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		}
