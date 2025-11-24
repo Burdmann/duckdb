@@ -43,10 +43,10 @@ FilterPropagateResult ConstantFilter::CheckStatistics(BaseStatistics &stats) con
 	if (!stats.CanHaveNoNull()) {
 		// no non-null values are possible: always false
 		fprintf(stderr,
-		        "%llx,%llu,%lld,EVAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"filter_propagate_result\"\":%u,\"\"start_time\"\":%lld}"
-		        "\"\n",
+		        "%llx,%llu,%lld,EVAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"filter_propagate_result\"\":%u,"
+		        "\"\"start_time\"\":%lld}\"\n",
 		        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime().count(), &stats,
-		        FilterPropagateResult::FILTER_ALWAYS_FALSE,start_time);
+		        FilterPropagateResult::FILTER_ALWAYS_FALSE, start_time);
 		return FilterPropagateResult::FILTER_ALWAYS_FALSE;
 	}
 	FilterPropagateResult result;
@@ -71,10 +71,10 @@ FilterPropagateResult ConstantFilter::CheckStatistics(BaseStatistics &stats) con
 		break;
 	default:
 		fprintf(stderr,
-		        "%llx,%llu,%lld,EVAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"filter_propagate_result\"\":%u,\"\"start_time\"\":%lld}"
-		        "\"\n",
+		        "%llx,%llu,%lld,EVAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"filter_propagate_result\"\":%u,"
+		        "\"\"start_time\"\":%lld}\"\n",
 		        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime().count(), &stats,
-		        FilterPropagateResult::NO_PRUNING_POSSIBLE,start_time);
+		        FilterPropagateResult::NO_PRUNING_POSSIBLE, start_time);
 		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 	}
 	if (result == FilterPropagateResult::FILTER_ALWAYS_TRUE) {
@@ -85,16 +85,17 @@ FilterPropagateResult ConstantFilter::CheckStatistics(BaseStatistics &stats) con
 			        "%llx,%llu,%lld,EVAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\2\",\"\"filter_propagate_"
 			        "result\"\":%u,\"\"start_time\"\":%lld}\"\n",
 			        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime().count(), &stats,
-			        FilterPropagateResult::NO_PRUNING_POSSIBLE,start_time);
+			        FilterPropagateResult::NO_PRUNING_POSSIBLE, start_time);
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		}
 	}
 	if (result == FilterPropagateResult::NO_PRUNING_POSSIBLE)
-		result = ColumnData::QueryAdditionalStats(stats,comparison_type,constant.type().InternalType(),constant);
-	fprintf(
-	    stderr,
-	    "%llx,%llu,%lld,EVAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"filter_propagate_result\"\":%u,\"\"start_time\"\":%lld}\"\n",
-	    duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime().count(), &stats, result,start_time);
+		result = ColumnData::QueryAdditionalStats(stats, comparison_type, constant.type().InternalType(), constant);
+	fprintf(stderr,
+	        "%llx,%llu,%lld,EVAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"filter_propagate_result\"\":%u,"
+	        "\"\"start_time\"\":%lld}\"\n",
+	        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime().count(), &stats, result,
+	        start_time);
 	return result;
 }
 
