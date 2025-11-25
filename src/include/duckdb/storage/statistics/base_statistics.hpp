@@ -149,6 +149,9 @@ private:
 	} stats_union;
 	//! Child stats (for LIST and STRUCT)
 	unsafe_unique_array<BaseStatistics> child_stats;
+
+public:
+	void *additonal_stats = NULL;
 };
 
 template <>

@@ -113,7 +113,7 @@ public:
 		return min_values.size() - 1;
 	}
 
-	inline static FilterPropagateResult Query_Equal(std::shared_ptr<ClusterAdditionalStats<T>> nstats, T constant) {
+	inline static FilterPropagateResult Query_Equal(ClusterAdditionalStats<T> *nstats, T constant) {
 		int idx = FindLastIndexBeforePoint_Linear(nstats->min_values, constant);
 		if (idx == -1) {
 			return FilterPropagateResult::FILTER_ALWAYS_FALSE;
@@ -127,27 +127,24 @@ public:
 		}
 	}
 
-	inline static FilterPropagateResult Query_NotEqual(std::shared_ptr<ClusterAdditionalStats<T>> nstats, T constant) {
+	inline static FilterPropagateResult Query_NotEqual(ClusterAdditionalStats<T> *nstats, T constant) {
 		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 	}
-	inline static FilterPropagateResult Query_GreaterThanEqual(std::shared_ptr<ClusterAdditionalStats<T>> nstats,
-	                                                           T constant) {
+	inline static FilterPropagateResult Query_GreaterThanEqual(ClusterAdditionalStats<T> *nstats, T constant) {
 		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 	}
-	inline static FilterPropagateResult Query_GreaterThan(std::shared_ptr<ClusterAdditionalStats<T>> nstats,
-	                                                      T constant) {
+	inline static FilterPropagateResult Query_GreaterThan(ClusterAdditionalStats<T> *nstats, T constant) {
 		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 	}
-	inline static FilterPropagateResult Query_LessThanEqual(std::shared_ptr<ClusterAdditionalStats<T>> nstats,
-	                                                        T constant) {
+	inline static FilterPropagateResult Query_LessThanEqual(ClusterAdditionalStats<T> *nstats, T constant) {
 		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 	}
-	inline static FilterPropagateResult Query_LessThan(std::shared_ptr<ClusterAdditionalStats<T>> nstats, T constant) {
+	inline static FilterPropagateResult Query_LessThan(ClusterAdditionalStats<T> *nstats, T constant) {
 		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 	}
-	inline static FilterPropagateResult Query_implementation(std::shared_ptr<AdditionalStats<T>> stats,
-	                                                         ExpressionType comparison_type, T constant) {
-		std::shared_ptr<ClusterAdditionalStats<T>> nstats = std::static_pointer_cast<ClusterAdditionalStats<T>>(stats);
+	inline static FilterPropagateResult Query_implementation(AdditionalStats<T> *stats, ExpressionType comparison_type,
+	                                                         T constant) {
+		ClusterAdditionalStats<T> *nstats = (ClusterAdditionalStats<T> *)stats;
 		switch (comparison_type) {
 		case ExpressionType::COMPARE_EQUAL:
 		case ExpressionType::COMPARE_NOT_DISTINCT_FROM:
@@ -167,13 +164,13 @@ public:
 			throw InternalException("Expression type in zonemap check not implemented");
 		}
 	}
-	inline static size_t Size_implementation(std::shared_ptr<AdditionalStats<T>> stats) {
-		std::shared_ptr<ClusterAdditionalStats<T>> nstats = std::static_pointer_cast<ClusterAdditionalStats<T>>(stats);
+	inline static size_t Size_implementation(AdditionalStats<T> *stats) {
+		ClusterAdditionalStats<T> *nstats = (ClusterAdditionalStats<T> *)stats;
 		return 2 * sizeof(T) * nstats->cluster_count + sizeof(*nstats);
 	}
-	inline static void Serialise_implementation(std::shared_ptr<AdditionalStats<T>> stats) {
+	inline static void Serialise_implementation(AdditionalStats<T> *stats) {
 	}
-	inline static void Deserialise_implementation(std::shared_ptr<AdditionalStats<T>> stats) {
+	inline static void Deserialise_implementation(AdditionalStats<T> *stats) {
 	}
 };
 
