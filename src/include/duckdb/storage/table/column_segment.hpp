@@ -177,6 +177,7 @@ public:
 	static std::unordered_map<void *, std::shared_ptr<AdditionalStats<double>>> additional_stats_double;
 	static std::unordered_map<void *, std::shared_ptr<AdditionalStats<string_t>>> additional_stats_string;
 	static std::unordered_map<std::thread::id, uint64_t> scanned_count;
+	static bool scanned_first_row;
 
 private:
 	//! The compression function

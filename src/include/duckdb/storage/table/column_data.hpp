@@ -351,22 +351,22 @@ public:
 
 	template <class T>
 	static inline FilterPropagateResult
-	QueryAdditionalStats(unordered_map<void *, std::shared_ptr<AdditionalStats<T>>> additional_stats_map,
+	QueryAdditionalStats(unordered_map<void *, std::shared_ptr<AdditionalStats<T>>> &additional_stats_map,
 	                     BaseStatistics *key, ExpressionType comparison_type, const T constant) {
 		if (additional_stats_map.count(key) == 0)
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		std::shared_ptr<AdditionalStats<T>> stats = additional_stats_map[key];
 		long long start_time = Util::GetTime().count();
-		fprintf(stderr,
-		        "%llx,%llu,%lld,EVAL_ADDITIONAL_STATISTICS_START,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\"type:\"\"%"
-		        "s\"\"}\"\n",
-		        duckdb::Util::session_id, duckdb::Util::command_count, start_time, key, stats->name);
+		// fprintf(stderr,
+		//         "%llx,%llu,%lld,EVAL_ADDITIONAL_STATISTICS_START,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\"type:\"\"%"
+		//         "s\"\"}\"\n",
+		//         duckdb::Util::session_id, duckdb::Util::command_count, start_time, key, stats->name);
 		FilterPropagateResult result = stats->Query(stats, comparison_type, constant);
-		fprintf(stderr,
-		        "%llx,%llu,%lld,EVAL_ADDITIONAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
-		        "\"\"start_time\"\":%lld}\"\n",
-		        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime().count(), key,
-		        stats->name, start_time);
+		// fprintf(stderr,
+		//         "%llx,%llu,%lld,EVAL_ADDITIONAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
+		//         "\"\"start_time\"\":%lld}\"\n",
+		//         duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime().count(), key,
+		//         stats->name, start_time);
 		return result;
 	}
 

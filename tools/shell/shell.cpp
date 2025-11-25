@@ -4583,6 +4583,7 @@ int ShellState::ProcessInput(InputMode mode) {
 			fprintf(stderr, "%llx,%llu,%lld,SQL_COMMAND_RUN_START,\"{\"\"command\"\":\"\"%s\"\"}\"\n",
 			        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime().count(), zSql);
 			duckdb::ColumnSegment::scanned_count.clear();
+			duckdb::ColumnSegment::scanned_first_row = false;
 			errCnt += RunOneSqlLine(mode, zSql);
 			for (auto pr : duckdb::ColumnSegment::scanned_count) {
 				fprintf(stderr, "%llx,%llu,%lld,SCANNED_ROWS,\"{\"\"thread\"\":%llu,\"\"count\"\":%llu}\"\n",

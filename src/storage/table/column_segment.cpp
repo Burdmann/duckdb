@@ -37,6 +37,7 @@ std::unordered_map<void *, std::shared_ptr<AdditionalStats<float>>> ColumnSegmen
 std::unordered_map<void *, std::shared_ptr<AdditionalStats<double>>> ColumnSegment::additional_stats_double;
 std::unordered_map<void *, std::shared_ptr<AdditionalStats<string_t>>> ColumnSegment::additional_stats_string;
 std::unordered_map<std::thread::id, uint64_t> ColumnSegment::scanned_count;
+bool ColumnSegment::scanned_first_row;
 
 //===--------------------------------------------------------------------===//
 // Create
@@ -132,6 +133,11 @@ void ColumnSegment::InitializeScan(ColumnScanState &state) {
 
 void ColumnSegment::Scan(ColumnScanState &state, idx_t scan_count, Vector &result, idx_t result_offset,
                          ScanVectorType scan_type) {
+	if (!scanned_first_row) {
+		scanned_first_row = true;
+		fprintf(stderr, "%llx,%llu,%lld,SCANNED_FIRST_ROW,\"{}\"\n", Util::session_id, Util::command_count,
+		        Util::GetTime().count());
+	}
 	// fprintf(stderr,
 	//         "%llx,%llu,%lld,SCANNED_ROWS,\"{\"\"count\"\":%llu,\"\"offset\"\":%llu,\"\"partition\"\":\"\"%p\"\"}\"\n",
 	//         Util::session_id, Util::command_count, Util::GetTime().count(), scan_count, result_offset, this);
