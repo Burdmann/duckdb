@@ -96,7 +96,7 @@ public:
 			} else if (min_values[mid] < constant) {
 				lo = mid;
 			} else {
-				// min_values[mid] = constant
+				// min_values[mid] == constant
 				return mid;
 			}
 		}

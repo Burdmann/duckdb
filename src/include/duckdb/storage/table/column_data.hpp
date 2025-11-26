@@ -263,7 +263,7 @@ public:
 	}
 
 	template <class T>
-	void InitNumericStats(std::vector<T> &temp_storage, std::vector<AdditionalStats<T>> &additional_stats,
+	void InitNumericStats(std::vector<T> &temp_storage, std::vector<ADDITIONAL_NUMERIC_STATS<T>> &additional_stats,
 	                      BaseStatistics &stats) {
 		long long start_time = Util::GetTime().count();
 		fprintf(
@@ -271,16 +271,17 @@ public:
 		    "%llx,%llu,%lld,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\"}\"\n",
 		    Util::session_id, Util::command_count, start_time, &stats, ADDITIONAL_NUMERIC_STATS<T>::static_name);
 		additional_stats.push_back(ADDITIONAL_NUMERIC_STATS<T>(temp_storage));
-		stats.additonal_stats = (void *)&additional_stats.back();
-		AdditionalStats<string_t> *stats_ptr = (AdditionalStats<string_t> *)stats.additonal_stats;
+		stats.additional_stats_vector = (void *)&additional_stats;
+		stats.additional_stats_index = additional_stats.size() - 1;
+		AdditionalStats<T> &astats = additional_stats.back();
 		temp_storage.clear();
 		fprintf(stderr,
 		        "%llx,%llu,%lld,END_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
 		        "\"\"size\"\":%lu,\"\"start_time\"\":%lld}\"\n",
 		        Util::session_id, Util::command_count, Util::GetTime().count(), &stats,
-		        ADDITIONAL_NUMERIC_STATS<T>::static_name, stats_ptr->Size(stats_ptr), start_time);
+		        ADDITIONAL_NUMERIC_STATS<T>::static_name, astats.Size(&astats), start_time);
 	}
-	void InitStringStats(std::vector<string_t> &temp_storage, std::vector<AdditionalStats<string_t>> &additional_stats,
+	void InitStringStats(std::vector<string_t> &temp_storage, std::vector<ADDITIONAL_STRING_STATS> &additional_stats,
 	                     BaseStatistics &stats) {
 		long long start_time = Util::GetTime().count();
 		fprintf(
@@ -288,14 +289,15 @@ public:
 		    "%llx,%llu,%lld,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\"}\"\n",
 		    Util::session_id, Util::command_count, start_time, &stats, ADDITIONAL_STRING_STATS::static_name);
 		additional_stats.push_back(ADDITIONAL_STRING_STATS(temp_storage));
-		stats.additonal_stats = (void *)&additional_stats.back();
-		AdditionalStats<string_t> *stats_ptr = (AdditionalStats<string_t> *)stats.additonal_stats;
+		stats.additional_stats_vector = (void *)&additional_stats;
+		stats.additional_stats_index = additional_stats.size() - 1;
+		AdditionalStats<string_t> &astats = additional_stats.back();
 		temp_storage.clear();
 		fprintf(stderr,
 		        "%llx,%llu,%lld,END_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
 		        "\"\"size\"\":%lu,\"\"start_time\"\":%lld}\"\n",
 		        Util::session_id, Util::command_count, Util::GetTime().count(), &stats,
-		        ADDITIONAL_STRING_STATS::static_name, stats_ptr->Size(stats_ptr), start_time);
+		        ADDITIONAL_STRING_STATS::static_name, astats.Size(&astats), start_time);
 	}
 
 	void InitStats(BaseStatistics &stats, PhysicalType type) {
@@ -352,10 +354,11 @@ public:
 	template <class T>
 	static inline FilterPropagateResult QueryAdditionalStats(BaseStatistics &stats, ExpressionType comparison_type,
 	                                                         const T constant) {
-		if (stats.additonal_stats == NULL)
+		if (stats.additional_stats_vector == NULL)
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
-		AdditionalStats<T> *astats = (AdditionalStats<T> *)stats.additonal_stats;
-		long long start_time = Util::GetTime().count();
+		std::vector<AdditionalStats<T>> &astats_vector =
+		    *((std::vector<AdditionalStats<T>> *)stats.additional_stats_vector);
+		AdditionalStats<T> *astats = &astats_vector[stats.additional_stats_index];
 		// fprintf(stderr,
 		//         "%llx,%llu,%lld,EVAL_ADDITIONAL_STATISTICS_START,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\"type:\"\"%"
 		//         "s\"\"}\"\n",

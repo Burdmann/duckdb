@@ -22,20 +22,20 @@
 namespace duckdb {
 
 // altp
-std::vector<AdditionalStats<bool>> ColumnSegment::additional_stats_bool;
-std::vector<AdditionalStats<uint8_t>> ColumnSegment::additional_stats_uint8;
-std::vector<AdditionalStats<uint16_t>> ColumnSegment::additional_stats_uint16;
-std::vector<AdditionalStats<uint32_t>> ColumnSegment::additional_stats_uint32;
-std::vector<AdditionalStats<uint64_t>> ColumnSegment::additional_stats_uint64;
-std::vector<AdditionalStats<uhugeint_t>> ColumnSegment::additional_stats_uhugeint;
-std::vector<AdditionalStats<int8_t>> ColumnSegment::additional_stats_int8;
-std::vector<AdditionalStats<int16_t>> ColumnSegment::additional_stats_int16;
-std::vector<AdditionalStats<int32_t>> ColumnSegment::additional_stats_int32;
-std::vector<AdditionalStats<int64_t>> ColumnSegment::additional_stats_int64;
-std::vector<AdditionalStats<hugeint_t>> ColumnSegment::additional_stats_hugeint;
-std::vector<AdditionalStats<float>> ColumnSegment::additional_stats_float;
-std::vector<AdditionalStats<double>> ColumnSegment::additional_stats_double;
-std::vector<AdditionalStats<string_t>> ColumnSegment::additional_stats_string;
+std::vector<ADDITIONAL_NUMERIC_STATS<bool>> ColumnSegment::additional_stats_bool;
+std::vector<ADDITIONAL_NUMERIC_STATS<uint8_t>> ColumnSegment::additional_stats_uint8;
+std::vector<ADDITIONAL_NUMERIC_STATS<uint16_t>> ColumnSegment::additional_stats_uint16;
+std::vector<ADDITIONAL_NUMERIC_STATS<uint32_t>> ColumnSegment::additional_stats_uint32;
+std::vector<ADDITIONAL_NUMERIC_STATS<uint64_t>> ColumnSegment::additional_stats_uint64;
+std::vector<ADDITIONAL_NUMERIC_STATS<uhugeint_t>> ColumnSegment::additional_stats_uhugeint;
+std::vector<ADDITIONAL_NUMERIC_STATS<int8_t>> ColumnSegment::additional_stats_int8;
+std::vector<ADDITIONAL_NUMERIC_STATS<int16_t>> ColumnSegment::additional_stats_int16;
+std::vector<ADDITIONAL_NUMERIC_STATS<int32_t>> ColumnSegment::additional_stats_int32;
+std::vector<ADDITIONAL_NUMERIC_STATS<int64_t>> ColumnSegment::additional_stats_int64;
+std::vector<ADDITIONAL_NUMERIC_STATS<hugeint_t>> ColumnSegment::additional_stats_hugeint;
+std::vector<ADDITIONAL_NUMERIC_STATS<float>> ColumnSegment::additional_stats_float;
+std::vector<ADDITIONAL_NUMERIC_STATS<double>> ColumnSegment::additional_stats_double;
+std::vector<ADDITIONAL_STRING_STATS> ColumnSegment::additional_stats_string;
 std::unordered_map<std::thread::id, uint64_t> ColumnSegment::scanned_count;
 bool ColumnSegment::scanned_first_row;
 

@@ -162,20 +162,20 @@ public:
 	shared_ptr<BlockHandle> block;
 
 	// altp
-	static std::vector<AdditionalStats<bool>> additional_stats_bool;
-	static std::vector<AdditionalStats<uint8_t>> additional_stats_uint8;
-	static std::vector<AdditionalStats<uint16_t>> additional_stats_uint16;
-	static std::vector<AdditionalStats<uint32_t>> additional_stats_uint32;
-	static std::vector<AdditionalStats<uint64_t>> additional_stats_uint64;
-	static std::vector<AdditionalStats<uhugeint_t>> additional_stats_uhugeint;
-	static std::vector<AdditionalStats<int8_t>> additional_stats_int8;
-	static std::vector<AdditionalStats<int16_t>> additional_stats_int16;
-	static std::vector<AdditionalStats<int32_t>> additional_stats_int32;
-	static std::vector<AdditionalStats<int64_t>> additional_stats_int64;
-	static std::vector<AdditionalStats<hugeint_t>> additional_stats_hugeint;
-	static std::vector<AdditionalStats<float>> additional_stats_float;
-	static std::vector<AdditionalStats<double>> additional_stats_double;
-	static std::vector<AdditionalStats<string_t>> additional_stats_string;
+	static std::vector<ADDITIONAL_NUMERIC_STATS<bool>> additional_stats_bool;
+	static std::vector<ADDITIONAL_NUMERIC_STATS<uint8_t>> additional_stats_uint8;
+	static std::vector<ADDITIONAL_NUMERIC_STATS<uint16_t>> additional_stats_uint16;
+	static std::vector<ADDITIONAL_NUMERIC_STATS<uint32_t>> additional_stats_uint32;
+	static std::vector<ADDITIONAL_NUMERIC_STATS<uint64_t>> additional_stats_uint64;
+	static std::vector<ADDITIONAL_NUMERIC_STATS<uhugeint_t>> additional_stats_uhugeint;
+	static std::vector<ADDITIONAL_NUMERIC_STATS<int8_t>> additional_stats_int8;
+	static std::vector<ADDITIONAL_NUMERIC_STATS<int16_t>> additional_stats_int16;
+	static std::vector<ADDITIONAL_NUMERIC_STATS<int32_t>> additional_stats_int32;
+	static std::vector<ADDITIONAL_NUMERIC_STATS<int64_t>> additional_stats_int64;
+	static std::vector<ADDITIONAL_NUMERIC_STATS<hugeint_t>> additional_stats_hugeint;
+	static std::vector<ADDITIONAL_NUMERIC_STATS<float>> additional_stats_float;
+	static std::vector<ADDITIONAL_NUMERIC_STATS<double>> additional_stats_double;
+	static std::vector<ADDITIONAL_STRING_STATS> additional_stats_string;
 	static std::unordered_map<std::thread::id, uint64_t> scanned_count;
 	static bool scanned_first_row;
 
