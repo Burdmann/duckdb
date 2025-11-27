@@ -11,8 +11,8 @@
 #include <functional>
 #include <memory>
 
-#define ADDITIONAL_NUMERIC_STATS EmptyAdditionalStats
-#define ADDITIONAL_STRING_STATS  EmptyAdditionalStats<string_t>
+#define ADDITIONAL_NUMERIC_STATS BloomAdditionalStats
+#define ADDITIONAL_STRING_STATS  BloomAdditionalStats<string_t>
 
 namespace duckdb {
 template <class T>
@@ -31,11 +31,13 @@ public:
 	std::function<size_t(AdditionalStats<T> *)> Size;
 	std::function<void(AdditionalStats<T> *)> Serialise;
 	std::function<void(AdditionalStats<T> *)> Deserialise;
-	static constexpr char *static_name = "error";
+	static inline const char *GetStaticName() {
+		return "error";
+	}
 	const char *name;
 
 	AdditionalStats() {
-		this->name = static_name;
+		this->name = GetStaticName();
 	}
 	// init
 	// void Initialise(std::vector<T> &data) {

@@ -17,9 +17,9 @@ public:
 	static uint64_t session_id;
 	static uint64_t command_count;
 
-	static inline std::chrono::nanoseconds GetTime() {
+	static inline uint64_t GetTime() {
 		auto duration = std::chrono::high_resolution_clock::now().time_since_epoch();
-		return std::chrono::duration_cast<std::chrono::nanoseconds>(duration);
+		return std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
 	}
 };
 

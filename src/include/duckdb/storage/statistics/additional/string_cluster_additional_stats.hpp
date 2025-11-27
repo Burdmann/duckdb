@@ -41,9 +41,11 @@ private:
 	}
 
 public:
-	static constexpr char *static_name = "cluster";
+	static inline const char *GetStaticName() {
+		return "cluster";
+	}
 	inline StringClusterAdditionalStats(std::vector<string_t> &data) {
-		this->name = static_name;
+		this->name = GetStaticName();
 		this->Initialise = &Initialise_implementation;
 		this->Query = &Query_implementation;
 		this->Size = &Size_implementation;

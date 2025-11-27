@@ -1827,8 +1827,8 @@ int ShellState::ExecuteSQL(const char *zSql, /* SQL to be evaluated */
 				cMode = RenderMode::EXPLAIN;
 			}
 
-			fprintf(stderr, "%llx,%llu,%lld,DONE_PREPARING_SQL_STATEMENT,\"{\"\"command\"\":\"\"%s\"\"}\"\n",
-			        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime().count(), zSql);
+			fprintf(stderr, "%lx,%lu,%lu,DONE_PREPARING_SQL_STATEMENT,\"{\"\"command\"\":\"\"%s\"\"}\"\n",
+			        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), zSql);
 			ExecutePreparedStatement(pStmt);
 
 			/* Finalize the statement just executed. If this fails, save a
@@ -4580,18 +4580,18 @@ int ShellState::ProcessInput(InputMode mode) {
 			nSql += nLine;
 		}
 		if (nSql && line_contains_semicolon(&zSql[nSqlPrior], nSql - nSqlPrior) && sqlite3_complete(zSql)) {
-			fprintf(stderr, "%llx,%llu,%lld,SQL_COMMAND_RUN_START,\"{\"\"command\"\":\"\"%s\"\"}\"\n",
-			        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime().count(), zSql);
+			fprintf(stderr, "%lx,%lu,%lu,SQL_COMMAND_RUN_START,\"{\"\"command\"\":\"\"%s\"\"}\"\n",
+			        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), zSql);
 			duckdb::ColumnSegment::scanned_count.clear();
 			duckdb::ColumnSegment::scanned_first_row = false;
 			errCnt += RunOneSqlLine(mode, zSql);
 			for (auto pr : duckdb::ColumnSegment::scanned_count) {
-				fprintf(stderr, "%llx,%llu,%lld,SCANNED_ROWS,\"{\"\"thread\"\":%llu,\"\"count\"\":%llu}\"\n",
-				        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime().count(),
-				        pr.first, pr.second);
+				fprintf(stderr, "%lx,%lu,%lu,SCANNED_ROWS,\"{\"\"thread\"\":%llu,\"\"count\"\":%lu}\"\n",
+				        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), pr.first,
+				        pr.second);
 			}
-			fprintf(stderr, "%llx,%llu,%lld,SQL_COMMAND_RUN_END,\"{\"\"command\"\":\"\"%s\"\"}\"\n",
-			        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime().count(), zSql);
+			fprintf(stderr, "%lx,%lu,%lu,SQL_COMMAND_RUN_END,\"{\"\"command\"\":\"\"%s\"\"}\"\n",
+			        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), zSql);
 			duckdb::Util::command_count++;
 			nSql = 0;
 			if (outCount) {

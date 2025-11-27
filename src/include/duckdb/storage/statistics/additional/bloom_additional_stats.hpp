@@ -63,14 +63,16 @@ private:
 			uint32_t bit_pos = (h1 + i * h2) % (64 * BLOCK_SIZE);
 			uint64_t bit_idx = bit_pos % 64;
 			uint64_t byte_idx = bit_pos / 64;
-			block[byte_idx] |= (1 << bit_idx);
+			block[byte_idx] |= (1ull << bit_idx);
 		}
 	}
 
 public:
-	static constexpr char *static_name = "bloom";
+	static inline const char *GetStaticName() {
+		return "bloom";
+	}
 	inline BloomAdditionalStats(std::vector<T> &data) {
-		this->name = static_name;
+		this->name = GetStaticName();
 		this->Initialise = &Initialise_implementation;
 		this->Query = &Query_implementation;
 		this->Size = &Size_implementation;
@@ -80,7 +82,8 @@ public:
 	}
 
 	inline static void Initialise_implementation(std::vector<T> &data, AdditionalStats<T> *stats) {
-		BloomAdditionalStats<T> *nstats = static_cast<BloomAdditionalStats<T> *>(stats);
+		BloomAdditionalStats<T> *nstats = (BloomAdditionalStats<T> *)stats;
+		std::fill(nstats->bit_array, nstats->bit_array + (BLOCK_COUNT * BLOCK_SIZE), 0);
 		for (T element : data) {
 			Insert(element, nstats->bit_array);
 		}
@@ -91,7 +94,7 @@ public:
 		switch (comparison_type) {
 		case ExpressionType::COMPARE_EQUAL:
 		case ExpressionType::COMPARE_NOT_DISTINCT_FROM: {
-			BloomAdditionalStats<T> *nstats = (BloomAdditionalStats<T>)stats;
+			BloomAdditionalStats<T> *nstats = (BloomAdditionalStats<T> *)stats;
 			if (QueryUtil(constant, nstats->bit_array))
 				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 
@@ -103,7 +106,7 @@ public:
 	}
 	inline static size_t Size_implementation(AdditionalStats<T> *stats) {
 		BloomAdditionalStats<T> *nstats = (BloomAdditionalStats<T> *)stats;
-		return sizeof(*nstats.get());
+		return sizeof(*nstats);
 	}
 	inline static void Serialise_implementation(AdditionalStats<T> *stats) {
 	}

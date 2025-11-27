@@ -524,6 +524,11 @@ void ColumnData::AppendData(BaseStatistics &append_stats, ColumnAppendState &sta
 
 		// we couldn't fit everything we wanted in the current column segment, create a new one
 		{
+			fprintf(stderr,
+			        "%lx,%lu,%lu,INITIALISED_COLUMN_SEGMENT,\"{\"\"column_index\"\":%lu,\"\"stats\"\":\"\"%p\"\","
+			        "\"\"count\"\":%lu}\"\n",
+			        Util::session_id, Util::command_count, Util::GetTime(), state.current->index,
+			        &state.current->stats.statistics, state.current->count.load());
 			InitStats(state.current->stats.statistics, vdata.physical_type);
 
 			auto l = data.Lock();

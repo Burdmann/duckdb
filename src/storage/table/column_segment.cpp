@@ -135,12 +135,9 @@ void ColumnSegment::Scan(ColumnScanState &state, idx_t scan_count, Vector &resul
                          ScanVectorType scan_type) {
 	if (!scanned_first_row) {
 		scanned_first_row = true;
-		fprintf(stderr, "%llx,%llu,%lld,SCANNED_FIRST_ROW,\"{}\"\n", Util::session_id, Util::command_count,
-		        Util::GetTime().count());
+		fprintf(stderr, "%lx,%lu,%lu,SCANNED_FIRST_ROW,\"{}\"\n", Util::session_id, Util::command_count,
+		        Util::GetTime());
 	}
-	// fprintf(stderr,
-	//         "%llx,%llu,%lld,SCANNED_ROWS,\"{\"\"count\"\":%llu,\"\"offset\"\":%llu,\"\"partition\"\":\"\"%p\"\"}\"\n",
-	//         Util::session_id, Util::command_count, Util::GetTime().count(), scan_count, result_offset, this);
 	if (ColumnSegment::scanned_count.count(std::this_thread::get_id()) == 0)
 		ColumnSegment::scanned_count[std::this_thread::get_id()] = 0;
 	ColumnSegment::scanned_count[std::this_thread::get_id()] += scan_count;
@@ -223,9 +220,9 @@ void ColumnSegment::InitializeAppend(ColumnAppendState &state) {
 }
 
 idx_t ColumnSegment::Append(ColumnAppendState &state, UnifiedVectorFormat &append_data, idx_t offset, idx_t count) {
-	long long start_time = Util::GetTime().count();
+	uint64_t start_time = Util::GetTime();
 	fprintf(stderr,
-	        "%llx,%llu,%lld,APPEND_START,\"{\"\"count\"\":%llu,\"\"offset\"\":%llu,\"\"column_id\"\":%lu,"
+	        "%lx,%lu,%lu,APPEND_START,\"{\"\"count\"\":%lu,\"\"offset\"\":%lu,\"\"column_id\"\":%lu,"
 	        "\"\"partition\"\":\"\"%p\"\"}\"\n",
 	        Util::session_id, Util::command_count, start_time, count, offset, this->index, this);
 	D_ASSERT(segment_type == ColumnSegmentType::TRANSIENT);
@@ -234,10 +231,9 @@ idx_t ColumnSegment::Append(ColumnAppendState &state, UnifiedVectorFormat &appen
 	}
 	idx_t res = function.get().append(*state.append_state, *this, stats, append_data, offset, count);
 	fprintf(stderr,
-	        "%llx,%llu,%lld,APPEND_END,\"{\"\"count\"\":%llu,\"\"offset\"\":%llu,\"\"column_id\"\":%lu,"
-	        "\"\"partition\"\":\"\"%p\"\",\"\"start_time\"\":%lld}\"\n",
-	        Util::session_id, Util::command_count, Util::GetTime().count(), count, offset, this->index, this,
-	        start_time);
+	        "%lx,%lu,%lu,APPEND_END,\"{\"\"count\"\":%lu,\"\"offset\"\":%lu,\"\"column_id\"\":%lu,"
+	        "\"\"partition\"\":\"\"%p\"\",\"\"start_time\"\":%lu}\"\n",
+	        Util::session_id, Util::command_count, Util::GetTime(), count, offset, this->index, this, start_time);
 	return res;
 }
 

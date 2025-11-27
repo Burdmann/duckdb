@@ -37,16 +37,16 @@ bool ConstantFilter::Compare(const Value &value) const {
 }
 
 FilterPropagateResult ConstantFilter::CheckStatistics(BaseStatistics &stats) const {
-	long long start_time = Util::GetTime().count();
-	fprintf(stderr, "%llx,%llu,%lld,EVAL_STATISTICS_START,\"{\"\"statistic\"\":\"\"%p\"\"}\"\n",
-	        duckdb::Util::session_id, duckdb::Util::command_count, start_time, &stats);
+	uint64_t start_time = Util::GetTime();
+	fprintf(stderr, "%lx,%lu,%lu,EVAL_STATISTICS_START,\"{\"\"statistic\"\":\"\"%p\"\"}\"\n", duckdb::Util::session_id,
+	        duckdb::Util::command_count, start_time, &stats);
 	if (!stats.CanHaveNoNull()) {
 		// no non-null values are possible: always false
 		fprintf(stderr,
-		        "%llx,%llu,%lld,EVAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"filter_propagate_result\"\":%u,"
-		        "\"\"start_time\"\":%lld}\"\n",
-		        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime().count(), &stats,
-		        FilterPropagateResult::FILTER_ALWAYS_FALSE, start_time);
+		        "%lx,%lu,%lu,EVAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"filter_propagate_result\"\":%u,"
+		        "\"\"start_time\"\":%lu}\"\n",
+		        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), &stats,
+		        (unsigned int)FilterPropagateResult::FILTER_ALWAYS_FALSE, start_time);
 		return FilterPropagateResult::FILTER_ALWAYS_FALSE;
 	}
 	FilterPropagateResult result;
@@ -71,10 +71,10 @@ FilterPropagateResult ConstantFilter::CheckStatistics(BaseStatistics &stats) con
 		break;
 	default:
 		fprintf(stderr,
-		        "%llx,%llu,%lld,EVAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"filter_propagate_result\"\":%u,"
-		        "\"\"start_time\"\":%lld}\"\n",
-		        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime().count(), &stats,
-		        FilterPropagateResult::NO_PRUNING_POSSIBLE, start_time);
+		        "%lx,%lu,%lu,EVAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"filter_propagate_result\"\":%u,"
+		        "\"\"start_time\"\":%lu}\"\n",
+		        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), &stats,
+		        (unsigned int)FilterPropagateResult::NO_PRUNING_POSSIBLE, start_time);
 		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 	}
 	if (result == FilterPropagateResult::FILTER_ALWAYS_TRUE) {
@@ -82,20 +82,20 @@ FilterPropagateResult ConstantFilter::CheckStatistics(BaseStatistics &stats) con
 		// we can't prune the filter
 		if (stats.CanHaveNull()) {
 			fprintf(stderr,
-			        "%llx,%llu,%lld,EVAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\2\",\"\"filter_propagate_"
-			        "result\"\":%u,\"\"start_time\"\":%lld}\"\n",
-			        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime().count(), &stats,
-			        FilterPropagateResult::NO_PRUNING_POSSIBLE, start_time);
+			        "%lx,%lu,%lu,EVAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\2\",\"\"filter_propagate_"
+			        "result\"\":%u,\"\"start_time\"\":%lu}\"\n",
+			        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), &stats,
+			        (unsigned int)FilterPropagateResult::NO_PRUNING_POSSIBLE, start_time);
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		}
 	}
 	if (result == FilterPropagateResult::NO_PRUNING_POSSIBLE)
 		result = ColumnData::QueryAdditionalStats(stats, comparison_type, constant.type().InternalType(), constant);
 	fprintf(stderr,
-	        "%llx,%llu,%lld,EVAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"filter_propagate_result\"\":%u,"
-	        "\"\"start_time\"\":%lld}\"\n",
-	        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime().count(), &stats, result,
-	        start_time);
+	        "%lx,%lu,%lu,EVAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"filter_propagate_result\"\":%u,"
+	        "\"\"start_time\"\":%lu}\"\n",
+	        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), &stats,
+	        (unsigned int)result, start_time);
 	return result;
 }
 
