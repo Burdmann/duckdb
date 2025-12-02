@@ -87,7 +87,7 @@ public:
 		nstats->cluster_count++;
 	}
 
-	inline static idx_t FindLastIndexBeforePoint_Binary(std::vector<T> min_values, T constant) {
+	inline static idx_t FindLastIndexBeforePoint_Binary(std::vector<T> &min_values, T constant) {
 		idx_t lo = 0;
 		idx_t hi = min_values.size() - 1;
 		idx_t mid;
@@ -106,7 +106,8 @@ public:
 			return -1;
 		return mid;
 	}
-	inline static idx_t FindLastIndexBeforePoint_Linear(std::vector<T> min_values, T constant) {
+
+	inline static idx_t FindLastIndexBeforePoint_Linear(std::vector<T> &min_values, T constant) {
 		for (int i = 0; i < min_values.size(); i++) {
 			if (min_values[i] > constant) {
 				return i - 1;
@@ -115,13 +116,14 @@ public:
 		return min_values.size() - 1;
 	}
 
+	inline static idx_t FindLastIndexBeforePoint(std::vector<T> &min_values, T constant) {
+		return FindLastIndexBeforePoint_Linear(min_values, constant);
+	}
+
 	inline static FilterPropagateResult Query_Equal(ClusterAdditionalStats<T> *nstats, T constant) {
-		int idx = FindLastIndexBeforePoint_Linear(nstats->min_values, constant);
+		int idx = FindLastIndexBeforePoint(nstats->min_values, constant);
 		if (idx == -1) {
 			return FilterPropagateResult::FILTER_ALWAYS_FALSE;
-		} else if (nstats->min_values.size() == 1 &&
-		           ConstantExactRange(nstats->min_values[idx], nstats->max_values[idx], constant)) {
-			return FilterPropagateResult::FILTER_ALWAYS_TRUE;
 		} else if (nstats->max_values[idx] >= constant) {
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		} else {
@@ -133,20 +135,46 @@ public:
 		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 	}
 	inline static FilterPropagateResult Query_GreaterThanEqual(ClusterAdditionalStats<T> *nstats, T constant) {
-		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+		int idx = FindLastIndexBeforePoint(nstats->min_values, constant);
+		if (idx == -1) {
+			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+		} else if (nstats->max_values[idx] >= constant) {
+			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+		} else {
+			return FilterPropagateResult::FILTER_ALWAYS_FALSE;
+		}
 	}
 	inline static FilterPropagateResult Query_GreaterThan(ClusterAdditionalStats<T> *nstats, T constant) {
-		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+		int idx = FindLastIndexBeforePoint(nstats->min_values, constant);
+		if (idx == -1) {
+			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+		} else if (nstats->max_values[idx] > constant) {
+			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+		} else {
+			return FilterPropagateResult::FILTER_ALWAYS_FALSE;
+		}
 	}
 	inline static FilterPropagateResult Query_LessThanEqual(ClusterAdditionalStats<T> *nstats, T constant) {
-		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+		int idx = FindLastIndexBeforePoint(nstats->min_values, constant);
+		if (idx == -1 && nstats->min_values[0] > constant) {
+			return FilterPropagateResult::FILTER_ALWAYS_FALSE;
+		} else {
+			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+		}
 	}
 	inline static FilterPropagateResult Query_LessThan(ClusterAdditionalStats<T> *nstats, T constant) {
-		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+		int idx = FindLastIndexBeforePoint(nstats->min_values, constant);
+		if (idx == -1) {
+			return FilterPropagateResult::FILTER_ALWAYS_FALSE;
+		} else {
+			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+		}
 	}
 	inline static FilterPropagateResult Query_implementation(AdditionalStats<T> *stats, ExpressionType comparison_type,
 	                                                         T constant) {
 		ClusterAdditionalStats<T> *nstats = (ClusterAdditionalStats<T> *)stats;
+		if (nstats->cluster_count == 0)
+			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		switch (comparison_type) {
 		case ExpressionType::COMPARE_EQUAL:
 		case ExpressionType::COMPARE_NOT_DISTINCT_FROM:

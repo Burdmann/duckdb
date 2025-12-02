@@ -355,10 +355,6 @@ public:
 	static inline FilterPropagateResult QueryAdditionalStats(BaseStatistics &stats, AdditionalStats<T> *astats,
 	                                                         ExpressionType comparison_type, const T constant) {
 		uint64_t start_time = Util::GetTime();
-		// fprintf(
-		//     stderr,
-		//     "%lx,%lu,%lu,EVAL_ADDITIONAL_STATISTICS_START,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\"}\"\n",
-		//     duckdb::Util::session_id, duckdb::Util::command_count, start_time, &stats, astats->name);
 		FilterPropagateResult result = astats->Query(astats, comparison_type, constant);
 		fprintf(stderr,
 		        "%lx,%lu,%lu,EVAL_ADDITIONAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","

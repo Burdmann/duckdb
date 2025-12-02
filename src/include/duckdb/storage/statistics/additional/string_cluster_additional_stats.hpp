@@ -40,6 +40,30 @@ private:
 		return res;
 	}
 
+	static int StringValueComparison(const_data_ptr_t data, idx_t len, const_data_ptr_t comparison) {
+		for (idx_t i = 0; i < len; i++) {
+			if (data[i] < comparison[i]) {
+				return -1;
+			} else if (data[i] > comparison[i]) {
+				return 1;
+			}
+		}
+		return 0;
+	}
+
+	static string_t ConstructValue(string_t input) {
+		data_t *data = (data_t *)input.GetData();
+		idx_t size = input.GetSize();
+		string_t res(MAX_STRING_MINMAX_SIZE);
+		data_t *target = (data_t *)res.GetData();
+		idx_t value_size = size > MAX_STRING_MINMAX_SIZE ? MAX_STRING_MINMAX_SIZE : size;
+		memcpy(target, data, value_size);
+		for (idx_t i = value_size; i < MAX_STRING_MINMAX_SIZE; i++) {
+			target[i] = '\0';
+		}
+		return res;
+	}
+
 public:
 	static inline const char *GetStaticName() {
 		return "cluster";
@@ -59,7 +83,7 @@ public:
 		if (size == 0)
 			return;
 
-		StringClusterAdditionalStats *nstats = static_cast<StringClusterAdditionalStats *>(stats);
+		StringClusterAdditionalStats *nstats = (StringClusterAdditionalStats *)stats;
 		nstats->cluster_count = 0;
 
 		// sort the data
@@ -84,94 +108,68 @@ public:
 
 		// save min/max ranges defined by those gaps in nstats
 		std::sort(idxs.begin(), idxs.end());
-		string_t start = data[0];
+		string_t start = ConstructValue(data[0]);
 		for (int idx : idxs) {
-			nstats->min_values.push_back(start);
-			nstats->max_values.push_back(data[idx]);
+			nstats->min_values.push_back(ConstructValue(start));
+			nstats->max_values.push_back(ConstructValue(data[idx]));
 			start = data[idx + 1];
 			nstats->cluster_count++;
 		}
 
-		nstats->min_values.push_back(start);
-		nstats->max_values.push_back(data.back());
+		nstats->min_values.push_back(ConstructValue(start));
+		nstats->max_values.push_back(ConstructValue(data.back()));
 		nstats->cluster_count++;
 	}
 
 	inline static FilterPropagateResult Query_inner(string_t min_value, string_t max_value,
 	                                                ExpressionType comparison_type, string_t constant) {
+		auto data = const_data_ptr_cast(constant.GetData());
+		idx_t size = constant.GetSize();
+
+		int min_comp = StringValueComparison(data, MinValue((idx_t)MAX_STRING_MINMAX_SIZE, size),
+		                                     (duckdb::data_t *)min_value.GetData());
+		int max_comp = StringValueComparison(data, MinValue((idx_t)MAX_STRING_MINMAX_SIZE, size),
+		                                     (duckdb::data_t *)max_value.GetData());
 		switch (comparison_type) {
 		case ExpressionType::COMPARE_EQUAL:
 		case ExpressionType::COMPARE_NOT_DISTINCT_FROM:
-			if (ConstantExactRange(min_value, max_value, constant)) {
-				return FilterPropagateResult::FILTER_ALWAYS_TRUE;
-			}
-			if (ConstantValueInRange(min_value, max_value, constant)) {
+			if (min_comp >= 0 && max_comp <= 0) {
 				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+			} else {
+				return FilterPropagateResult::FILTER_ALWAYS_FALSE;
 			}
-			return FilterPropagateResult::FILTER_ALWAYS_FALSE;
 		case ExpressionType::COMPARE_NOTEQUAL:
 		case ExpressionType::COMPARE_DISTINCT_FROM:
-			if (!ConstantValueInRange(min_value, max_value, constant)) {
+			if (min_comp < 0 || max_comp > 0) {
 				return FilterPropagateResult::FILTER_ALWAYS_TRUE;
-			} else if (ConstantExactRange(min_value, max_value, constant)) {
-				// corner case of a cluster with one numeric equal to the target constant
-				return FilterPropagateResult::FILTER_ALWAYS_FALSE;
 			}
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		case ExpressionType::COMPARE_GREATERTHANOREQUALTO:
-			// GreaterThanEquals::Operation(X, C)
-			// this can be true only if max(X) >= C
-			// if min(X) >= C, then this is always true
-			if (GreaterThanEquals::Operation(min_value, constant)) {
-				return FilterPropagateResult::FILTER_ALWAYS_TRUE;
-			} else if (GreaterThanEquals::Operation(max_value, constant)) {
-				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
-			} else {
-				return FilterPropagateResult::FILTER_ALWAYS_FALSE;
-			}
 		case ExpressionType::COMPARE_GREATERTHAN:
-			// GreaterThan::Operation(X, C)
-			// this can be true only if max(X) > C
-			// if min(X) > C, then this is always true
-			if (GreaterThan::Operation(min_value, constant)) {
-				return FilterPropagateResult::FILTER_ALWAYS_TRUE;
-			} else if (GreaterThan::Operation(max_value, constant)) {
-				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
-			} else {
-				return FilterPropagateResult::FILTER_ALWAYS_FALSE;
-			}
-		case ExpressionType::COMPARE_LESSTHANOREQUALTO:
-			// LessThanEquals::Operation(X, C)
-			// this can be true only if min(X) <= C
-			// if max(X) <= C, then this is always true
-			if (LessThanEquals::Operation(max_value, constant)) {
-				return FilterPropagateResult::FILTER_ALWAYS_TRUE;
-			} else if (LessThanEquals::Operation(min_value, constant)) {
+			if (max_comp <= 0) {
 				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 			} else {
 				return FilterPropagateResult::FILTER_ALWAYS_FALSE;
 			}
 		case ExpressionType::COMPARE_LESSTHAN:
-			// LessThan::Operation(X, C)
-			// this can be true only if min(X) < C
-			// if max(X) < C, then this is always true
-			if (LessThan::Operation(max_value, constant)) {
-				return FilterPropagateResult::FILTER_ALWAYS_TRUE;
-			} else if (LessThan::Operation(min_value, constant)) {
+		case ExpressionType::COMPARE_LESSTHANOREQUALTO:
+			if (min_comp >= 0) {
 				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 			} else {
 				return FilterPropagateResult::FILTER_ALWAYS_FALSE;
 			}
 		default:
-			throw InternalException("Expression type in zonemap check not implemented");
+			throw InternalException("Expression type not implemented for string statistics zone map");
 		}
 	}
 	inline static FilterPropagateResult Query_implementation(AdditionalStats<string_t> *stats,
 	                                                         ExpressionType comparison_type, string_t constant) {
 		StringClusterAdditionalStats *nstats = (StringClusterAdditionalStats *)stats;
+		if (nstats->cluster_count == 0)
+			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		for (int i = 0; i < nstats->min_values.size(); i++) {
 			FilterPropagateResult result =
-			    Query_inner(nstats->min_values[i], nstats->min_values[i], comparison_type, constant);
+			    Query_inner(nstats->min_values[i], nstats->max_values[i], comparison_type, constant);
 			if (result == FilterPropagateResult::FILTER_ALWAYS_TRUE) {
 				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 			} else if (result == FilterPropagateResult::NO_PRUNING_POSSIBLE)
@@ -181,7 +179,7 @@ public:
 	}
 	inline static size_t Size_implementation(AdditionalStats<string_t> *stats) {
 		StringClusterAdditionalStats *nstats = (StringClusterAdditionalStats *)stats;
-		return 2 * sizeof(string_t) * nstats->cluster_count + sizeof(*nstats);
+		return 2 * (sizeof(string_t) + MAX_NUMBER_OF_CLUSTERS) * nstats->cluster_count + sizeof(*nstats);
 	}
 	inline static void Serialise_implementation(AdditionalStats<string_t> *stats) {
 	}
