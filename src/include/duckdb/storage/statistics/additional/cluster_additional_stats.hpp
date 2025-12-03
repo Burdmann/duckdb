@@ -21,7 +21,7 @@ template <class T>
 class ClusterAdditionalStats : public AdditionalStats<T> {
 private:
 	unsigned int cluster_count = 0;
-	constexpr static uint32_t MAX_NUMBER_OF_CLUSTERS = 2000;
+	constexpr static uint32_t MAX_NUMBER_OF_CLUSTERS = 200;
 	std::vector<T> min_values;
 	std::vector<T> max_values;
 	static bool ConstantExactRange(T min, T max, T constant) {

@@ -82,6 +82,14 @@ idx_t StandardColumnData::ScanCount(ColumnScanState &state, Vector &result, idx_
 void StandardColumnData::Filter(TransactionData transaction, idx_t vector_index, ColumnScanState &state, Vector &result,
                                 SelectionVector &sel, idx_t &count, const TableFilter &filter,
                                 TableFilterState &filter_state) {
+	if (!ColumnSegment::scanned_first_row) {
+		ColumnSegment::scanned_first_row = true;
+		fprintf(stderr, "%lx,%lu,%lu,SCANNED_FIRST_ROW,\"{}\"\n", Util::session_id, Util::command_count,
+		        Util::GetTime());
+	}
+	if (ColumnSegment::scanned_count.count(std::this_thread::get_id()) == 0)
+		ColumnSegment::scanned_count[std::this_thread::get_id()] = 0;
+	ColumnSegment::scanned_count[std::this_thread::get_id()] += count;
 	// check if we can do a specialized select
 	// the compression functions need to support this
 	auto compression = GetCompressionFunction();
