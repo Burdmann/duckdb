@@ -4582,14 +4582,11 @@ int ShellState::ProcessInput(InputMode mode) {
 		if (nSql && line_contains_semicolon(&zSql[nSqlPrior], nSql - nSqlPrior) && sqlite3_complete(zSql)) {
 			fprintf(stderr, "%lx,%lu,%lu,SQL_COMMAND_RUN_START,\"{\"\"command\"\":\"\"%s\"\"}\"\n",
 			        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), zSql);
-			duckdb::ColumnSegment::scanned_count.clear();
+			duckdb::ColumnSegment::scanned_count = 0;
 			duckdb::ColumnSegment::scanned_first_row = false;
 			errCnt += RunOneSqlLine(mode, zSql);
-			for (auto pr : duckdb::ColumnSegment::scanned_count) {
-				fprintf(stderr, "%lx,%lu,%lu,SCANNED_ROWS,\"{\"\"thread\"\":%llu,\"\"count\"\":%lu}\"\n",
-				        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), pr.first,
-				        pr.second);
-			}
+			fprintf(stderr, "%lx,%lu,%lu,SCANNED_ROWS,\"{\"\"count\"\":%lu}\"\n", duckdb::Util::session_id,
+			        duckdb::Util::command_count, duckdb::Util::GetTime(), duckdb::ColumnSegment::scanned_count.load());
 			fprintf(stderr, "%lx,%lu,%lu,SQL_COMMAND_RUN_END,\"{\"\"command\"\":\"\"%s\"\"}\"\n",
 			        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), zSql);
 			duckdb::Util::command_count++;

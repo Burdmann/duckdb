@@ -131,44 +131,22 @@ public:
 		}
 	}
 
+	// These can all safely return NO_PRUNING_POSSIBLE, because if pruning was possible in these cases, the regular
+	// min/max stats would have found it
 	inline static FilterPropagateResult Query_NotEqual(ClusterAdditionalStats<T> *nstats, T constant) {
 		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 	}
 	inline static FilterPropagateResult Query_GreaterThanEqual(ClusterAdditionalStats<T> *nstats, T constant) {
-		int idx = FindLastIndexBeforePoint(nstats->min_values, constant);
-		if (idx == -1) {
-			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
-		} else if (nstats->max_values[idx] >= constant) {
-			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
-		} else {
-			return FilterPropagateResult::FILTER_ALWAYS_FALSE;
-		}
+		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 	}
 	inline static FilterPropagateResult Query_GreaterThan(ClusterAdditionalStats<T> *nstats, T constant) {
-		int idx = FindLastIndexBeforePoint(nstats->min_values, constant);
-		if (idx == -1) {
-			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
-		} else if (nstats->max_values[idx] > constant) {
-			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
-		} else {
-			return FilterPropagateResult::FILTER_ALWAYS_FALSE;
-		}
+		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 	}
 	inline static FilterPropagateResult Query_LessThanEqual(ClusterAdditionalStats<T> *nstats, T constant) {
-		int idx = FindLastIndexBeforePoint(nstats->min_values, constant);
-		if (idx == -1 && nstats->min_values[0] > constant) {
-			return FilterPropagateResult::FILTER_ALWAYS_FALSE;
-		} else {
-			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
-		}
+		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 	}
 	inline static FilterPropagateResult Query_LessThan(ClusterAdditionalStats<T> *nstats, T constant) {
-		int idx = FindLastIndexBeforePoint(nstats->min_values, constant);
-		if (idx == -1) {
-			return FilterPropagateResult::FILTER_ALWAYS_FALSE;
-		} else {
-			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
-		}
+		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 	}
 	inline static FilterPropagateResult Query_implementation(AdditionalStats<T> *stats, ExpressionType comparison_type,
 	                                                         T constant) {

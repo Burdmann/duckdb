@@ -36,7 +36,7 @@ std::vector<ADDITIONAL_NUMERIC_STATS<hugeint_t>> ColumnSegment::additional_stats
 std::vector<ADDITIONAL_NUMERIC_STATS<float>> ColumnSegment::additional_stats_float;
 std::vector<ADDITIONAL_NUMERIC_STATS<double>> ColumnSegment::additional_stats_double;
 std::vector<ADDITIONAL_STRING_STATS> ColumnSegment::additional_stats_string;
-std::unordered_map<std::thread::id, uint64_t> ColumnSegment::scanned_count;
+std::atomic<uint64_t> ColumnSegment::scanned_count;
 bool ColumnSegment::scanned_first_row;
 
 //===--------------------------------------------------------------------===//

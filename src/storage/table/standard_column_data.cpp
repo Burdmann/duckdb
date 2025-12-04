@@ -87,9 +87,7 @@ void StandardColumnData::Filter(TransactionData transaction, idx_t vector_index,
 		fprintf(stderr, "%lx,%lu,%lu,SCANNED_FIRST_ROW,\"{}\"\n", Util::session_id, Util::command_count,
 		        Util::GetTime());
 	}
-	if (ColumnSegment::scanned_count.count(std::this_thread::get_id()) == 0)
-		ColumnSegment::scanned_count[std::this_thread::get_id()] = 0;
-	ColumnSegment::scanned_count[std::this_thread::get_id()] += count;
+	ColumnSegment::scanned_count += count;
 	// check if we can do a specialized select
 	// the compression functions need to support this
 	auto compression = GetCompressionFunction();
