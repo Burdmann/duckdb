@@ -377,3 +377,4 @@ partsupp.csv
 region.csv
 supplier.csv
 output.txt
+output.json

@@ -134,10 +134,13 @@ unique_ptr<ParsedExpression> Transformer::TransformAExprInternal(duckdb_libpgque
 		children.push_back(TransformExpression(root.rexpr));
 		return make_uniq<FunctionExpression>("nullif", std::move(children));
 	}
+	// altp: between
 	// rewrite (NOT) X BETWEEN A AND B into (NOT) AND(GREATERTHANOREQUALTO(X,
 	// A), LESSTHANOREQUALTO(X, B))
 	case duckdb_libpgquery::PG_AEXPR_BETWEEN:
 	case duckdb_libpgquery::PG_AEXPR_NOT_BETWEEN: {
+		// altp: print
+		printf("HELLLOOOOOOO\n");
 		auto between_args = PGPointerCast<duckdb_libpgquery::PGList>(root.rexpr);
 		if (between_args->length != 2 || !between_args->head->data.ptr_value || !between_args->tail->data.ptr_value) {
 			throw InternalException("(NOT) BETWEEN needs two args");
@@ -151,11 +154,12 @@ unique_ptr<ParsedExpression> Transformer::TransformAExprInternal(duckdb_libpgque
 
 		auto compare_between =
 		    make_uniq<BetweenExpression>(std::move(input), std::move(between_left), std::move(between_right));
-		if (root.kind == duckdb_libpgquery::PG_AEXPR_BETWEEN) {
-			return std::move(compare_between);
-		} else {
-			return make_uniq<OperatorExpression>(ExpressionType::OPERATOR_NOT, std::move(compare_between));
-		}
+		return std::move(compare_between);
+		// if (root.kind == duckdb_libpgquery::PG_AEXPR_BETWEEN) {
+		// 	return std::move(compare_between);
+		// } else {
+		// 	return make_uniq<OperatorExpression>(ExpressionType::OPERATOR_NOT, std::move(compare_between));
+		// }
 	}
 	// rewrite SIMILAR TO into regexp_full_match('asdf', '.*sd.*')
 	case duckdb_libpgquery::PG_AEXPR_SIMILAR: {
