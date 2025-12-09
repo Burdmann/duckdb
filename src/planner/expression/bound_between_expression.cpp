@@ -3,7 +3,6 @@
 
 namespace duckdb {
 
-// altp: between?
 BoundBetweenExpression::BoundBetweenExpression()
     : Expression(ExpressionType::COMPARE_BETWEEN, ExpressionClass::BOUND_BETWEEN, LogicalType::BOOLEAN) {
 }

@@ -115,8 +115,6 @@ void ExpressionExecutor::Execute(const BoundBetweenExpression &expr, ExpressionS
 	Vector intermediate1(LogicalType::BOOLEAN);
 	Vector intermediate2(LogicalType::BOOLEAN);
 
-	// altp: print
-	printf("HELLO FROM EXECUTE\n");
 	if (expr.upper_inclusive && expr.lower_inclusive) {
 		VectorOperations::GreaterThanEquals(input, lower, intermediate1, count);
 		VectorOperations::LessThanEquals(input, upper, intermediate2, count);

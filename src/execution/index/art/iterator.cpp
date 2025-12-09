@@ -41,7 +41,6 @@ bool IteratorKey::GreaterThan(const ARTKey &key, const bool equal, const uint8_t
 //===--------------------------------------------------------------------===//
 // Iterator
 //===--------------------------------------------------------------------===//
-// altp: scan
 bool Iterator::Scan(const ARTKey &upper_bound, const idx_t max_count, set<row_t> &row_ids, const bool equal) {
 	bool has_next;
 	do {

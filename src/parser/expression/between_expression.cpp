@@ -4,7 +4,6 @@
 
 namespace duckdb {
 
-// altp: between?
 BetweenExpression::BetweenExpression(unique_ptr<ParsedExpression> input_p, unique_ptr<ParsedExpression> lower_p,
                                      unique_ptr<ParsedExpression> upper_p)
     : ParsedExpression(ExpressionType::COMPARE_BETWEEN, ExpressionClass::BETWEEN), input(std::move(input_p)),

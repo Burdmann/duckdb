@@ -11,8 +11,6 @@ namespace duckdb {
 
 BindResult ExpressionBinder::BindExpression(BetweenExpression &expr, idx_t depth) {
 	// first try to bind the children of the case expression
-	// altp: print
-	printf("HELLO FROM BIND\n");
 	ErrorData error;
 	BindChild(expr.input, depth, error);
 	BindChild(expr.lower, depth, error);
@@ -53,8 +51,6 @@ BindResult ExpressionBinder::BindExpression(BetweenExpression &expr, idx_t depth
 	PushCollation(context, input, input_type);
 	PushCollation(context, lower, input_type);
 	PushCollation(context, upper, input_type);
-	return BindResult(
-	    make_uniq<BoundBetweenExpression>(std::move(input), std::move(lower), std::move(upper), true, true));
 	if (!input->IsVolatile() && !input->HasParameter() && !input->HasSubquery()) {
 		// the expression does not have side effects and can be copied: create two comparisons
 		// the reason we do this is that individual comparisons are easier to handle in optimizers
