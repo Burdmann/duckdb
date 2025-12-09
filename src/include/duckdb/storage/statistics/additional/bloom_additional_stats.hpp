@@ -200,6 +200,7 @@ public:
 		this->name = GetStaticName();
 		this->Initialise = &Initialise_implementation;
 		this->Query = &Query_implementation;
+		this->QueryRange = &QueryRange_implementation;
 		this->Size = &Size_implementation;
 		this->Serialise = &Serialise_implementation;
 		this->Deserialise = &Deserialise_implementation;
@@ -229,6 +230,11 @@ public:
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		}
 	}
+
+	inline static FilterPropagateResult QueryRange_implementation(AdditionalStats<T> *stats, T start, T end) {
+		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+	}
+
 	inline static size_t Size_implementation(AdditionalStats<T> *stats) {
 		BloomAdditionalStats<T> *nstats = (BloomAdditionalStats<T> *)stats;
 		return sizeof(*nstats);

@@ -24,9 +24,6 @@
 
 namespace duckdb {
 
-set<void *> RowGroup::needed;
-set<void *> RowGroup::scanned;
-
 RowGroup::RowGroup(RowGroupCollection &collection_p, idx_t start, idx_t count)
     : SegmentBase<RowGroup>(start, count), collection(collection_p), version_info(nullptr), allocation_size(0),
       row_id_is_loaded(false) {
@@ -455,6 +452,11 @@ bool RowGroup::CheckZonemap(ScanFilterInfo &filters) {
 }
 
 bool RowGroup::CheckZonemapSegments(CollectionScanState &state) {
+	bool contains_lessthan[GetColumnCount()] = {false};
+	bool contains_greaterthan[GetColumnCount()] = {false};
+	Value lower_value[GetColumnCount()];
+	Value upper_value[GetColumnCount()];
+
 	auto &filters = state.GetFilterInfo();
 	for (auto &entry : filters.GetFilterList()) {
 		if (entry.IsAlwaysTrue()) {
@@ -465,9 +467,34 @@ bool RowGroup::CheckZonemapSegments(CollectionScanState &state) {
 		auto base_column_idx = entry.table_column_index;
 		auto &filter = entry.filter;
 
+		bool between_case_skip = false;
+
+		if (filter.filter_type == TableFilterType::CONSTANT_COMPARISON) {
+			auto &comp = filter.Cast<ConstantFilter>();
+			if (comp.comparison_type == ExpressionType::COMPARE_GREATERTHAN ||
+			    comp.comparison_type == ExpressionType::COMPARE_GREATERTHANOREQUALTO) {
+				contains_greaterthan[base_column_idx] = true;
+				lower_value[base_column_idx] = comp.constant;
+			}
+			if (comp.comparison_type == ExpressionType::COMPARE_LESSTHAN |
+			    comp.comparison_type == ExpressionType::COMPARE_LESSTHANOREQUALTO) {
+				contains_lessthan[base_column_idx] = true;
+				upper_value[base_column_idx] = comp.constant;
+			}
+			if (contains_greaterthan[base_column_idx] && contains_lessthan[base_column_idx]) {
+				// check if the filter is between 2 clusters (if we are using cluster stats)
+				between_case_skip =
+				    ColumnData::RangeQueryAdditionalStats(state.column_scans[column_idx].current->stats.statistics,
+				                                          lower_value[base_column_idx], upper_value[base_column_idx]) ==
+				    FilterPropagateResult::FILTER_ALWAYS_FALSE;
+				// state.column_scans[column_idx].current->stats.statistics.additional_stats_vector;
+			}
+		}
+
 		auto prune_result = GetColumn(base_column_idx).CheckZonemap(state.column_scans[column_idx], filter);
 		if (prune_result != FilterPropagateResult::FILTER_ALWAYS_FALSE) {
-			continue;
+			if (!between_case_skip)
+				continue;
 		}
 
 		// check zone map segment.
@@ -616,10 +643,6 @@ void RowGroup::TemplatedScan(TransactionData transaction, CollectionScanState &s
 					auto &col_data = GetColumn(column_idx);
 					col_data.Filter(transaction, state.vector_index, state.column_scans[scan_idx], result_vector, sel,
 					                approved_tuple_count, filter.filter, table_filter_state);
-					scanned.insert((void *)state.column_scans[scan_idx].current);
-					if (approved_tuple_count > 0) {
-						needed.insert((void *)state.column_scans[scan_idx].current);
-					}
 				}
 				for (auto &table_filter : filter_list) {
 					if (table_filter.IsAlwaysTrue()) {

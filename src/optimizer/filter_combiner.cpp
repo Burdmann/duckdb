@@ -783,6 +783,26 @@ FilterResult FilterCombiner::AddFilter(Expression &expr) {
 			idx_t equivalence_set = GetEquivalenceSet(node);
 			auto result = FilterResult::UNSATISFIABLE;
 
+			// if (lower_is_scalar && upper_is_scalar) {
+			// 	auto lower_scalar = comparison.lower.get();
+			// 	auto upper_scalar = comparison.upper.get();
+			// 	Value lower_constant_value;
+			// 	Value upper_constant_value;
+			// 	if (!ExpressionExecutor::TryEvaluateScalar(context, *lower_scalar, lower_constant_value)) {
+			// 		return FilterResult::UNSUPPORTED;
+			// 	}
+			// 	if (!ExpressionExecutor::TryEvaluateScalar(context, *upper_scalar, upper_constant_value)) {
+			// 		return FilterResult::UNSUPPORTED;
+			// 	}
+			// 	ExpressionValueInformation info;
+			// 	info.comparison_type = ExpressionType::COMPARE_BETWEEN;
+			// 	info.constant = lower_constant_value;
+			// 	info.constant2 = upper_constant_value;
+			// 	auto &info_list = constant_values.find(equivalence_set)->second;
+			// 	result = AddConstantComparison(info_list, info);
+			// 	return result;
+			// }
+
 			if (lower_is_scalar) {
 				auto scalar = comparison.lower.get();
 				Value constant_value;

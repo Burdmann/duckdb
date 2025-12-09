@@ -41,6 +41,7 @@ public:
 public:
 	struct ExpressionValueInformation {
 		Value constant;
+		// Value constant2; // only used for between
 		ExpressionType comparison_type;
 	};
 
