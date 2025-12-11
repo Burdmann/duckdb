@@ -39,6 +39,7 @@ public:
 		this->name = GetStaticName();
 		this->Initialise = &Initialise_implementation;
 		this->Query = &Query_implementation;
+		this->QueryRange = &QueryRange_implementation;
 		this->Size = &Size_implementation;
 		this->Serialise = &Serialise_implementation;
 		this->Deserialise = &Deserialise_implementation;
@@ -233,6 +234,7 @@ public:
 		this->name = GetStaticName();
 		this->Initialise = &Initialise_implementation;
 		this->Query = &Query_implementation;
+		this->QueryRange = &QueryRange_implementation;
 		this->Size = &Size_implementation;
 		this->Serialise = &Serialise_implementation;
 		this->Deserialise = &Deserialise_implementation;
@@ -338,6 +340,13 @@ public:
 		}
 		return FilterPropagateResult::FILTER_ALWAYS_FALSE;
 	}
+
+	inline static FilterPropagateResult QueryRange_implementation(AdditionalStats<string_t> *stats, string_t start,
+	                                                              string_t end) {
+		// TODO: implement
+		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+	}
+
 	inline static size_t Size_implementation(AdditionalStats<string_t> *stats) {
 		ClusterAdditionalStats<string_t> *nstats = (ClusterAdditionalStats<string_t> *)stats;
 		return 2 * (sizeof(string_t) + MAX_NUMBER_OF_CLUSTERS) * nstats->cluster_count + sizeof(*nstats);

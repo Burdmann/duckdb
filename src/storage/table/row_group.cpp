@@ -452,10 +452,10 @@ bool RowGroup::CheckZonemap(ScanFilterInfo &filters) {
 }
 
 bool RowGroup::CheckZonemapSegments(CollectionScanState &state) {
-	bool contains_lessthan[GetColumnCount()] = {false};
-	bool contains_greaterthan[GetColumnCount()] = {false};
-	Value lower_value[GetColumnCount()];
-	Value upper_value[GetColumnCount()];
+	std::vector<bool> contains_lessthan(GetColumnCount());
+	std::vector<bool> contains_greaterthan(GetColumnCount());
+	std::vector<Value> lower_value(GetColumnCount());
+	std::vector<Value> upper_value(GetColumnCount());
 
 	auto &filters = state.GetFilterInfo();
 	for (auto &entry : filters.GetFilterList()) {
@@ -469,25 +469,31 @@ bool RowGroup::CheckZonemapSegments(CollectionScanState &state) {
 
 		bool between_case_skip = false;
 
-		if (filter.filter_type == TableFilterType::CONSTANT_COMPARISON) {
-			auto &comp = filter.Cast<ConstantFilter>();
-			if (comp.comparison_type == ExpressionType::COMPARE_GREATERTHAN ||
-			    comp.comparison_type == ExpressionType::COMPARE_GREATERTHANOREQUALTO) {
-				contains_greaterthan[base_column_idx] = true;
-				lower_value[base_column_idx] = comp.constant;
-			}
-			if (comp.comparison_type == ExpressionType::COMPARE_LESSTHAN |
-			    comp.comparison_type == ExpressionType::COMPARE_LESSTHANOREQUALTO) {
-				contains_lessthan[base_column_idx] = true;
-				upper_value[base_column_idx] = comp.constant;
-			}
-			if (contains_greaterthan[base_column_idx] && contains_lessthan[base_column_idx]) {
-				// check if the filter is between 2 clusters (if we are using cluster stats)
-				between_case_skip =
-				    ColumnData::RangeQueryAdditionalStats(state.column_scans[column_idx].current->stats.statistics,
-				                                          lower_value[base_column_idx], upper_value[base_column_idx]) ==
-				    FilterPropagateResult::FILTER_ALWAYS_FALSE;
-				// state.column_scans[column_idx].current->stats.statistics.additional_stats_vector;
+		if (filter.filter_type == TableFilterType::CONJUNCTION_AND) {
+			auto &and_filter = filter.Cast<ConjunctionAndFilter>();
+			for (auto &child_filter : and_filter.child_filters) {
+				if (child_filter->filter_type == TableFilterType::CONSTANT_COMPARISON) {
+					auto &comp = child_filter->Cast<ConstantFilter>();
+					if (comp.comparison_type == ExpressionType::COMPARE_GREATERTHAN ||
+					    comp.comparison_type == ExpressionType::COMPARE_GREATERTHANOREQUALTO) {
+						contains_greaterthan[base_column_idx] = true;
+						lower_value[base_column_idx] = comp.constant;
+					}
+					if (comp.comparison_type == ExpressionType::COMPARE_LESSTHAN |
+					    comp.comparison_type == ExpressionType::COMPARE_LESSTHANOREQUALTO) {
+						contains_lessthan[base_column_idx] = true;
+						upper_value[base_column_idx] = comp.constant;
+					}
+					if (contains_greaterthan[base_column_idx] && contains_lessthan[base_column_idx]) {
+						// check if the filter is between 2 clusters (if we are using cluster stats)
+						between_case_skip =
+						    ColumnData::RangeQueryAdditionalStats(
+						        state.column_scans[column_idx].current->stats.statistics,
+						        comp.constant.type().InternalType(), lower_value[base_column_idx],
+						        upper_value[base_column_idx]) == FilterPropagateResult::FILTER_ALWAYS_FALSE;
+						// state.column_scans[column_idx].current->stats.statistics.additional_stats_vector;
+					}
+				}
 			}
 		}
 
@@ -595,6 +601,7 @@ void RowGroup::TemplatedScan(TransactionData transaction, CollectionScanState &s
 		}
 
 		bool has_filters = filter_info.HasFilters();
+		// printf("scanned %lu rows\n", count);
 		if (count == max_count && !has_filters) {
 			// scan all vectors completely: full scan without deletions or table filters
 			for (idx_t i = 0; i < column_ids.size(); i++) {
@@ -688,6 +695,7 @@ void RowGroup::TemplatedScan(TransactionData transaction, CollectionScanState &s
 			D_ASSERT(approved_tuple_count > 0);
 			count = approved_tuple_count;
 		}
+		ColumnSegment::scanned_count += count;
 		result.SetCardinality(count);
 		state.vector_index++;
 		break;
