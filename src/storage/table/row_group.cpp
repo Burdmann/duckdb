@@ -542,9 +542,11 @@ void RowGroup::TemplatedScan(TransactionData transaction, CollectionScanState &s
 	                           TYPE != TableScanType::TABLE_SCAN_COMMITTED_ROWS_OMIT_PERMANENTLY_DELETED;
 	const auto &column_ids = state.GetColumnIds();
 	auto &filter_info = state.GetFilterInfo();
+	ColumnSegment::scanned_count++;
 	while (true) {
 		if (state.vector_index * STANDARD_VECTOR_SIZE >= state.max_row_group_row) {
 			// exceeded the amount of rows to scan
+			ColumnSegment::scanned_count--;
 			return;
 		}
 		idx_t current_row = state.vector_index * STANDARD_VECTOR_SIZE;
@@ -601,6 +603,7 @@ void RowGroup::TemplatedScan(TransactionData transaction, CollectionScanState &s
 		}
 
 		bool has_filters = filter_info.HasFilters();
+		// ColumnSegment::scanned_count += count;
 		// printf("scanned %lu rows\n", count);
 		if (count == max_count && !has_filters) {
 			// scan all vectors completely: full scan without deletions or table filters
@@ -695,7 +698,7 @@ void RowGroup::TemplatedScan(TransactionData transaction, CollectionScanState &s
 			D_ASSERT(approved_tuple_count > 0);
 			count = approved_tuple_count;
 		}
-		ColumnSegment::scanned_count += count;
+		// ColumnSegment::scanned_count += count;
 		result.SetCardinality(count);
 		state.vector_index++;
 		break;
