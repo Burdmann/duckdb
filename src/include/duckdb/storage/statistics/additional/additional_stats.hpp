@@ -11,8 +11,6 @@
 #include <functional>
 #include <memory>
 
-#define ADDITIONAL_STATS ClusterAdditionalStats
-
 namespace duckdb {
 template <class T>
 class EmptyAdditionalStats;
