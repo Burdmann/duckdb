@@ -4585,9 +4585,9 @@ int ShellState::ProcessInput(InputMode mode) {
 			duckdb::ColumnSegment::scanned_count = 0;
 			duckdb::ColumnSegment::scanned_first_row = false;
 			errCnt += RunOneSqlLine(mode, zSql);
-			printf("scanned %lu rows\n", duckdb::ColumnSegment::scanned_count.load());
+			printf("scanned %lu rows\n", duckdb::ColumnSegment::scanned_count);
 			fprintf(stderr, "%lx,%lu,%lu,SCANNED_ROWS,\"{\"\"count\"\":%lu}\"\n", duckdb::Util::session_id,
-			        duckdb::Util::command_count, duckdb::Util::GetTime(), duckdb::ColumnSegment::scanned_count.load());
+			        duckdb::Util::command_count, duckdb::Util::GetTime(), duckdb::ColumnSegment::scanned_count);
 			fprintf(stderr, "%lx,%lu,%lu,SQL_COMMAND_RUN_END,\"{\"\"command\"\":\"\"%s\"\"}\"\n",
 			        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), zSql);
 			duckdb::Util::command_count++;
