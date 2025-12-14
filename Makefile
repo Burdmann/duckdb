@@ -25,7 +25,7 @@ PROJ_DIR := $(dir $(MKFILE_PATH))
 PYTHON ?= python3
 
 ifdef STATS
-	CMAKE_VARS="-DSTATS=${STATS}"
+	CMAKE_VARS:=${CMAKE_VARS} -DSTATS=${STATS}
 endif
 
 ifeq ($(GEN),ninja)
