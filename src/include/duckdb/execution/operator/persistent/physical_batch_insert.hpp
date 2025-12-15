@@ -65,6 +65,9 @@ public:
 		return true;
 	}
 
+	virtual void FinishInitialiseStats(ExecutionContext &context, DataChunk &insert_chunk,
+	                                   OperatorSinkInput &input) const;
+
 private:
 	bool ExecuteTask(ClientContext &context, GlobalSinkState &gstate_p, LocalSinkState &lstate_p) const;
 	void ExecuteTasks(ClientContext &context, GlobalSinkState &gstate_p, LocalSinkState &lstate_p) const;

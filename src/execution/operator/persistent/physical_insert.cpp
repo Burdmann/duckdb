@@ -620,9 +620,9 @@ idx_t PhysicalInsert::OnConflictHandling(TableCatalogEntry &table, ExecutionCont
 	return updated_tuples;
 }
 
-void PhysicalInsert::FinishInitialiseStats(ExecutionContext &context, DataChunk &insert_chunk, OperatorSinkInput &input) const {
+void PhysicalInsert::FinishInitialiseStats(ExecutionContext &context, DataChunk &insert_chunk,
+                                           OperatorSinkInput &input) const {
 	auto &gstate = input.global_state.Cast<InsertGlobalState>();
-	auto &lstate = input.local_state.Cast<InsertLocalState>();
 
 	auto &table = gstate.table;
 	auto &storage = table.GetStorage();

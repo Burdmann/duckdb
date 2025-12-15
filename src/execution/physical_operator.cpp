@@ -202,7 +202,8 @@ bool PhysicalOperator::OperatorCachingAllowed(ExecutionContext &context) {
 	return true;
 }
 
-void PhysicalOperator::FinishInitialiseStats(ExecutionContext &context, DataChunk &insert_chunk, OperatorSinkInput &input) const {
+void PhysicalOperator::FinishInitialiseStats(ExecutionContext &context, DataChunk &insert_chunk,
+                                             OperatorSinkInput &input) const {
 	throw InternalException("Calling FinishInitialiseStats on a node that is not a sink!");
 }
 
