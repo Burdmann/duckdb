@@ -1,4 +1,0 @@
-CREATE TABLE test AS SELECT * FROM 'test-big.csv';
-SELECT * FROM test WHERE A = 1;
-SELECT * FROM test WHERE A = 60000;
-SELECT * FROM test WHERE B = 79401;
