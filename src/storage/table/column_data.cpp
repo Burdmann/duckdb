@@ -515,16 +515,16 @@ void ColumnData::AppendData(BaseStatistics &append_stats, ColumnAppendState &sta
 	while (true) {
 		// append the data from the vector
 		uint64_t start_time = Util::GetTime();
-		fprintf(stderr,
-		        "%lx,%lu,%lu,APPEND_START,\"{\"\"count\"\":%lu,\"\"offset\"\":%lu,\"\"column_id\"\":%lu,"
-		        "\"\"partition\"\":\"\"%p\"\"}\"\n",
-		        Util::session_id, Util::command_count, start_time, append_count, offset, this->column_index, this);
+		// fprintf(stderr,
+		//         "%lx,%lu,%lu,APPEND_START,\"{\"\"count\"\":%lu,\"\"offset\"\":%lu,\"\"column_id\"\":%lu,"
+		//         "\"\"partition\"\":\"\"%p\"\"}\"\n",
+		//         Util::session_id, Util::command_count, start_time, append_count, offset, this->column_index, this);
 		idx_t copied_elements = state.current->Append(state, vdata, offset, append_count);
-		fprintf(stderr,
-		        "%lx,%lu,%lu,APPEND_END,\"{\"\"count\"\":%lu,\"\"offset\"\":%lu,\"\"column_id\"\":%lu,"
-		        "\"\"partition\"\":\"\"%p\"\",\"\"start_time\"\":%lu}\"\n",
-		        Util::session_id, Util::command_count, Util::GetTime(), append_count, offset, this->column_index, this,
-		        start_time);
+		// fprintf(stderr,
+		//         "%lx,%lu,%lu,APPEND_END,\"{\"\"count\"\":%lu,\"\"offset\"\":%lu,\"\"column_id\"\":%lu,"
+		//         "\"\"partition\"\":\"\"%p\"\",\"\"start_time\"\":%lu}\"\n",
+		//         Util::session_id, Util::command_count, Util::GetTime(), append_count, offset, this->column_index,
+		//         this, start_time);
 		append_stats.Merge(state.current->stats.statistics);
 		AppendTemp(vdata, copied_elements, state.current->stats.statistics);
 		if (copied_elements == append_count) {

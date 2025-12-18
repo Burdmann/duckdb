@@ -879,11 +879,11 @@ void RowGroup::InitStats(RowGroupAppendState &state, DataChunk &chunk, duckdb::i
 	for (idx_t i = 0; i < GetColumnCount(); i++) {
 		UnifiedVectorFormat vdata;
 		chunk.data[i].ToUnifiedFormat(count, vdata);
-		fprintf(stderr,
-		        "%lx,%lu,%lu,INITIALISED_COLUMN_SEGMENT,\"{\"\"column_index\"\":%lu,\"\"stats\"\":\"\"%p\"\","
-		        "\"\"count\"\":%lu}\"\n",
-		        Util::session_id, Util::command_count, Util::GetTime(), state.states[i].current->index,
-		        &state.states[i].current->stats.statistics, state.states[i].current->count.load());
+		// fprintf(stderr,
+		//         "%lx,%lu,%lu,INITIALISED_COLUMN_SEGMENT,\"{\"\"column_index\"\":%lu,\"\"stats\"\":\"\"%p\"\","
+		//         "\"\"count\"\":%lu}\"\n",
+		//         Util::session_id, Util::command_count, Util::GetTime(), state.states[i].current->index,
+		//         &state.states[i].current->stats.statistics, state.states[i].current->count.load());
 		GetColumn(i).InitStats(state.states[i].current->stats.statistics, vdata.physical_type);
 	}
 }

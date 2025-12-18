@@ -24,6 +24,7 @@
 
 #include <mutex>
 #include <memory>
+#include <iostream>
 #include "duckdb/storage/statistics/additional/empty_additional_stats.hpp"
 #include "duckdb/storage/statistics/additional/cluster_additional_stats.hpp"
 #include "duckdb/storage/statistics/additional/bloom_additional_stats.hpp"
@@ -206,9 +207,29 @@ public:
 	void AppendTemp(UnifiedVectorFormat &vdata, idx_t append_count, std::vector<T> &temp_storage) {
 		const T *data = vdata.GetData<T>();
 		for (int i = 0; i < append_count; i++) {
-			temp_storage.push_back(data[i]);
+			long unsigned int *validity = vdata.validity.GetData();
+			int idx = i / 64;
+			int bit = i % 64;
+			if (vdata.validity.AllValid() || validity[idx] & (1LU << bit)) {
+				// std::cout << data[i] << std::endl;
+				temp_storage.push_back(data[i]);
+			}
 		}
 	}
+	// void AppendTempString(UnifiedVectorFormat &vdata, idx_t append_count, std::vector<string_t> &temp_storage) {
+	// 	const string_t *data = vdata.GetData<string_t>();
+	// 	for (int i = 0; i < append_count; i++) {
+	// 		long unsigned int *validity = vdata.validity.GetData();
+	// 		int idx = i / 64;
+	// 		int bit = i % 64;
+	// 		if (vdata.validity.AllValid() || validity[idx] & (1LU << bit)) {
+	// 			for (int j = 0; j < data[i].GetSize(); j++)
+	// 				printf("%c", data[i].GetData()[j]);
+	// 			printf("\n");
+	// 			temp_storage.push_back(data[i]);
+	// 		}
+	// 	}
+	// }
 
 	void AppendTemp(UnifiedVectorFormat &vdata, idx_t copied_elements, BaseStatistics &stats) {
 		map_mutex.lock();
@@ -265,10 +286,10 @@ public:
 	void InitAdditionalStats(std::vector<T> &temp_storage, std::vector<ADDITIONAL_STATS<T>> &additional_stats,
 	                         BaseStatistics &stats) {
 		uint64_t start_time = Util::GetTime();
-		fprintf(
-		    stderr,
-		    "%lx,%lu,%lu,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\"}\"\n",
-		    Util::session_id, Util::command_count, start_time, &stats, ADDITIONAL_STATS<T>::GetStaticName());
+		// fprintf(
+		//     stderr,
+		//     "%lx,%lu,%lu,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\"}\"\n",
+		//     Util::session_id, Util::command_count, start_time, &stats, ADDITIONAL_STATS<T>::GetStaticName());
 		additional_stats.push_back(ADDITIONAL_STATS<T>(temp_storage));
 		stats.additional_stats_vector = (void *)&additional_stats;
 		stats.additional_stats_index = additional_stats.size() - 1;
@@ -342,11 +363,11 @@ public:
 		ADDITIONAL_STATS<T> *astats = &astats_vector[stats.additional_stats_index];
 		uint64_t start_time = Util::GetTime();
 		FilterPropagateResult result = astats->Query(astats, comparison_type, constant);
-		fprintf(stderr,
-		        "%lx,%lu,%lu,EVAL_ADDITIONAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
-		        "\"\"start_time\"\":%lu,\"\"result\"\":%u}\"\n",
-		        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), &stats, astats->name,
-		        start_time, (unsigned int)result);
+		// fprintf(stderr,
+		//         "%lx,%lu,%lu,EVAL_ADDITIONAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
+		//         "\"\"start_time\"\":%lu,\"\"result\"\":%u}\"\n",
+		//         duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), &stats, astats->name,
+		//         start_time, (unsigned int)result);
 		return result;
 	}
 
@@ -395,11 +416,11 @@ public:
 		ADDITIONAL_STATS<T> *astats = &astats_vector[stats.additional_stats_index];
 		uint64_t start_time = Util::GetTime();
 		FilterPropagateResult result = astats->QueryRange(astats, start, end);
-		fprintf(stderr,
-		        "%lx,%lu,%lu,EVAL_ADDITIONAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
-		        "\"\"start_time\"\":%lu,\"\"result\"\":%u}\"\n",
-		        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), &stats, astats->name,
-		        start_time, (unsigned int)result);
+		// fprintf(stderr,
+		//         "%lx,%lu,%lu,EVAL_ADDITIONAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
+		//         "\"\"start_time\"\":%lu,\"\"result\"\":%u}\"\n",
+		//         duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), &stats, astats->name,
+		//         start_time, (unsigned int)result);
 		return result;
 	}
 

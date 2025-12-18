@@ -1,4 +1,0 @@
-name,size,rows_scanned,additional_stat_processing_time,stat_processing_time,production_time,ingestion_time,total_build_time,avg_query_time
-"empty",11534376,226185141884,2.637,332.821,1.178,112.007,54.675,0.231
-"cluster",1379716880,226200177590,2.726,399.947,98.851,107.484,145.456,0.251
-"bloom",2760746640,178293632882,2.596,371.76,12.462,64.113,62.017,0.227
