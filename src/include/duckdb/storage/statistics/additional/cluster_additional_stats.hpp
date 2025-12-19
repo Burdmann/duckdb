@@ -47,11 +47,12 @@ public:
 	}
 
 	inline static void Initialise_implementation(std::vector<T> &data, AdditionalStats<T> *stats) {
+		ClusterAdditionalStats<T> *nstats = static_cast<ClusterAdditionalStats<T> *>(stats);
+		nstats->cluster_count = 0;
+
 		int size = data.size();
 		if (size == 0)
 			return;
-
-		ClusterAdditionalStats<T> *nstats = static_cast<ClusterAdditionalStats<T> *>(stats);
 
 		// sort the data
 		std::sort(data.begin(), data.end());
@@ -154,6 +155,8 @@ public:
 	}
 	inline static FilterPropagateResult QueryRange_implementation(AdditionalStats<T> *stats, T start, T end) {
 		ClusterAdditionalStats<T> *nstats = (ClusterAdditionalStats<T> *)stats;
+		if (nstats->cluster_count == 0)
+			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		int idx = FindLastIndexBeforePoint(nstats->min_values, start);
 		if (idx == -1) {
 			if (nstats->min_values[0] > end) {
@@ -242,12 +245,12 @@ public:
 	}
 
 	inline static void Initialise_implementation(std::vector<string_t> &data, AdditionalStats<string_t> *stats) {
+		ClusterAdditionalStats<string_t> *nstats = (ClusterAdditionalStats<string_t> *)stats;
+		nstats->cluster_count = 0;
+
 		int size = data.size();
 		if (size == 0)
 			return;
-
-		ClusterAdditionalStats<string_t> *nstats = (ClusterAdditionalStats<string_t> *)stats;
-		nstats->cluster_count = 0;
 
 		// sort the data
 		std::sort(data.begin(), data.end());
@@ -343,6 +346,9 @@ public:
 
 	inline static FilterPropagateResult QueryRange_implementation(AdditionalStats<string_t> *stats, string_t start,
 	                                                              string_t end) {
+		ClusterAdditionalStats<string_t> *nstats = (ClusterAdditionalStats<string_t> *)stats;
+		if (nstats->cluster_count == 0)
+			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		// TODO: implement
 		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 	}

@@ -4491,6 +4491,8 @@ void ShellState::FixCommandForLog(char *zSql, char **zSql_fixed) {
 	idx_t idx = 0;
 	for (int i = 0; i < stop; i++) {
 		(*zSql_fixed)[idx++] = zSql[i];
+		if (zSql[i] == '\n')
+			(*zSql_fixed)[idx] = ' ';
 		if (zSql[i] == '"')
 			(*zSql_fixed)[idx++] = '"';
 	}

@@ -84,8 +84,8 @@ void StandardColumnData::Filter(TransactionData transaction, idx_t vector_index,
                                 TableFilterState &filter_state) {
 	if (!ColumnSegment::scanned_first_row) {
 		ColumnSegment::scanned_first_row = true;
-		fprintf(stderr, "%lx,%lu,%lu,SCANNED_FIRST_ROW,\"{}\"\n", Util::session_id, Util::command_count,
-		        Util::GetTime());
+		// fprintf(stderr, "%lx,%lu,%lu,SCANNED_FIRST_ROW,\"{}\"\n", Util::session_id, Util::command_count,
+		//         Util::GetTime());
 	}
 	// check if we can do a specialized select
 	// the compression functions need to support this
