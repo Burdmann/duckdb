@@ -178,6 +178,7 @@ public:
 	static std::vector<ADDITIONAL_STATS<string_t>> additional_stats_string;
 	static uint64_t scanned_count;
 	static bool scanned_first_row;
+	idx_t column_idx = -1;
 
 private:
 	//! The compression function

@@ -26,7 +26,7 @@ for idx,in_file in enumerate(in_files):
     for i in range(NUM_TABLES):
         sizes[idx].append(duckdb.execute(f"SELECT COALESCE(SUM(CAST(Data->'size' AS INTEGER)),0) FROM tbl WHERE type = 'END_INITIALISE_ADDITIONAL_STATS' AND CommandID = {NUM_TABLES+i};").fetchone()[0])
         ingestion_times[idx].append(duckdb.execute(f"SELECT ROUND((end_time-start_time)/1000000000.0,5) FROM times WHERE CommandID = {NUM_TABLES+i}").fetchone()[0])
-        tables[idx].append(duckdb.execute(f"SELECT CAST(Data->'command' AS VARCHAR) FROM tbl WHERE type='SQL_COMMAND_RUN_START' AND CommandID = {NUM_TABLES+i}").fetchone()[0].split()[2])
+        tables[idx].append(duckdb.execute(f"SELECT CAST(Data->'command' AS VARCHAR) FROM tbl WHERE type='SQL_COMMAND_RUN_START' AND CommandID = {NUM_TABLES+i}").fetchone()[0].split()[1])
 
     for i in range(NUM_QUERIES):
         times[idx].append(duckdb.execute(f"SELECT ROUND(MEDIAN(end_time-start_time)/1000000000.0,5) FROM times WHERE CommandID >= {QUERIES_START+NUM_ITERATIONS*i} AND CommandID < {QUERIES_START+NUM_ITERATIONS*(1+i)};").fetchone()[0])

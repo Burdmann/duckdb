@@ -23,6 +23,7 @@ class Serializer;
 class Deserializer;
 
 class Vector;
+class ColumnSegment;
 struct UnifiedVectorFormat;
 
 enum class StatsInfo : uint8_t {
@@ -153,6 +154,7 @@ private:
 public:
 	void *additional_stats_vector = NULL;
 	int additional_stats_index = -1;
+	ColumnSegment *segment;
 };
 
 template <>

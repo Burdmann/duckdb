@@ -436,6 +436,7 @@ FilterPropagateResult ColumnData::CheckZonemap(ColumnScanState &state, TableFilt
 	FilterPropagateResult prune_result;
 	{
 		lock_guard<mutex> l(stats_lock);
+		state.current->stats.statistics.segment = state.current;
 		prune_result = filter.CheckStatistics(state.current->stats.statistics);
 		if (prune_result == FilterPropagateResult::NO_PRUNING_POSSIBLE) {
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
@@ -540,6 +541,7 @@ void ColumnData::AppendData(BaseStatistics &append_stats, ColumnAppendState &sta
 			//         Util::session_id, Util::command_count, Util::GetTime(), state.current->index,
 			//         &state.current->stats.statistics, state.current->count.load());
 			InitStats(state.current->stats.statistics, vdata.physical_type);
+			state.current->column_idx = column_index;
 
 			auto l = data.Lock();
 			AppendTransientSegment(l, state.current->start + state.current->count);

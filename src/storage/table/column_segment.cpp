@@ -110,6 +110,8 @@ ColumnSegment::ColumnSegment(ColumnSegment &other, const idx_t start)
 }
 
 ColumnSegment::~ColumnSegment() {
+	fprintf(stderr, "%lx,%lu,%lu,SEGMENT_DESTROYED,\"{\"\"start\"\":%lu,\"\"count\"\":%lu,\"\"idx\"\":%lu}\"\n",
+	        Util::session_id, Util::command_count, Util::GetTime(), start, count.load(), column_idx);
 }
 
 //===--------------------------------------------------------------------===//

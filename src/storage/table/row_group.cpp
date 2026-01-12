@@ -885,6 +885,7 @@ void RowGroup::InitStats(RowGroupAppendState &state, DataChunk &chunk, duckdb::i
 		//         Util::session_id, Util::command_count, Util::GetTime(), state.states[i].current->index,
 		//         &state.states[i].current->stats.statistics, state.states[i].current->count.load());
 		GetColumn(i).InitStats(state.states[i].current->stats.statistics, vdata.physical_type);
+		state.states[i].current->column_idx = i;
 	}
 }
 

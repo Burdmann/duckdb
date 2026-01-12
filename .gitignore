@@ -401,3 +401,8 @@ web_page.csv
 web_returns.csv
 web_sales.csv
 web_site.csv
+segments_par.csv
+segments_seq.csv
+segment_sizes.txt
+segment_combiner.py
+l_shipdate.csv
