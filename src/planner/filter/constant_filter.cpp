@@ -92,11 +92,11 @@ FilterPropagateResult ConstantFilter::CheckStatistics(BaseStatistics &stats) con
 	}
 	if (result == FilterPropagateResult::NO_PRUNING_POSSIBLE)
 		result = ColumnData::QueryAdditionalStats(stats, comparison_type, constant.type().InternalType(), constant);
-	// fprintf(stderr,
-	//         "%lx,%lu,%lu,EVAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"filter_propagate_result\"\":%u,"
-	//         "\"\"start_time\"\":%lu}\"\n",
-	//         duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), &stats,
-	//         (unsigned int)result, start_time);
+	fprintf(stderr,
+	        "%lx,%lu,%lu,EVAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"filter_propagate_result\"\":%u,"
+	        "\"\"start_time\"\":%lu}\"\n",
+	        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), &stats,
+	        (unsigned int)result, start_time);
 	return result;
 }
 

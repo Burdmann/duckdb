@@ -601,7 +601,7 @@ void RowGroup::TemplatedScan(TransactionData transaction, CollectionScanState &s
 		}
 
 		bool has_filters = filter_info.HasFilters();
-		ColumnSegment::scanned_count += count;
+		// ColumnSegment::scanned_count += count;
 		if (count == max_count && !has_filters) {
 			// scan all vectors completely: full scan without deletions or table filters
 			for (idx_t i = 0; i < column_ids.size(); i++) {
