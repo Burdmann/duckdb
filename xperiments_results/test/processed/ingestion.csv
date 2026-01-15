@@ -1,2 +1,2 @@
 Table_name,min_max_ingestion_time,cluster_ingestion_time,bloom_ingestion_time
-lineitem,4.09175,6.53759,2.00403
+lineitem,3.07765,7.66502,3.4386

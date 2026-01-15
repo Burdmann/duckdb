@@ -153,6 +153,8 @@ public:
 	virtual void Append(BaseStatistics &stats, ColumnAppendState &state, Vector &vector, idx_t count);
 	//! Append a vector of type [type] to the end of the column
 	void Append(ColumnAppendState &state, Vector &vector, idx_t count);
+	virtual void AppendDataWriteTemp(BaseStatistics &stats, ColumnAppendState &state, UnifiedVectorFormat &vdata,
+	                                 idx_t count);
 	virtual void AppendData(BaseStatistics &stats, ColumnAppendState &state, UnifiedVectorFormat &vdata, idx_t count);
 	//! Revert a set of appends to the ColumnData
 	virtual void RevertAppend(row_t start_row);
@@ -307,45 +309,59 @@ public:
 		switch (type) {
 		case PhysicalType::BOOL:
 			InitAdditionalStats(this->bool_temp_vectors[&stats], ColumnSegment::additional_stats_bool, stats);
+			this->bool_temp_vectors.erase(&stats);
 			break;
 		case PhysicalType::INT8:
 			InitAdditionalStats(this->int8_temp_vectors[&stats], ColumnSegment::additional_stats_int8, stats);
+			this->int8_temp_vectors.erase(&stats);
 			break;
 		case PhysicalType::INT16:
 			InitAdditionalStats(this->int16_temp_vectors[&stats], ColumnSegment::additional_stats_int16, stats);
+			this->int16_temp_vectors.erase(&stats);
 			break;
 		case PhysicalType::INT32:
 			InitAdditionalStats(this->int32_temp_vectors[&stats], ColumnSegment::additional_stats_int32, stats);
+			this->int32_temp_vectors.erase(&stats);
 			break;
 		case PhysicalType::INT64:
 			InitAdditionalStats(this->int64_temp_vectors[&stats], ColumnSegment::additional_stats_int64, stats);
+			this->int64_temp_vectors.erase(&stats);
 			break;
 		case PhysicalType::INT128:
 			InitAdditionalStats(this->hugeint_temp_vectors[&stats], ColumnSegment::additional_stats_hugeint, stats);
+			this->hugeint_temp_vectors.erase(&stats);
 			break;
 		case PhysicalType::UINT8:
 			InitAdditionalStats(this->uint8_temp_vectors[&stats], ColumnSegment::additional_stats_uint8, stats);
+			this->uint8_temp_vectors.erase(&stats);
 			break;
 		case PhysicalType::UINT16:
 			InitAdditionalStats(this->uint16_temp_vectors[&stats], ColumnSegment::additional_stats_uint16, stats);
+			this->uint16_temp_vectors.erase(&stats);
 			break;
 		case PhysicalType::UINT32:
 			InitAdditionalStats(this->uint32_temp_vectors[&stats], ColumnSegment::additional_stats_uint32, stats);
+			this->uint32_temp_vectors.erase(&stats);
 			break;
 		case PhysicalType::UINT64:
 			InitAdditionalStats(this->uint64_temp_vectors[&stats], ColumnSegment::additional_stats_uint64, stats);
+			this->uint64_temp_vectors.erase(&stats);
 			break;
 		case PhysicalType::UINT128:
 			InitAdditionalStats(this->uhugeint_temp_vectors[&stats], ColumnSegment::additional_stats_uhugeint, stats);
+			this->uhugeint_temp_vectors.erase(&stats);
 			break;
 		case PhysicalType::FLOAT:
 			InitAdditionalStats(this->float_temp_vectors[&stats], ColumnSegment::additional_stats_float, stats);
+			this->float_temp_vectors.erase(&stats);
 			break;
 		case PhysicalType::DOUBLE:
 			InitAdditionalStats(this->double_temp_vectors[&stats], ColumnSegment::additional_stats_double, stats);
+			this->double_temp_vectors.erase(&stats);
 			break;
 		case PhysicalType::VARCHAR:
 			InitAdditionalStats(this->string_temp_vectors[&stats], ColumnSegment::additional_stats_string, stats);
+			this->string_temp_vectors.erase(&stats);
 			break;
 		default:
 			throw InternalException("Unsupported type for appending to numeric cluster stats");

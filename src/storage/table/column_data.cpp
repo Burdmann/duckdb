@@ -509,23 +509,14 @@ void ColumnData::InitializeAppend(ColumnAppendState &state) {
 	D_ASSERT(state.current->GetCompressionFunction().append);
 }
 
-void ColumnData::AppendData(BaseStatistics &append_stats, ColumnAppendState &state, UnifiedVectorFormat &vdata,
-                            idx_t append_count) {
+void ColumnData::AppendDataWriteTemp(BaseStatistics &append_stats, ColumnAppendState &state, UnifiedVectorFormat &vdata,
+                                     idx_t append_count) {
 	idx_t offset = 0;
 	this->count += append_count;
 	while (true) {
 		// append the data from the vector
 		uint64_t start_time = Util::GetTime();
-		// fprintf(stderr,
-		//         "%lx,%lu,%lu,APPEND_START,\"{\"\"count\"\":%lu,\"\"offset\"\":%lu,\"\"column_id\"\":%lu,"
-		//         "\"\"partition\"\":\"\"%p\"\"}\"\n",
-		//         Util::session_id, Util::command_count, start_time, append_count, offset, this->column_index, this);
 		idx_t copied_elements = state.current->Append(state, vdata, offset, append_count);
-		// fprintf(stderr,
-		//         "%lx,%lu,%lu,APPEND_END,\"{\"\"count\"\":%lu,\"\"offset\"\":%lu,\"\"column_id\"\":%lu,"
-		//         "\"\"partition\"\":\"\"%p\"\",\"\"start_time\"\":%lu}\"\n",
-		//         Util::session_id, Util::command_count, Util::GetTime(), append_count, offset, this->column_index,
-		//         this, start_time);
 		append_stats.Merge(state.current->stats.statistics);
 		AppendTemp(vdata, copied_elements, state.current->stats.statistics);
 		if (copied_elements == append_count) {
@@ -535,12 +526,35 @@ void ColumnData::AppendData(BaseStatistics &append_stats, ColumnAppendState &sta
 
 		// we couldn't fit everything we wanted in the current column segment, create a new one
 		{
-			// fprintf(stderr,
-			//         "%lx,%lu,%lu,INITIALISED_COLUMN_SEGMENT,\"{\"\"column_index\"\":%lu,\"\"stats\"\":\"\"%p\"\","
-			//         "\"\"count\"\":%lu}\"\n",
-			//         Util::session_id, Util::command_count, Util::GetTime(), state.current->index,
-			//         &state.current->stats.statistics, state.current->count.load());
 			InitStats(state.current->stats.statistics, vdata.physical_type);
+			state.current->column_idx = column_index;
+
+			auto l = data.Lock();
+			AppendTransientSegment(l, state.current->start + state.current->count);
+			state.current = data.GetLastSegment(l);
+			state.current->InitializeAppend(state);
+		}
+		offset += copied_elements;
+		append_count -= copied_elements;
+	}
+}
+
+void ColumnData::AppendData(BaseStatistics &append_stats, ColumnAppendState &state, UnifiedVectorFormat &vdata,
+                            idx_t append_count) {
+	idx_t offset = 0;
+	this->count += append_count;
+	while (true) {
+		// append the data from the vector
+		uint64_t start_time = Util::GetTime();
+		idx_t copied_elements = state.current->Append(state, vdata, offset, append_count);
+		append_stats.Merge(state.current->stats.statistics);
+		if (copied_elements == append_count) {
+			// finished copying everything
+			break;
+		}
+
+		// we couldn't fit everything we wanted in the current column segment, create a new one
+		{
 			state.current->column_idx = column_index;
 
 			auto l = data.Lock();

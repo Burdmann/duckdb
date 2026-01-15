@@ -38,16 +38,7 @@ bool ConstantFilter::Compare(const Value &value) const {
 
 FilterPropagateResult ConstantFilter::CheckStatistics(BaseStatistics &stats) const {
 	uint64_t start_time = Util::GetTime();
-	// fprintf(stderr, "%lx,%lu,%lu,EVAL_STATISTICS_START,\"{\"\"statistic\"\":\"\"%p\"\"}\"\n",
-	// duckdb::Util::session_id,
-	//         duckdb::Util::command_count, start_time, &stats);
 	if (!stats.CanHaveNoNull()) {
-		// no non-null values are possible: always false
-		// fprintf(stderr,
-		//         "%lx,%lu,%lu,EVAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"filter_propagate_result\"\":%u,"
-		//         "\"\"start_time\"\":%lu}\"\n",
-		//         duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), &stats,
-		//         (unsigned int)FilterPropagateResult::FILTER_ALWAYS_FALSE, start_time);
 		return FilterPropagateResult::FILTER_ALWAYS_FALSE;
 	}
 	FilterPropagateResult result;
@@ -71,22 +62,12 @@ FilterPropagateResult ConstantFilter::CheckStatistics(BaseStatistics &stats) con
 		result = StringStats::CheckZonemap(stats, comparison_type, array_ptr<const Value>(&constant, 1));
 		break;
 	default:
-		// fprintf(stderr,
-		//         "%lx,%lu,%lu,EVAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"filter_propagate_result\"\":%u,"
-		//         "\"\"start_time\"\":%lu}\"\n",
-		//         duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), &stats,
-		//         (unsigned int)FilterPropagateResult::NO_PRUNING_POSSIBLE, start_time);
 		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 	}
 	if (result == FilterPropagateResult::FILTER_ALWAYS_TRUE) {
 		// the numeric filter is always true, but the column can have NULL values
 		// we can't prune the filter
 		if (stats.CanHaveNull()) {
-			// fprintf(stderr,
-			//         "%lx,%lu,%lu,EVAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\2\",\"\"filter_propagate_"
-			//         "result\"\":%u,\"\"start_time\"\":%lu}\"\n",
-			//         duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), &stats,
-			//         (unsigned int)FilterPropagateResult::NO_PRUNING_POSSIBLE, start_time);
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		}
 	}

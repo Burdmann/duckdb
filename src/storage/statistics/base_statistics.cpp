@@ -16,14 +16,14 @@ namespace duckdb {
 
 BaseStatistics::BaseStatistics() {
 	type = LogicalType::INVALID;
-	// fprintf(stderr, "%lx,%lu,%lu,STAT_CREATED,\"{\"\"size\"\":%lu,\"\"address\"\":\"\"%p\"\"}\"\n", Util::session_id,
-	//         Util::command_count, Util::GetTime(), sizeof(*this), this);
+	fprintf(stderr, "%lx,%lu,%lu,STAT_CREATED,\"{\"\"size\"\":%lu,\"\"address\"\":\"\"%p\"\"}\"\n", Util::session_id,
+	        Util::command_count, Util::GetTime(), sizeof(*this), this);
 }
 
 BaseStatistics::BaseStatistics(LogicalType type) {
-	// fprintf(stderr, "%lx,%lu,%lu,STAT_CREATED,\"{\"\"size\"\":%lu,\"\"address\"\":\"\"%p\"\"}\"\n", Util::session_id,
-	//         Util::command_count, Util::GetTime(), sizeof(*this), this);
 	Construct(*this, std::move(type));
+	fprintf(stderr, "%lx,%lu,%lu,STAT_CREATED,\"{\"\"size\"\":%lu,\"\"address\"\":\"\"%p\"\"}\"\n", Util::session_id,
+	        Util::command_count, Util::GetTime(), sizeof(*this), this);
 }
 
 void BaseStatistics::Construct(BaseStatistics &stats, LogicalType type) {
@@ -45,9 +45,13 @@ void BaseStatistics::Construct(BaseStatistics &stats, LogicalType type) {
 }
 
 BaseStatistics::~BaseStatistics() {
-	// fprintf(stderr, "%lx,%lu,%lu,STAT_DESTROYED,\"{\"\"size\"\":%lu,\"\"address\"\":\"\"%p\"\"}\"\n",
-	// Util::session_id,
-	//         Util::command_count, Util::GetTime(), sizeof(*this), this);
+	fprintf(stderr,
+	        "%lx,%lu,%lu,STAT_DESTROYED,\"{\"\"size\"\":%lu,\"\"address\"\":\"\"%p\"\",\"\"start\"\":%lu,\"\"count\"\":"
+	        "%lu,\"\"column\"\":%lu,\"\"additional_stats_vector\"\":\"\"%p\"\",\"\"additional_stats_index\"\":%lu,"
+	        "\"\"segment\"\":\"\"%p\"\"}\"\n",
+	        Util::session_id, Util::command_count, Util::GetTime(), sizeof(*this), this,
+	        (segment != NULL) ? segment->start : -1, (segment != NULL) ? segment->count.load() : -1,
+	        (segment != NULL) ? segment->column_idx : -1, additional_stats_vector, additional_stats_index, segment);
 }
 
 BaseStatistics::BaseStatistics(BaseStatistics &&other) noexcept {
@@ -58,6 +62,9 @@ BaseStatistics::BaseStatistics(BaseStatistics &&other) noexcept {
 	has_no_null = other.has_no_null;
 	distinct_count = other.distinct_count;
 	stats_union = other.stats_union;
+	additional_stats_vector = other.additional_stats_vector;
+	additional_stats_index = other.additional_stats_index;
+	segment = other.segment;
 	std::swap(child_stats, other.child_stats);
 }
 
@@ -150,6 +157,11 @@ bool BaseStatistics::IsConstant() const {
 void BaseStatistics::Merge(const BaseStatistics &other) {
 	has_null = has_null || other.has_null;
 	has_no_null = has_no_null || other.has_no_null;
+	if (additional_stats_vector == NULL) {
+		additional_stats_vector = other.additional_stats_vector;
+		additional_stats_index = other.additional_stats_index;
+		segment = other.segment;
+	}
 	switch (GetStatsType()) {
 	case StatisticsType::NUMERIC_STATS:
 		NumericStats::Merge(*this, other);

@@ -135,7 +135,7 @@ void StandardColumnData::InitializeAppend(ColumnAppendState &state) {
 
 void StandardColumnData::AppendData(BaseStatistics &stats, ColumnAppendState &state, UnifiedVectorFormat &vdata,
                                     idx_t count) {
-	ColumnData::AppendData(stats, state, vdata, count);
+	ColumnData::AppendDataWriteTemp(stats, state, vdata, count);
 	validity.AppendData(stats, state.child_appends[0], vdata, count);
 }
 

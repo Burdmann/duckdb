@@ -154,7 +154,7 @@ private:
 public:
 	void *additional_stats_vector = NULL;
 	int additional_stats_index = -1;
-	ColumnSegment *segment;
+	ColumnSegment *segment = NULL;
 };
 
 template <>

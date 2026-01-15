@@ -1,2 +1,2 @@
 Table_name,min_max_size,cluster_size,bloom_size
-lineitem,2939600,15508288,590859600
+lineitem,2942000,15511360,591342000
