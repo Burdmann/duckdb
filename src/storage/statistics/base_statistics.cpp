@@ -16,14 +16,10 @@ namespace duckdb {
 
 BaseStatistics::BaseStatistics() {
 	type = LogicalType::INVALID;
-	fprintf(stderr, "%lx,%lu,%lu,STAT_CREATED,\"{\"\"type\"\":0,\"\"size\"\":%lu,\"\"address\"\":\"\"%p\"\"}\"\n",
-	        Util::session_id, Util::command_count, Util::GetTime(), sizeof(*this), this);
 }
 
 BaseStatistics::BaseStatistics(LogicalType type) {
 	Construct(*this, std::move(type));
-	fprintf(stderr, "%lx,%lu,%lu,STAT_CREATED,\"{\"\"type\"\":1,\"\"size\"\":%lu,\"\"address\"\":\"\"%p\"\"}\"\n",
-	        Util::session_id, Util::command_count, Util::GetTime(), sizeof(*this), this);
 }
 
 void BaseStatistics::Construct(BaseStatistics &stats, LogicalType type) {
@@ -45,20 +41,9 @@ void BaseStatistics::Construct(BaseStatistics &stats, LogicalType type) {
 }
 
 BaseStatistics::~BaseStatistics() {
-	fprintf(stderr,
-	        "%lx,%lu,%lu,STAT_DESTROYED,\"{\"\"size\"\":%lu,\"\"address\"\":\"\"%p\"\",\"\"start\"\":%lu,\"\"count\"\":"
-	        "%lu,\"\"column\"\":%lu,\"\"additional_stats_vector\"\":\"\"%p\"\",\"\"additional_stats_index\"\":%lu,"
-	        "\"\"segment\"\":\"\"%p\"\"}\"\n",
-	        Util::session_id, Util::command_count, Util::GetTime(), sizeof(*this), this,
-	        (segment != NULL) ? segment->start : -1, (segment != NULL) ? segment->count.load() : -1,
-	        (segment != NULL) ? segment->column_idx : -1, additional_stats_vector, additional_stats_index, segment);
 }
 
 BaseStatistics::BaseStatistics(BaseStatistics &&other) noexcept {
-	fprintf(stderr,
-	        "%lx,%lu,%lu,STAT_CREATED,\"{\"\"type\"\":2,\"\"size\"\":%lu,\"\"address\"\":\"\"%p\"\",\"\"other\"\":\"\"%"
-	        "p\"\"}\"\n",
-	        Util::session_id, Util::command_count, Util::GetTime(), sizeof(*this), this, &other);
 	std::swap(type, other.type);
 	has_null = other.has_null;
 	has_no_null = other.has_no_null;
@@ -66,7 +51,6 @@ BaseStatistics::BaseStatistics(BaseStatistics &&other) noexcept {
 	stats_union = other.stats_union;
 	additional_stats_vector = other.additional_stats_vector;
 	additional_stats_index = other.additional_stats_index;
-	segment = other.segment;
 	std::swap(child_stats, other.child_stats);
 }
 
@@ -78,7 +62,6 @@ BaseStatistics &BaseStatistics::operator=(BaseStatistics &&other) noexcept {
 	stats_union = other.stats_union;
 	additional_stats_vector = other.additional_stats_vector;
 	additional_stats_index = other.additional_stats_index;
-	segment = other.segment;
 	std::swap(child_stats, other.child_stats);
 	return *this;
 }
@@ -160,14 +143,11 @@ bool BaseStatistics::IsConstant() const {
 }
 
 void BaseStatistics::Merge(const BaseStatistics &other) {
-	fprintf(stderr, "%lx,%lu,%lu,STATS_MERGED,\"{\"\"this\"\":\"\"%p\"\",\"\"other\"\":\"\"%p\"\"}\"\n",
-	        Util::session_id, Util::command_count, Util::GetTime(), this, &other);
 	has_null = has_null || other.has_null;
 	has_no_null = has_no_null || other.has_no_null;
 	if (additional_stats_vector == NULL) {
 		additional_stats_vector = other.additional_stats_vector;
 		additional_stats_index = other.additional_stats_index;
-		segment = other.segment;
 	}
 	switch (GetStatsType()) {
 	case StatisticsType::NUMERIC_STATS:
@@ -269,8 +249,6 @@ void BaseStatistics::Copy(const BaseStatistics &other) {
 
 BaseStatistics BaseStatistics::Copy() const {
 	BaseStatistics result(type);
-	fprintf(stderr, "%lx,%lu,%lu,STAT_COPIED,\"{\"\"from\"\":\"\"%p,\"\"to\"\":\"\"%p\"\"}\"\n", Util::session_id,
-	        Util::command_count, Util::GetTime(), this, &result);
 	result.Copy(*this);
 	return result;
 }
@@ -285,7 +263,6 @@ void BaseStatistics::CopyBase(const BaseStatistics &other) {
 	has_null = other.has_null;
 	has_no_null = other.has_no_null;
 	distinct_count = other.distinct_count;
-	segment = other.segment;
 	additional_stats_vector = other.additional_stats_vector;
 	additional_stats_index = other.additional_stats_index;
 }

@@ -436,7 +436,6 @@ FilterPropagateResult ColumnData::CheckZonemap(ColumnScanState &state, TableFilt
 	FilterPropagateResult prune_result;
 	{
 		lock_guard<mutex> l(stats_lock);
-		state.current->stats.statistics.segment = state.current;
 		prune_result = filter.CheckStatistics(state.current->stats.statistics);
 		if (prune_result == FilterPropagateResult::NO_PRUNING_POSSIBLE) {
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
@@ -518,7 +517,7 @@ void ColumnData::AppendDataWriteTemp(BaseStatistics &append_stats, ColumnAppendS
 		uint64_t start_time = Util::GetTime();
 		idx_t copied_elements = state.current->Append(state, vdata, offset, append_count);
 		append_stats.Merge(state.current->stats.statistics);
-		AppendTemp(vdata, copied_elements, state.current->stats.statistics);
+		AppendTemp(vdata, copied_elements, append_stats);
 		// AppendTemp(vdata, copied_elements, append_stats);
 		if (copied_elements == append_count) {
 			// finished copying everything
@@ -527,10 +526,6 @@ void ColumnData::AppendDataWriteTemp(BaseStatistics &append_stats, ColumnAppendS
 
 		// we couldn't fit everything we wanted in the current column segment, create a new one
 		{
-			InitStats(state.current->stats.statistics, vdata.physical_type);
-			// InitStats(append_stats, vdata.physical_type);
-			state.current->column_idx = column_index;
-
 			auto l = data.Lock();
 			AppendTransientSegment(l, state.current->start + state.current->count);
 			state.current = data.GetLastSegment(l);

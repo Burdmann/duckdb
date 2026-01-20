@@ -369,11 +369,88 @@ public:
 		map_mutex.unlock();
 	}
 
+	void InitStats() {
+		map_mutex.lock();
+		switch (type.InternalType()) {
+		case PhysicalType::BOOL:
+			InitAdditionalStats(this->bool_temp_vectors[&stats->statistics], ColumnSegment::additional_stats_bool,
+			                    stats->statistics);
+			this->bool_temp_vectors.erase(&stats->statistics);
+			break;
+		case PhysicalType::INT8:
+			InitAdditionalStats(this->int8_temp_vectors[&stats->statistics], ColumnSegment::additional_stats_int8,
+			                    stats->statistics);
+			this->int8_temp_vectors.erase(&stats->statistics);
+			break;
+		case PhysicalType::INT16:
+			InitAdditionalStats(this->int16_temp_vectors[&stats->statistics], ColumnSegment::additional_stats_int16,
+			                    stats->statistics);
+			this->int16_temp_vectors.erase(&stats->statistics);
+			break;
+		case PhysicalType::INT32:
+			InitAdditionalStats(this->int32_temp_vectors[&stats->statistics], ColumnSegment::additional_stats_int32,
+			                    stats->statistics);
+			this->int32_temp_vectors.erase(&stats->statistics);
+			break;
+		case PhysicalType::INT64:
+			InitAdditionalStats(this->int64_temp_vectors[&stats->statistics], ColumnSegment::additional_stats_int64,
+			                    stats->statistics);
+			this->int64_temp_vectors.erase(&stats->statistics);
+			break;
+		case PhysicalType::INT128:
+			InitAdditionalStats(this->hugeint_temp_vectors[&stats->statistics], ColumnSegment::additional_stats_hugeint,
+			                    stats->statistics);
+			this->hugeint_temp_vectors.erase(&stats->statistics);
+			break;
+		case PhysicalType::UINT8:
+			InitAdditionalStats(this->uint8_temp_vectors[&stats->statistics], ColumnSegment::additional_stats_uint8,
+			                    stats->statistics);
+			this->uint8_temp_vectors.erase(&stats->statistics);
+			break;
+		case PhysicalType::UINT16:
+			InitAdditionalStats(this->uint16_temp_vectors[&stats->statistics], ColumnSegment::additional_stats_uint16,
+			                    stats->statistics);
+			this->uint16_temp_vectors.erase(&stats->statistics);
+			break;
+		case PhysicalType::UINT32:
+			InitAdditionalStats(this->uint32_temp_vectors[&stats->statistics], ColumnSegment::additional_stats_uint32,
+			                    stats->statistics);
+			this->uint32_temp_vectors.erase(&stats->statistics);
+			break;
+		case PhysicalType::UINT64:
+			InitAdditionalStats(this->uint64_temp_vectors[&stats->statistics], ColumnSegment::additional_stats_uint64,
+			                    stats->statistics);
+			this->uint64_temp_vectors.erase(&stats->statistics);
+			break;
+		case PhysicalType::UINT128:
+			InitAdditionalStats(this->uhugeint_temp_vectors[&stats->statistics],
+			                    ColumnSegment::additional_stats_uhugeint, stats->statistics);
+			this->uhugeint_temp_vectors.erase(&stats->statistics);
+			break;
+		case PhysicalType::FLOAT:
+			InitAdditionalStats(this->float_temp_vectors[&stats->statistics], ColumnSegment::additional_stats_float,
+			                    stats->statistics);
+			this->float_temp_vectors.erase(&stats->statistics);
+			break;
+		case PhysicalType::DOUBLE:
+			InitAdditionalStats(this->double_temp_vectors[&stats->statistics], ColumnSegment::additional_stats_double,
+			                    stats->statistics);
+			this->double_temp_vectors.erase(&stats->statistics);
+			break;
+		case PhysicalType::VARCHAR:
+			InitAdditionalStats(this->string_temp_vectors[&stats->statistics], ColumnSegment::additional_stats_string,
+			                    stats->statistics);
+			this->string_temp_vectors.erase(&stats->statistics);
+			break;
+		default:
+			throw InternalException("Unsupported type for appending to numeric cluster stats");
+		}
+		map_mutex.unlock();
+	}
+
 	template <class T>
 	static inline FilterPropagateResult QueryAdditionalStats(BaseStatistics &stats, ExpressionType comparison_type,
 	                                                         const T constant) {
-		fprintf(stderr, "%lx,%lu,%lu,ATTEMPTED_EVAL_ADDITIONAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\"}\"\n",
-		        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), &stats);
 		if (stats.additional_stats_vector == NULL)
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		std::vector<ADDITIONAL_STATS<T>> &astats_vector =
@@ -382,12 +459,10 @@ public:
 		uint64_t start_time = Util::GetTime();
 		FilterPropagateResult result = astats->Query(astats, comparison_type, constant);
 		fprintf(stderr,
-		        "%lx,%lu,%lu,EVAL_ADDITIONAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"start\"\":%lu,"
-		        "\"\"count\"\":%lu,\"\"column\"\":%lu,\"\"type\"\":\"\"%s\"\",\"\"start_time\"\":%lu,\"\"result\"\":%u}"
-		        "\"\n",
-		        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), &stats,
-		        stats.segment->start, stats.segment->count.load(), stats.segment->column_idx, astats->name, start_time,
-		        (unsigned int)result);
+		        "%lx,%lu,%lu,EVAL_ADDITIONAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
+		        "\"\"start_time\"\":%lu,\"\"result\"\":%u}\"\n",
+		        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), &stats, astats->name,
+		        start_time, (unsigned int)result);
 		return result;
 	}
 

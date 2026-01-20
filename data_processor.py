@@ -20,7 +20,7 @@ duckdb.execute("CREATE TABLE Result_pruning (Query INT, min_max_rows_scanned FLO
 duckdb.execute("CREATE TABLE Result_size (Table_name VARCHAR, min_max_size INT64, cluster_size INT64, bloom_size INT64);")
 duckdb.execute("CREATE TABLE Result_ingestion (Table_name VARCHAR, min_max_ingestion_time FLOAT, cluster_ingestion_time FLOAT, bloom_ingestion_time FLOAT);")
 for idx,in_file in enumerate(in_files):
-    duckdb.execute(f"CREATE TABLE tbl AS SELECT * FROM '{in_file}';")
+    duckdb.execute(f"CREATE TABLE tbl AS SELECT * FROM read_csv('{in_file}',max_line_size=100000000);")
     duckdb.execute("CREATE TABLE times AS SELECT start_time,end_time,t1.CommandID AS CommandID FROM (SELECT Time as end_time,CommandID FROM tbl WHERE type = 'SQL_COMMAND_RUN_END') t1 JOIN (SELECT Time as start_time,CommandID FROM tbl WHERE type = 'SQL_COMMAND_RUN_START') t2 on t1.CommandID = t2.commandID;")
 
     for i in range(NUM_TABLES):
