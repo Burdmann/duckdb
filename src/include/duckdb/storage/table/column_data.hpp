@@ -372,6 +372,8 @@ public:
 	template <class T>
 	static inline FilterPropagateResult QueryAdditionalStats(BaseStatistics &stats, ExpressionType comparison_type,
 	                                                         const T constant) {
+		fprintf(stderr, "%lx,%lu,%lu,ATTEMPTED_EVAL_ADDITIONAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\"}\"\n",
+		        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), &stats);
 		if (stats.additional_stats_vector == NULL)
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		std::vector<ADDITIONAL_STATS<T>> &astats_vector =
