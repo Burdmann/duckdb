@@ -20,7 +20,7 @@ class QueryContext;
 
 //! The standard row group size
 // #define DEFAULT_ROW_GROUP_SIZE 122880ULL
-#define DEFAULT_ROW_GROUP_SIZE 4096ULL // changed size to see better pruning
+#define DEFAULT_ROW_GROUP_SIZE 8192ULL // changed size to see better pruning
 //! The definition of an invalid block
 #define INVALID_BLOCK (-1)
 //! The maximum block id is 2^62

@@ -408,3 +408,4 @@ segment_combiner.py
 l_shipdate.csv
 temp.csv
 correctness_test/*
+4k/*
