@@ -14,7 +14,6 @@ COPY part FROM 'tpch_small/part.csv' (FORMAT 'csv', force_not_null ('p_partkey',
 COPY partsupp FROM 'tpch_small/partsupp.csv' (FORMAT 'csv', force_not_null ('ps_partkey', 'ps_suppkey', 'ps_availqty', 'ps_supplycost', 'ps_comment'), delimiter ',', header 1);
 COPY region FROM 'tpch_small/region.csv' (FORMAT 'csv', force_not_null ('r_regionkey', 'r_name', 'r_comment'), delimiter ',', header 1);
 COPY supplier FROM 'tpch_small/supplier.csv' (FORMAT 'csv', force_not_null ('s_suppkey', 's_name', 's_address', 's_nationkey', 's_phone', 's_acctbal', 's_comment'), delimiter ',', header 1);
-SET threads TO 1;
 SELECT
     l_returnflag,
     l_linestatus,

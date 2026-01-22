@@ -152,7 +152,7 @@ private:
 
 	static inline size_t hash(T value) {
 		size_t h = std::hash<T> {}(value);
-		return MurmurHash3_x64_128(&h, 8, 1);
+		return MurmurHash3_x64_128(&h, sizeof(size_t), 1);
 	}
 
 	static inline uint64_t *GetBlock(uint32_t h1, uint32_t h2, uint64_t *bit_array) {
@@ -171,7 +171,7 @@ private:
 			uint32_t bit_pos = (h1 + i * h2) % (64 * BLOCK_SIZE);
 			uint64_t bit_idx = bit_pos % 64;
 			uint64_t byte_idx = bit_pos / 64;
-			result &= (block[byte_idx] >> bit_idx) & 1;
+			result = result && ((block[byte_idx] >> bit_idx) & 1);
 		}
 		return result;
 	}
