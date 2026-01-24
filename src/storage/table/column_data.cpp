@@ -517,7 +517,8 @@ void ColumnData::AppendDataWriteTemp(BaseStatistics &append_stats, ColumnAppendS
 		uint64_t start_time = Util::GetTime();
 		idx_t copied_elements = state.current->Append(state, vdata, offset, append_count);
 		append_stats.Merge(state.current->stats.statistics);
-		AppendTemp(vdata, copied_elements, append_stats);
+		// AppendTemp(vdata, copied_elements, append_stats);
+		AppendTemp(vdata, copied_elements, stats->statistics);
 		// AppendTemp(vdata, copied_elements, append_stats);
 		if (copied_elements == append_count) {
 			// finished copying everything
