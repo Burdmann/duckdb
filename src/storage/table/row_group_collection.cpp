@@ -401,7 +401,7 @@ bool RowGroupCollection::Append(DataChunk &chunk, TableAppendState &state) {
 
 			// ColumnData::InitStats();
 			// printf("here\n");
-			current_row_group->InitStats(state.row_group_append_state, chunk, append_count);
+			current_row_group->InitStats(state.row_group_append_state);
 
 			D_ASSERT(chunk.size() == remaining + append_count);
 			// slice the input chunk

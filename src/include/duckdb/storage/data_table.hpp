@@ -281,7 +281,7 @@ public:
 
 	// altp
 	void FinishInitialiseStats(TableCatalogEntry &table, ClientContext &context, DataChunk &chunk,
-                            const vector<unique_ptr<BoundConstraint>> &bound_constraints);
+	                           const vector<unique_ptr<BoundConstraint>> &bound_constraints, RowGroup &row_group);
 
 private:
 	//! Verify the new added constraints against current persistent&local data

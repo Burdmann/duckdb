@@ -875,9 +875,9 @@ void RowGroup::InitializeAppend(RowGroupAppendState &append_state) {
 	}
 }
 
-void RowGroup::InitStats(RowGroupAppendState &state, DataChunk &chunk, duckdb::idx_t count) {
+void RowGroup::InitStats(RowGroupAppendState &state) {
 	for (idx_t i = 0; i < GetColumnCount(); i++) {
-		GetColumn(i).InitStats();
+		GetColumn(i).InitStats(state.row_group->GetColumn(i).GetStats()->statistics);
 	}
 }
 

@@ -218,65 +218,51 @@ public:
 			}
 		}
 	}
-	// void AppendTempString(UnifiedVectorFormat &vdata, idx_t append_count, std::vector<string_t> &temp_storage) {
-	// 	const string_t *data = vdata.GetData<string_t>();
-	// 	for (int i = 0; i < append_count; i++) {
-	// 		long unsigned int *validity = vdata.validity.GetData();
-	// 		int idx = i / 64;
-	// 		int bit = i % 64;
-	// 		if (vdata.validity.AllValid() || validity[idx] & (1LU << bit)) {
-	// 			for (int j = 0; j < data[i].GetSize(); j++)
-	// 				printf("%c", data[i].GetData()[j]);
-	// 			printf("\n");
-	// 			temp_storage.push_back(data[i]);
-	// 		}
-	// 	}
-	// }
 
 	void AppendTemp(UnifiedVectorFormat &vdata, idx_t copied_elements, BaseStatistics &stats) {
 		map_mutex.lock();
 		switch (vdata.physical_type) {
 		case PhysicalType::BOOL:
-			AppendTemp(vdata, copied_elements, this->bool_temp_vectors[this]);
+			AppendTemp(vdata, copied_elements, bool_temp_vectors[this]);
 			break;
 		case PhysicalType::INT8:
-			AppendTemp(vdata, copied_elements, this->int8_temp_vectors[this]);
+			AppendTemp(vdata, copied_elements, int8_temp_vectors[this]);
 			break;
 		case PhysicalType::INT16:
-			AppendTemp(vdata, copied_elements, this->int16_temp_vectors[this]);
+			AppendTemp(vdata, copied_elements, int16_temp_vectors[this]);
 			break;
 		case PhysicalType::INT32:
-			AppendTemp(vdata, copied_elements, this->int32_temp_vectors[this]);
+			AppendTemp(vdata, copied_elements, int32_temp_vectors[this]);
 			break;
 		case PhysicalType::INT64:
-			AppendTemp(vdata, copied_elements, this->int64_temp_vectors[this]);
+			AppendTemp(vdata, copied_elements, int64_temp_vectors[this]);
 			break;
 		case PhysicalType::UINT8:
-			AppendTemp(vdata, copied_elements, this->uint8_temp_vectors[this]);
+			AppendTemp(vdata, copied_elements, uint8_temp_vectors[this]);
 			break;
 		case PhysicalType::UINT16:
-			AppendTemp(vdata, copied_elements, this->uint16_temp_vectors[this]);
+			AppendTemp(vdata, copied_elements, uint16_temp_vectors[this]);
 			break;
 		case PhysicalType::UINT32:
-			AppendTemp(vdata, copied_elements, this->uint32_temp_vectors[this]);
+			AppendTemp(vdata, copied_elements, uint32_temp_vectors[this]);
 			break;
 		case PhysicalType::UINT64:
-			AppendTemp(vdata, copied_elements, this->uint64_temp_vectors[this]);
+			AppendTemp(vdata, copied_elements, uint64_temp_vectors[this]);
 			break;
 		case PhysicalType::INT128:
-			AppendTemp(vdata, copied_elements, this->hugeint_temp_vectors[this]);
+			AppendTemp(vdata, copied_elements, hugeint_temp_vectors[this]);
 			break;
 		case PhysicalType::UINT128:
-			AppendTemp(vdata, copied_elements, this->uhugeint_temp_vectors[this]);
+			AppendTemp(vdata, copied_elements, uhugeint_temp_vectors[this]);
 			break;
 		case PhysicalType::FLOAT:
-			AppendTemp(vdata, copied_elements, this->float_temp_vectors[this]);
+			AppendTemp(vdata, copied_elements, float_temp_vectors[this]);
 			break;
 		case PhysicalType::DOUBLE:
-			AppendTemp(vdata, copied_elements, this->double_temp_vectors[this]);
+			AppendTemp(vdata, copied_elements, double_temp_vectors[this]);
 			break;
 		case PhysicalType::VARCHAR:
-			AppendTemp(vdata, copied_elements, this->string_temp_vectors[this]);
+			AppendTemp(vdata, copied_elements, string_temp_vectors[this]);
 			break;
 		default:
 			throw InternalException("Unsupported type for appending to additional stats");
@@ -304,64 +290,64 @@ public:
 		        astats.Size(&astats), start_time);
 	}
 
-	void InitStats(BaseStatistics &stats, PhysicalType type) {
+	void InitStats(BaseStatistics &stats) {
 		map_mutex.lock();
-		switch (type) {
+		switch (type.InternalType()) {
 		case PhysicalType::BOOL:
-			InitAdditionalStats(this->bool_temp_vectors[this], ColumnSegment::additional_stats_bool, stats);
-			this->bool_temp_vectors.erase(&stats);
+			InitAdditionalStats(bool_temp_vectors[this], ColumnSegment::additional_stats_bool, stats);
+			bool_temp_vectors.erase(this);
 			break;
 		case PhysicalType::INT8:
-			InitAdditionalStats(this->int8_temp_vectors[this], ColumnSegment::additional_stats_int8, stats);
-			this->int8_temp_vectors.erase(&stats);
+			InitAdditionalStats(int8_temp_vectors[this], ColumnSegment::additional_stats_int8, stats);
+			int8_temp_vectors.erase(this);
 			break;
 		case PhysicalType::INT16:
-			InitAdditionalStats(this->int16_temp_vectors[this], ColumnSegment::additional_stats_int16, stats);
-			this->int16_temp_vectors.erase(&stats);
+			InitAdditionalStats(int16_temp_vectors[this], ColumnSegment::additional_stats_int16, stats);
+			int16_temp_vectors.erase(this);
 			break;
 		case PhysicalType::INT32:
-			InitAdditionalStats(this->int32_temp_vectors[this], ColumnSegment::additional_stats_int32, stats);
-			this->int32_temp_vectors.erase(&stats);
+			InitAdditionalStats(int32_temp_vectors[this], ColumnSegment::additional_stats_int32, stats);
+			int32_temp_vectors.erase(this);
 			break;
 		case PhysicalType::INT64:
-			InitAdditionalStats(this->int64_temp_vectors[this], ColumnSegment::additional_stats_int64, stats);
-			this->int64_temp_vectors.erase(&stats);
+			InitAdditionalStats(int64_temp_vectors[this], ColumnSegment::additional_stats_int64, stats);
+			int64_temp_vectors.erase(this);
 			break;
 		case PhysicalType::INT128:
-			InitAdditionalStats(this->hugeint_temp_vectors[this], ColumnSegment::additional_stats_hugeint, stats);
-			this->hugeint_temp_vectors.erase(&stats);
+			InitAdditionalStats(hugeint_temp_vectors[this], ColumnSegment::additional_stats_hugeint, stats);
+			hugeint_temp_vectors.erase(this);
 			break;
 		case PhysicalType::UINT8:
-			InitAdditionalStats(this->uint8_temp_vectors[this], ColumnSegment::additional_stats_uint8, stats);
-			this->uint8_temp_vectors.erase(&stats);
+			InitAdditionalStats(uint8_temp_vectors[this], ColumnSegment::additional_stats_uint8, stats);
+			uint8_temp_vectors.erase(this);
 			break;
 		case PhysicalType::UINT16:
-			InitAdditionalStats(this->uint16_temp_vectors[this], ColumnSegment::additional_stats_uint16, stats);
-			this->uint16_temp_vectors.erase(&stats);
+			InitAdditionalStats(uint16_temp_vectors[this], ColumnSegment::additional_stats_uint16, stats);
+			uint16_temp_vectors.erase(this);
 			break;
 		case PhysicalType::UINT32:
-			InitAdditionalStats(this->uint32_temp_vectors[this], ColumnSegment::additional_stats_uint32, stats);
-			this->uint32_temp_vectors.erase(&stats);
+			InitAdditionalStats(uint32_temp_vectors[this], ColumnSegment::additional_stats_uint32, stats);
+			uint32_temp_vectors.erase(this);
 			break;
 		case PhysicalType::UINT64:
-			InitAdditionalStats(this->uint64_temp_vectors[this], ColumnSegment::additional_stats_uint64, stats);
-			this->uint64_temp_vectors.erase(&stats);
+			InitAdditionalStats(uint64_temp_vectors[this], ColumnSegment::additional_stats_uint64, stats);
+			uint64_temp_vectors.erase(this);
 			break;
 		case PhysicalType::UINT128:
-			InitAdditionalStats(this->uhugeint_temp_vectors[this], ColumnSegment::additional_stats_uhugeint, stats);
-			this->uhugeint_temp_vectors.erase(&stats);
+			InitAdditionalStats(uhugeint_temp_vectors[this], ColumnSegment::additional_stats_uhugeint, stats);
+			uhugeint_temp_vectors.erase(this);
 			break;
 		case PhysicalType::FLOAT:
-			InitAdditionalStats(this->float_temp_vectors[this], ColumnSegment::additional_stats_float, stats);
-			this->float_temp_vectors.erase(&stats);
+			InitAdditionalStats(float_temp_vectors[this], ColumnSegment::additional_stats_float, stats);
+			float_temp_vectors.erase(this);
 			break;
 		case PhysicalType::DOUBLE:
-			InitAdditionalStats(this->double_temp_vectors[this], ColumnSegment::additional_stats_double, stats);
-			this->double_temp_vectors.erase(&stats);
+			InitAdditionalStats(double_temp_vectors[this], ColumnSegment::additional_stats_double, stats);
+			double_temp_vectors.erase(this);
 			break;
 		case PhysicalType::VARCHAR:
-			InitAdditionalStats(this->string_temp_vectors[this], ColumnSegment::additional_stats_string, stats);
-			this->string_temp_vectors.erase(&stats);
+			InitAdditionalStats(string_temp_vectors[this], ColumnSegment::additional_stats_string, stats);
+			string_temp_vectors.erase(this);
 			break;
 		default:
 			throw InternalException("Unsupported type for appending to numeric cluster stats");
@@ -373,72 +359,61 @@ public:
 		map_mutex.lock();
 		switch (type.InternalType()) {
 		case PhysicalType::BOOL:
-			InitAdditionalStats(this->bool_temp_vectors[this], ColumnSegment::additional_stats_bool, stats->statistics);
-			this->bool_temp_vectors.erase(this);
+			InitAdditionalStats(bool_temp_vectors[this], ColumnSegment::additional_stats_bool, stats->statistics);
+			bool_temp_vectors.erase(this);
 			break;
 		case PhysicalType::INT8:
-			InitAdditionalStats(this->int8_temp_vectors[this], ColumnSegment::additional_stats_int8, stats->statistics);
-			this->int8_temp_vectors.erase(this);
+			InitAdditionalStats(int8_temp_vectors[this], ColumnSegment::additional_stats_int8, stats->statistics);
+			int8_temp_vectors.erase(this);
 			break;
 		case PhysicalType::INT16:
-			InitAdditionalStats(this->int16_temp_vectors[this], ColumnSegment::additional_stats_int16,
-			                    stats->statistics);
-			this->int16_temp_vectors.erase(this);
+			InitAdditionalStats(int16_temp_vectors[this], ColumnSegment::additional_stats_int16, stats->statistics);
+			int16_temp_vectors.erase(this);
 			break;
 		case PhysicalType::INT32:
-			InitAdditionalStats(this->int32_temp_vectors[this], ColumnSegment::additional_stats_int32,
-			                    stats->statistics);
-			this->int32_temp_vectors.erase(this);
+			InitAdditionalStats(int32_temp_vectors[this], ColumnSegment::additional_stats_int32, stats->statistics);
+			int32_temp_vectors.erase(this);
 			break;
 		case PhysicalType::INT64:
-			InitAdditionalStats(this->int64_temp_vectors[this], ColumnSegment::additional_stats_int64,
-			                    stats->statistics);
-			this->int64_temp_vectors.erase(this);
+			InitAdditionalStats(int64_temp_vectors[this], ColumnSegment::additional_stats_int64, stats->statistics);
+			int64_temp_vectors.erase(this);
 			break;
 		case PhysicalType::INT128:
-			InitAdditionalStats(this->hugeint_temp_vectors[this], ColumnSegment::additional_stats_hugeint,
-			                    stats->statistics);
-			this->hugeint_temp_vectors.erase(this);
+			InitAdditionalStats(hugeint_temp_vectors[this], ColumnSegment::additional_stats_hugeint, stats->statistics);
+			hugeint_temp_vectors.erase(this);
 			break;
 		case PhysicalType::UINT8:
-			InitAdditionalStats(this->uint8_temp_vectors[this], ColumnSegment::additional_stats_uint8,
-			                    stats->statistics);
-			this->uint8_temp_vectors.erase(this);
+			InitAdditionalStats(uint8_temp_vectors[this], ColumnSegment::additional_stats_uint8, stats->statistics);
+			uint8_temp_vectors.erase(this);
 			break;
 		case PhysicalType::UINT16:
-			InitAdditionalStats(this->uint16_temp_vectors[this], ColumnSegment::additional_stats_uint16,
-			                    stats->statistics);
-			this->uint16_temp_vectors.erase(this);
+			InitAdditionalStats(uint16_temp_vectors[this], ColumnSegment::additional_stats_uint16, stats->statistics);
+			uint16_temp_vectors.erase(this);
 			break;
 		case PhysicalType::UINT32:
-			InitAdditionalStats(this->uint32_temp_vectors[this], ColumnSegment::additional_stats_uint32,
-			                    stats->statistics);
-			this->uint32_temp_vectors.erase(this);
+			InitAdditionalStats(uint32_temp_vectors[this], ColumnSegment::additional_stats_uint32, stats->statistics);
+			uint32_temp_vectors.erase(this);
 			break;
 		case PhysicalType::UINT64:
-			InitAdditionalStats(this->uint64_temp_vectors[this], ColumnSegment::additional_stats_uint64,
-			                    stats->statistics);
-			this->uint64_temp_vectors.erase(this);
+			InitAdditionalStats(uint64_temp_vectors[this], ColumnSegment::additional_stats_uint64, stats->statistics);
+			uint64_temp_vectors.erase(this);
 			break;
 		case PhysicalType::UINT128:
-			InitAdditionalStats(this->uhugeint_temp_vectors[this], ColumnSegment::additional_stats_uhugeint,
+			InitAdditionalStats(uhugeint_temp_vectors[this], ColumnSegment::additional_stats_uhugeint,
 			                    stats->statistics);
-			this->uhugeint_temp_vectors.erase(this);
+			uhugeint_temp_vectors.erase(this);
 			break;
 		case PhysicalType::FLOAT:
-			InitAdditionalStats(this->float_temp_vectors[this], ColumnSegment::additional_stats_float,
-			                    stats->statistics);
-			this->float_temp_vectors.erase(this);
+			InitAdditionalStats(float_temp_vectors[this], ColumnSegment::additional_stats_float, stats->statistics);
+			float_temp_vectors.erase(this);
 			break;
 		case PhysicalType::DOUBLE:
-			InitAdditionalStats(this->double_temp_vectors[this], ColumnSegment::additional_stats_double,
-			                    stats->statistics);
-			this->double_temp_vectors.erase(this);
+			InitAdditionalStats(double_temp_vectors[this], ColumnSegment::additional_stats_double, stats->statistics);
+			double_temp_vectors.erase(this);
 			break;
 		case PhysicalType::VARCHAR:
-			InitAdditionalStats(this->string_temp_vectors[this], ColumnSegment::additional_stats_string,
-			                    stats->statistics);
-			this->string_temp_vectors.erase(this);
+			InitAdditionalStats(string_temp_vectors[this], ColumnSegment::additional_stats_string, stats->statistics);
+			string_temp_vectors.erase(this);
 			break;
 		default:
 			throw InternalException("Unsupported type for appending to numeric cluster stats");
@@ -552,6 +527,10 @@ public:
 		default:
 			throw InternalException("Unsupported type querying additional stats");
 		}
+	}
+
+	inline SegmentStatistics *GetStats() {
+		return stats.get();
 	}
 
 protected:
