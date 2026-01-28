@@ -409,3 +409,5 @@ l_shipdate.csv
 temp.csv
 correctness_test_*/*
 4k/*
+tpcc.sql
+tpcc/*
