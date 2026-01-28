@@ -1,0 +1,2 @@
+Table_name,min_max_size,cluster_size,bloom_size
+lineitem,1456400,58723182400,292736400

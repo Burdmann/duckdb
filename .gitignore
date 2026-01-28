@@ -411,3 +411,4 @@ correctness_test_*/*
 4k/*
 tpcc.sql
 tpcc/*
+l_comment.csv
