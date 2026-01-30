@@ -1,2 +1,2 @@
 Table_name,min_max_size,cluster_size,bloom_size,always_prune_size
-lineitem,1456400,36817792,292736400,1460800
+lineitem,1460800,13556224,293620800,1460800

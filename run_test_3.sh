@@ -1,13 +1,13 @@
-dir="xperiments_results/test_comment"
+dir="xperiments_results/test_comment_i"
 # dir="."
 mkdir -p $dir/processed
 cat template.csv > $dir/raw_data_min_max.csv
 cat template.csv > $dir/raw_data_cluster.csv
 cat template.csv > $dir/raw_data_bloom.csv
 cat template.csv > $dir/raw_data_always_prune.csv
-./build/release/duckdb_min_max -f sql_queries_test_2.sql 2>> $dir/raw_data_min_max.csv
-./build/release/duckdb_cluster -f sql_queries_test_2.sql 2>> $dir/raw_data_cluster.csv
-./build/release/duckdb_bloom -f sql_queries_test_2.sql 2>> $dir/raw_data_bloom.csv
+./build/release/duckdb_min_max -f sql_queries_test_3.sql 2>> $dir/raw_data_min_max.csv
+./build/release/duckdb_cluster -f sql_queries_test_3.sql 2>> $dir/raw_data_cluster.csv
+./build/release/duckdb_bloom -f sql_queries_test_3.sql 2>> $dir/raw_data_bloom.csv
 ./build/release/duckdb_always_prune -f sql_queries_test_3.sql 2>> $dir/raw_data_always_prune.csv
 python3 data_processor.py 1 100 50 $dir/raw_data_min_max.csv $dir/raw_data_cluster.csv $dir/raw_data_bloom.csv $dir/raw_data_always_prune.csv
 mv pruning.csv $dir/processed/

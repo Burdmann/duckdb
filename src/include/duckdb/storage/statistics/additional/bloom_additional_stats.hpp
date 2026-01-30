@@ -1,7 +1,7 @@
 //===----------------------------------------------------------------------===//
 //                         DuckDB
 //
-// duckdb/storage/statistics/additional/empty_additional_stats.hpp
+// duckdb/storage/statistics/additional/bloom_additional_stats.hpp
 //
 //
 //===----------------------------------------------------------------------===//

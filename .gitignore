@@ -361,13 +361,6 @@ tools/pythonpkg/duckdb_build/
 
 test-big.csv
 lineitem-shuffled.csv
-raw_data_bloom.csv
-raw_data_cluster.csv
-raw_data_min_max.csv
-raw_data_test.csv
-raw_data_bloom_only.csv
-raw_data_cluster_only.csv
-raw_data_min_max_2.csv
 customer.csv
 lineitem.csv
 nation.csv
@@ -412,3 +405,5 @@ correctness_test_*/*
 tpcc.sql
 tpcc/*
 l_comment.csv
+l_comment_i.csv
+raw_data_*.csv

@@ -1,7 +1,7 @@
 //===----------------------------------------------------------------------===//
 //                         DuckDB
 //
-// duckdb/storage/statistics/additional/empty_additional_stats.hpp
+// duckdb/storage/statistics/additional/cluster_additional_stats.hpp
 //
 //
 //===----------------------------------------------------------------------===//
@@ -17,11 +17,13 @@
 
 namespace duckdb {
 
+constexpr static uint32_t MAX_NUMBER_OF_CLUSTERS = 100;
+constexpr static uint32_t MAX_STRING_MINMAX_SIZE = 8;
+
 template <class T>
 class ClusterAdditionalStats : public AdditionalStats<T> {
 private:
 	unsigned int cluster_count = 0;
-	constexpr static uint32_t MAX_NUMBER_OF_CLUSTERS = 100;
 	std::vector<T> min_values;
 	std::vector<T> max_values;
 	static bool ConstantExactRange(T min, T max, T constant) {
@@ -184,8 +186,6 @@ public:
 template <>
 class ClusterAdditionalStats<string_t> : public AdditionalStats<string_t> {
 private:
-	constexpr static uint32_t MAX_STRING_MINMAX_SIZE = 8;
-	constexpr static uint32_t MAX_NUMBER_OF_CLUSTERS = 2000;
 	unsigned int cluster_count = 0;
 	std::vector<string_t> min_values;
 	std::vector<string_t> max_values;
@@ -355,7 +355,7 @@ public:
 
 	inline static size_t Size_implementation(AdditionalStats<string_t> *stats) {
 		ClusterAdditionalStats<string_t> *nstats = (ClusterAdditionalStats<string_t> *)stats;
-		return 2 * (sizeof(string_t) + MAX_NUMBER_OF_CLUSTERS) * nstats->cluster_count + sizeof(*nstats);
+		return 2 * (sizeof(string_t) + MAX_STRING_MINMAX_SIZE) * nstats->cluster_count + sizeof(*nstats);
 	}
 	inline static void Serialise_implementation(AdditionalStats<string_t> *stats) {
 	}
