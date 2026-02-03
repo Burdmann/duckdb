@@ -347,6 +347,8 @@ void BaseStatistics::Serialize(Serializer &serializer) const {
 			break;
 		}
 	});
+	serializer.WriteProperty(104, "additional_stats_vector", (uint64_t)additional_stats_vector);
+	serializer.WriteProperty(105, "additional_stats_index", additional_stats_index);
 }
 
 BaseStatistics BaseStatistics::Deserialize(Deserializer &deserializer) {
@@ -385,6 +387,12 @@ BaseStatistics BaseStatistics::Deserialize(Deserializer &deserializer) {
 			break;
 		}
 	});
+
+	auto additional_stats_vector = (void *)deserializer.ReadProperty<uint64_t>(104, "additional_stats_vector");
+	auto additional_stats_index = deserializer.ReadProperty<int>(105, "additional_stats_index");
+
+	stats.additional_stats_vector = additional_stats_vector;
+	stats.additional_stats_index = additional_stats_index;
 
 	return stats;
 }

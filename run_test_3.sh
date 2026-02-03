@@ -1,4 +1,4 @@
-dir="xperiments_results/test_comment_i"
+dir="xperiments_results/test_comment_i_sf20"
 # dir="."
 mkdir -p $dir/processed
 cat template.csv > $dir/raw_data_min_max.csv

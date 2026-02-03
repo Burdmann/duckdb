@@ -177,6 +177,7 @@ public:
 	static std::vector<ADDITIONAL_STATS<double>> additional_stats_double;
 	static std::vector<ADDITIONAL_STATS<string_t>> additional_stats_string;
 	static uint64_t scanned_count;
+	static uint64_t unnecessary_scanned_count;
 	static bool scanned_first_row;
 	idx_t column_idx = -1;
 
