@@ -37,6 +37,7 @@ std::vector<ADDITIONAL_STATS<float>> ColumnSegment::additional_stats_float;
 std::vector<ADDITIONAL_STATS<double>> ColumnSegment::additional_stats_double;
 std::vector<ADDITIONAL_STATS<string_t>> ColumnSegment::additional_stats_string;
 uint64_t ColumnSegment::scanned_count;
+uint64_t ColumnSegment::unnecessary_scanned_count;
 bool ColumnSegment::scanned_first_row;
 
 //===--------------------------------------------------------------------===//
