@@ -407,3 +407,5 @@ tpcc/*
 l_comment.csv
 l_comment_i.csv
 raw_data_*.csv
+l_comment_i-big.csv
+l_comment-big.csv
