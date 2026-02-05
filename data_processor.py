@@ -1,14 +1,17 @@
 import duckdb
 import sys
+import os
 
 NUM_TABLES = int(sys.argv[1])
 NUM_QUERIES = int(sys.argv[2])
 NUM_ITERATIONS = int(sys.argv[3])
 in_files = sys.argv[4:]
 
+ATTACHED = True
 NUM_STATS = len(in_files)
-QUERIES_START = 2*NUM_TABLES+NUM_QUERIES+2
-names = ["_".join(infile.split("/")[-1].split('.')[0].split('_')[2:]) for infile in in_files]
+QUERIES_START = 2*NUM_TABLES+NUM_QUERIES+2 + (2 if ATTACHED else 0)
+# names = ["_".join(infile.split("/")[-1].split('.')[0].split('_')[2:]) for infile in in_files]
+names = ["Min/max","Min/max clusters","Bloom filter","Prune everything"]
 
 times = [[] for _ in range(NUM_STATS)]
 rows_scanned = [[] for _ in range(NUM_STATS)]
@@ -16,23 +19,26 @@ sizes = [[] for _ in range(NUM_STATS)]
 ingestion_times = [[] for _ in range(NUM_STATS)]
 tables = [[] for _ in range(NUM_STATS)]
 
-
-duckdb.execute(f"CREATE TABLE Result_time (Query INT, {", ".join([f'{name}_time FLOAT' for name in names])});")
-duckdb.execute(f"CREATE TABLE Result_pruning (Query INT, {", ".join([f'{name}_rows_scanned FLOAT' for name in names])});")
-duckdb.execute(f"CREATE TABLE Result_size (Table_name VARCHAR, {", ".join([f'{name}_size INT64' for name in names])});")
-duckdb.execute(f"CREATE TABLE Result_ingestion (Table_name VARCHAR, {", ".join([f'{name}_ingestion_time FLOAT' for name in names])});")
+if os.path.exists("test.db"):
+    os.remove("test.db")
+duckdb.execute("ATTACH 'test.db'")
+duckdb.execute("USE test")
+duckdb.execute(f"CREATE TABLE Result_time (Query INT, {", ".join([f'{name} FLOAT' for name in names])});")
+duckdb.execute(f"CREATE TABLE Result_pruning (Query INT, {", ".join([f'{name} FLOAT' for name in names])});")
+duckdb.execute(f"CREATE TABLE Result_size (Table_name VARCHAR, {", ".join([f'{name} INT64' for name in names])});")
+duckdb.execute(f"CREATE TABLE Result_ingestion (Table_name VARCHAR, {", ".join([f'{name} FLOAT' for name in names])});")
 for idx,in_file in enumerate(in_files):
     duckdb.execute(f"CREATE TABLE tbl AS SELECT * FROM read_csv('{in_file}',max_line_size=100000000);")
     duckdb.execute("CREATE TABLE times AS SELECT start_time,end_time,t1.CommandID AS CommandID FROM (SELECT Time as end_time,CommandID FROM tbl WHERE type = 'SQL_COMMAND_RUN_END') t1 JOIN (SELECT Time as start_time,CommandID FROM tbl WHERE type = 'SQL_COMMAND_RUN_START') t2 on t1.CommandID = t2.commandID;")
 
     for i in range(NUM_TABLES):
-        sizes[idx].append(duckdb.execute(f"SELECT COALESCE(SUM(CAST(Data->'size' AS INTEGER)),0) FROM tbl WHERE type = 'END_INITIALISE_ADDITIONAL_STATS' AND CommandID = {NUM_TABLES+i};").fetchone()[0])
-        ingestion_times[idx].append(duckdb.execute(f"SELECT ROUND((end_time-start_time)/1000000000.0,5) FROM times WHERE CommandID = {NUM_TABLES+i}").fetchone()[0])
-        tables[idx].append(duckdb.execute(f"SELECT CAST(Data->'command' AS VARCHAR) FROM tbl WHERE type='SQL_COMMAND_RUN_START' AND CommandID = {NUM_TABLES+i}").fetchone()[0].split()[1])
+        sizes[idx].append(duckdb.execute(f"SELECT COALESCE(SUM(CAST(Data->'size' AS INTEGER)),0) FROM tbl WHERE type = 'END_INITIALISE_ADDITIONAL_STATS' AND CommandID = {NUM_TABLES+i+(2 if ATTACHED else 0)};").fetchone()[0])
+        ingestion_times[idx].append(duckdb.execute(f"SELECT ROUND((end_time-start_time)/1000000000.0,5) FROM times WHERE CommandID = {NUM_TABLES+i+(2 if ATTACHED else 0)}").fetchone()[0])
+        tables[idx].append(duckdb.execute(f"SELECT CAST(Data->'command' AS VARCHAR) FROM tbl WHERE type='SQL_COMMAND_RUN_START' AND CommandID = {NUM_TABLES+i+(2 if ATTACHED else 0)}").fetchone()[0].split()[1])
 
     for i in range(NUM_QUERIES):
         times[idx].append(duckdb.execute(f"SELECT ROUND(MEDIAN(end_time-start_time)/1000000000.0,5) FROM times WHERE CommandID >= {QUERIES_START+NUM_ITERATIONS*i} AND CommandID < {QUERIES_START+NUM_ITERATIONS*(1+i)};").fetchone()[0])
-        rows_scanned[idx].append(duckdb.execute(f"SELECT ROUND(SUM(CAST(Data->'count' AS INTEGER))/1000000.0,5) AS val FROM tbl WHERE type = 'SCANNED_ROWS' and CommandID = {2*NUM_TABLES+1+i};").fetchone()[0])
+        rows_scanned[idx].append(duckdb.execute(f"SELECT ROUND(SUM(CAST(Data->'count' AS INTEGER))/1000000.0,5) AS val FROM tbl WHERE type = 'SCANNED_ROWS' and CommandID = {2*NUM_TABLES+1+i+(2 if ATTACHED else 0)};").fetchone()[0])
 
     duckdb.execute(f"DROP TABLE tbl;")
     duckdb.execute(f"DROP TABLE times;")

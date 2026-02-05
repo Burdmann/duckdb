@@ -1,5 +1,7 @@
+ATTACH 'test.db';
+USE test;
 CREATE TABLE lineitem(l_comment BIGINT NOT NULL);;
-COPY lineitem FROM 'l_comment_i.csv' (FORMAT 'csv', force_not_null ('l_comment'), delimiter ',', header 1);
+COPY lineitem FROM 'l_comment_i-big.csv' (FORMAT 'csv', force_not_null ('l_comment'), delimiter ',', header 1);
 SET threads TO 1;
 SELECT * FROM lineitem WHERE l_comment = 59623932661609202;
 SELECT * FROM lineitem WHERE l_comment = 38798806986109676;

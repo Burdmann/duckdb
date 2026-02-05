@@ -1,0 +1,2 @@
+Table_name,Min/max,Min/max clusters,Bloom filter,Prune everything
+lineitem,15.37646,53.68856,12.67788,8.4353

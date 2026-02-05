@@ -1,5 +1,7 @@
+ATTACH 'test.db';
+USE test;
 CREATE TABLE lineitem(l_comment VARCHAR NOT NULL);;
-COPY lineitem FROM 'l_comment.csv' (FORMAT 'csv', force_not_null ('l_comment'), delimiter ',', header 1);
+COPY lineitem FROM 'l_comment-big.csv' (FORMAT 'csv', force_not_null ('l_comment'), delimiter ',', header 1, parallel false);
 SET threads TO 1;
 SELECT * FROM lineitem WHERE l_comment = 'ittis erat ';
 SELECT * FROM lineitem WHERE l_comment = 'Duis vel sapien tempor,';
