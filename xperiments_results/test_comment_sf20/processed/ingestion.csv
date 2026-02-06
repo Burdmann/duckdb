@@ -1,2 +1,2 @@
-Table_name,min_max_ingestion_time,cluster_ingestion_time,bloom_ingestion_time,always_prune_ingestion_time
-lineitem,3.49556,21.2819,13.50217,1.98555
+Name,Unit,Table_name,Min/max,Min/max clusters,Bloom filter,Prune everything
+Ingestion,s,lineitem,3.49556,21.2819,13.50217,1.98555
