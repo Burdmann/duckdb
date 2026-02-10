@@ -18,8 +18,8 @@ public:
 	static uint64_t command_count;
 
 	static inline uint64_t GetTime() {
-		auto duration = std::chrono::high_resolution_clock::now().time_since_epoch();
-		return std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
+		auto duration = std::chrono::steady_clock::now().time_since_epoch();
+		return std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
 	}
 };
 

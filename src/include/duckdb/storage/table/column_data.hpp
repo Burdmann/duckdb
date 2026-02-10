@@ -432,11 +432,11 @@ public:
 		ADDITIONAL_STATS<T> *astats = &astats_vector[stats.additional_stats_index];
 		uint64_t start_time = Util::GetTime();
 		FilterPropagateResult result = astats->Query(astats, comparison_type, constant);
-		fprintf(stderr,
-		        "%lx,%lu,%lu,EVAL_ADDITIONAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
-		        "\"\"start_time\"\":%lu,\"\"result\"\":%u}\"\n",
-		        duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), &stats, astats->name,
-		        start_time, (unsigned int)result);
+		// fprintf(stderr,
+		//         "%lx,%lu,%lu,EVAL_ADDITIONAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
+		//         "\"\"start_time\"\":%lu,\"\"result\"\":%u}\"\n",
+		//         duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), &stats, astats->name,
+		//         start_time, (unsigned int)result);
 		return result;
 	}
 

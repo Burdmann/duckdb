@@ -7,7 +7,7 @@ NUM_QUERIES = int(sys.argv[2])
 NUM_ITERATIONS = int(sys.argv[3])
 in_files = sys.argv[4:]
 
-ATTACHED = False # FIXME:
+ATTACHED = True # FIXME:
 NUM_STATS = len(in_files)
 QUERIES_START = 2*NUM_TABLES+NUM_QUERIES+2 + (2 if ATTACHED else 0)
 # names = ["_".join(infile.split("/")[-1].split('.')[0].split('_')[2:]) for infile in in_files]
@@ -33,11 +33,11 @@ for idx,in_file in enumerate(in_files):
 
     for i in range(NUM_TABLES):
         sizes[idx].append(duckdb.execute(f"SELECT COALESCE(SUM(CAST(Data->'size' AS INTEGER)),0) FROM tbl WHERE type = 'END_INITIALISE_ADDITIONAL_STATS' AND CommandID = {NUM_TABLES+i+(2 if ATTACHED else 0)};").fetchone()[0])
-        ingestion_times[idx].append(duckdb.execute(f"SELECT ROUND((end_time-start_time)/1000000000.0,5) FROM times WHERE CommandID = {NUM_TABLES+i+(2 if ATTACHED else 0)}").fetchone()[0])
+        ingestion_times[idx].append(duckdb.execute(f"SELECT ROUND((end_time-start_time)/1000000.0,5) FROM times WHERE CommandID = {NUM_TABLES+i+(2 if ATTACHED else 0)}").fetchone()[0])
         tables[idx].append(duckdb.execute(f"SELECT CAST(Data->'command' AS VARCHAR) FROM tbl WHERE type='SQL_COMMAND_RUN_START' AND CommandID = {NUM_TABLES+i+(2 if ATTACHED else 0)}").fetchone()[0].split()[1])
 
     for i in range(NUM_QUERIES):
-        times[idx] += [l[0] for l in duckdb.execute(f"SELECT ROUND((end_time-start_time)/1000000000.0,5) FROM times WHERE CommandID >= {QUERIES_START+NUM_ITERATIONS*i} AND CommandID < {QUERIES_START+NUM_ITERATIONS*(1+i)};").fetchall()]
+        times[idx] += [l[0] for l in duckdb.execute(f"SELECT ROUND((end_time-start_time)/1000000.0,5) FROM times WHERE CommandID >= {QUERIES_START+NUM_ITERATIONS*i} AND CommandID < {QUERIES_START+NUM_ITERATIONS*(1+i)};").fetchall()]
         rows_scanned[idx].append(duckdb.execute(f"SELECT ROUND(SUM(CAST(Data->'count' AS INTEGER))/1000000.0,5) AS val FROM tbl WHERE type = 'SCANNED_ROWS' and CommandID = {2*NUM_TABLES+1+i+(2 if ATTACHED else 0)};").fetchone()[0])
 
     duckdb.execute(f"DROP TABLE tbl;")
@@ -46,7 +46,7 @@ for i in range(NUM_QUERIES):
     for j in range(NUM_ITERATIONS):
         idx = i*NUM_ITERATIONS+j
         duckdb.execute(f"INSERT INTO Result_time VALUES ('Time','s',{i+1},{",".join([str(time[idx]) for time in times])});")
-    duckdb.execute(f"INSERT INTO Result_pruning VALUES ('Rows scanned',millions,{i+1},{",".join([str(scanned[i]) for scanned in rows_scanned])});")
+    duckdb.execute(f"INSERT INTO Result_pruning VALUES ('Rows scanned','millions',{i+1},{",".join([str(scanned[i]) for scanned in rows_scanned])});")
 for i in range(NUM_TABLES):
     if (len(set([tables[j][i] for j in range(NUM_STATS)]))) != 1:
         raise "tables are not in the same order in given input files"

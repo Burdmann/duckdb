@@ -12,3 +12,4 @@ mv pruning.csv $dir/processed/
 mv query_time.csv $dir/processed/
 mv size.csv $dir/processed/
 mv ingestion.csv $dir/processed/
+python3 data_visualiser.py $dir/processed
