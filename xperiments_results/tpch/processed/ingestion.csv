@@ -1,9 +1,9 @@
-Table_name,min_max_ingestion_time,cluster_ingestion_time,bloom_ingestion_time
-customer,0.32839,0.68138,0.20305
-lineitem,7.37974,32.05072,11.47512
-nation,0.00343,0.00275,0.0035
-orders,1.17078,7.61652,1.96446
-part,0.20238,1.19679,0.36735
-partsupp,0.58699,0.11117,3.14056
-region,0.00269,0.00154,0.00296
-supplier,0.04384,0.07764,0.0372
+Name,Unit,Table_name,Min/max,Min/max clusters,Bloom filter
+Ingestion,s,customer,0.13031,0.69098,0.28885
+Ingestion,s,lineitem,7.54431,33.53923,10.65318
+Ingestion,s,nation,0.00183,0.00233,0.00243
+Ingestion,s,orders,1.26752,6.44364,2.0551
+Ingestion,s,part,0.19528,0.97292,0.29283
+Ingestion,s,partsupp,0.53329,2.49041,0.67799
+Ingestion,s,region,0.00129,0.00122,0.00182
+Ingestion,s,supplier,0.0349,0.06409,0.03783
