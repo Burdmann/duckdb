@@ -6,6 +6,7 @@ from collections import OrderedDict
 from sigfig import round
 
 data_folder = sys.argv[1]
+title = sys.argv[2]
 time_file = f"{data_folder}/query_time.csv"
 scan_count_file = f"{data_folder}/pruning.csv"
 files = [(time_file,'Time'),(scan_count_file,"Rows scanned")]
@@ -63,7 +64,7 @@ for attribute, measurement in data_means.items():
     unit = units[attribute]
     ax.set_ylabel(f'{attribute}{f" ({unit})" if unit else ""}',color=colour)
     ax.tick_params(axis='y', labelcolor=colour)
-    ax.set_title("Pruning & Time")
+    ax.set_title(title)
     ax.set_xticks(x + width, names)
 ax1.set_ymargin(0.2)
 ax2.set_ymargin(0.2)
