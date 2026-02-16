@@ -29,6 +29,7 @@
 #include "duckdb/storage/statistics/additional/cluster_additional_stats.hpp"
 #include "duckdb/storage/statistics/additional/bloom_additional_stats.hpp"
 #include "duckdb/storage/statistics/additional/always_prune_additional_stats.hpp"
+#include "duckdb/storage/statistics/additional/dictionary_additional_stats.hpp"
 
 namespace duckdb {
 class ColumnData;

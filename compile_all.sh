@@ -3,4 +3,4 @@ bin_dir="build/release"
 make STATS=EmptyAdditionalStats && mv $bin_dir/duckdb $bin_dir/duckdb_min_max
 make STATS=ClusterAdditionalStats && mv $bin_dir/duckdb $bin_dir/duckdb_cluster
 make STATS=BloomAdditionalStats && mv $bin_dir/duckdb $bin_dir/duckdb_bloom
-make STATS=AlwaysPruneAdditionalStats && mv $bin_dir/duckdb $bin_dir/duckdb_always_prune
+make STATS=DictionaryAdditionalStats && mv $bin_dir/duckdb $bin_dir/duckdb_dictionary

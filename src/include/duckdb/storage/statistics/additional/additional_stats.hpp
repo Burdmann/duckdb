@@ -20,6 +20,8 @@ template <class T>
 class BloomAdditionalStats;
 template <class T>
 class AlwaysPruneAdditionalStats;
+template <class T>
+class DictionaryAdditionalStats;
 
 template <class T>
 class AdditionalStats {

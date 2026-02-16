@@ -7,10 +7,11 @@ NUM_QUERIES = int(sys.argv[2])
 NUM_ITERATIONS = int(sys.argv[3])
 in_files = sys.argv[4:]
 
-ATTACHED = False # FIXME:
+ATTACHED = True # FIXME:
 NUM_STATS = len(in_files)
 QUERIES_START = 2*NUM_TABLES+NUM_QUERIES+2 + (2 if ATTACHED else 0)
-names = ["Min/max","Min/max clusters","Bloom filter"]
+# names = ["Min/max","Min/max clusters","Bloom filter"]
+names = ["Min/max","Min/max clusters","Bloom filter","Dictionary"]
 # names = ["Min/max","Min/max clusters","Bloom filter","Prune everything"]
 # names = ["200","500","1K","2K","5K","10K"]
 # names = ["100","200","500","1K","2K","5K"]
