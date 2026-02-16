@@ -16,7 +16,7 @@
 namespace duckdb {
 
 // to allow use of dictionaries only where there are few enough items in a partition
-constexpr static uint32_t MAX_NUMBER_OF_ITEMS = 1000;
+constexpr static uint32_t MAX_NUMBER_OF_ITEMS = 4000;
 
 template <class T>
 class DictionaryAdditionalStats : public AdditionalStats<T> {
@@ -42,10 +42,13 @@ public:
 		DictionaryAdditionalStats<T> *nstats = (DictionaryAdditionalStats<T> *)stats;
 		for (T item : data) {
 			nstats->dictionary.insert(item);
+			if (nstats->dictionary.size() > MAX_NUMBER_OF_ITEMS)
+				break;
 		}
 		if (nstats->dictionary.size() > MAX_NUMBER_OF_ITEMS) {
 			nstats->overfull = true;
 			nstats->dictionary.clear();
+			nstats->dictionary.rehash(1);
 		}
 	}
 	inline static FilterPropagateResult Query_implementation(AdditionalStats<T> *stats, ExpressionType comparison_type,

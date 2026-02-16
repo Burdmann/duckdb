@@ -1,2 +1,2 @@
 Name,Unit,Table_name,Min/max,Min/max clusters,Bloom filter,Dictionary
-Size,B,hits,175371000,1866614780,3683232000,6317207156
+Ingestion,s,hits,138.45898,309.9539,160.48537,160.81682
