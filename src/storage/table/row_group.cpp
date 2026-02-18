@@ -467,40 +467,38 @@ bool RowGroup::CheckZonemapSegments(CollectionScanState &state) {
 		auto base_column_idx = entry.table_column_index;
 		auto &filter = entry.filter;
 
-		bool between_case_skip = false;
+		// bool between_case_skip = false;
 
-		if (filter.filter_type == TableFilterType::CONJUNCTION_AND) {
-			auto &and_filter = filter.Cast<ConjunctionAndFilter>();
-			for (auto &child_filter : and_filter.child_filters) {
-				if (child_filter->filter_type == TableFilterType::CONSTANT_COMPARISON) {
-					auto &comp = child_filter->Cast<ConstantFilter>();
-					if (comp.comparison_type == ExpressionType::COMPARE_GREATERTHAN ||
-					    comp.comparison_type == ExpressionType::COMPARE_GREATERTHANOREQUALTO) {
-						contains_greaterthan[base_column_idx] = true;
-						lower_value[base_column_idx] = comp.constant;
-					}
-					if (comp.comparison_type == ExpressionType::COMPARE_LESSTHAN |
-					    comp.comparison_type == ExpressionType::COMPARE_LESSTHANOREQUALTO) {
-						contains_lessthan[base_column_idx] = true;
-						upper_value[base_column_idx] = comp.constant;
-					}
-					if (contains_greaterthan[base_column_idx] && contains_lessthan[base_column_idx]) {
-						// check if the filter is between 2 clusters (if we are using cluster stats)
-						between_case_skip =
-						    ColumnData::RangeQueryAdditionalStats(
-						        state.column_scans[column_idx].current->stats.statistics,
-						        comp.constant.type().InternalType(), lower_value[base_column_idx],
-						        upper_value[base_column_idx]) == FilterPropagateResult::FILTER_ALWAYS_FALSE;
-						// state.column_scans[column_idx].current->stats.statistics.additional_stats_vector;
-					}
-				}
-			}
-		}
+		// if (filter.filter_type == TableFilterType::CONJUNCTION_AND) {
+		// 	auto &and_filter = filter.Cast<ConjunctionAndFilter>();
+		// 	for (auto &child_filter : and_filter.child_filters) {
+		// 		if (child_filter->filter_type == TableFilterType::CONSTANT_COMPARISON) {
+		// 			auto &comp = child_filter->Cast<ConstantFilter>();
+		// 			if (comp.comparison_type == ExpressionType::COMPARE_GREATERTHAN ||
+		// 			    comp.comparison_type == ExpressionType::COMPARE_GREATERTHANOREQUALTO) {
+		// 				contains_greaterthan[base_column_idx] = true;
+		// 				lower_value[base_column_idx] = comp.constant;
+		// 			}
+		// 			if (comp.comparison_type == ExpressionType::COMPARE_LESSTHAN |
+		// 			    comp.comparison_type == ExpressionType::COMPARE_LESSTHANOREQUALTO) {
+		// 				contains_lessthan[base_column_idx] = true;
+		// 				upper_value[base_column_idx] = comp.constant;
+		// 			}
+		// 			if (contains_greaterthan[base_column_idx] && contains_lessthan[base_column_idx]) {
+		// 				check if the filter is between 2 clusters(if we are using cluster stats) between_case_skip =
+		// 				    ColumnData::RangeQueryAdditionalStats(
+		// 				        state.column_scans[column_idx].current->stats.statistics,
+		// 				        comp.constant.type().InternalType(), lower_value[base_column_idx],
+		// 				        upper_value[base_column_idx]) == FilterPropagateResult::FILTER_ALWAYS_FALSE;
+		// 			}
+		// 		}
+		// 	}
+		// }
 
 		auto prune_result = GetColumn(base_column_idx).CheckZonemap(state.column_scans[column_idx], filter);
 		if (prune_result != FilterPropagateResult::FILTER_ALWAYS_FALSE) {
-			if (!between_case_skip)
-				continue;
+			// if (!between_case_skip)
+			// 	continue;
 		}
 
 		// check zone map segment.

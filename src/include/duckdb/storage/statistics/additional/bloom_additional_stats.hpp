@@ -26,7 +26,7 @@ private:
 
 	// for register-sized blocks
 	constexpr static uint32_t K = 1;
-	constexpr static uint32_t BLOCK_COUNT = 500;
+	constexpr static uint32_t BLOCK_COUNT = 250;
 	constexpr static uint32_t BLOCK_SIZE = 1; // the unit here is word lengths (64 bits)
 	uint64_t bit_array[BLOCK_COUNT * BLOCK_SIZE];
 
