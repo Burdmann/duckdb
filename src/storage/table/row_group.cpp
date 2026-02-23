@@ -498,7 +498,7 @@ bool RowGroup::CheckZonemapSegments(CollectionScanState &state) {
 		auto prune_result = GetColumn(base_column_idx).CheckZonemap(state.column_scans[column_idx], filter);
 		if (prune_result != FilterPropagateResult::FILTER_ALWAYS_FALSE) {
 			// if (!between_case_skip)
-			// 	continue;
+			continue;
 		}
 
 		// check zone map segment.

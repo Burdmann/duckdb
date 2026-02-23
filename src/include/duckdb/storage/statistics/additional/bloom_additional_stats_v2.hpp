@@ -1,7 +1,7 @@
 //===----------------------------------------------------------------------===//
 //                         DuckDB
 //
-// duckdb/storage/statistics/additional/bloom_additional_stats.hpp
+// duckdb/storage/statistics/additional/bloom_additional_stats_v2.hpp
 //
 //
 //===----------------------------------------------------------------------===//
@@ -11,11 +11,12 @@
 #include <functional>
 #include "duckdb/storage/statistics/additional/additional_stats.hpp"
 #include "duckdb/common/enums/filter_propagate_result.hpp"
+#include <unordered_set>
 
 namespace duckdb {
 
 template <class T>
-class BloomAdditionalStats : public AdditionalStats<T> {
+class BloomAdditionalStats2 : public AdditionalStats<T> {
 private:
 	// following numbers are chosen based on https://www.vldb.org/pvldb/vol12/p502-lang.pdf
 
@@ -25,10 +26,15 @@ private:
 	// constexpr static uint32_t BLOCK_SIZE = 8; // the unit here is word lengths (64 bits)
 
 	// for register-sized blocks
-	constexpr static uint32_t K = 2;
+	constexpr static uint32_t K = 3;
 	constexpr static uint32_t BLOCK_COUNT = 1;
-	constexpr static uint32_t BLOCK_SIZE = 400; // the unit here is word lengths (64 bits)
-	uint64_t bit_array[BLOCK_COUNT * BLOCK_SIZE];
+	constexpr static uint32_t MAX_BLOCK_SIZE = 400; // the unit here is word lengths (64 bits)
+	constexpr static uint32_t TARGET_BITS_PER_KEY = 3;
+	constexpr static uint32_t MIN_BITS_PER_KEY = 1;
+
+	std::vector<uint64_t> bit_array;
+	uint32_t size;
+	bool overfull = false;
 
 	// https://github.com/PeterScott/murmur3
 	static inline uint64_t rotl64(uint64_t x, int8_t r) {
@@ -155,37 +161,35 @@ private:
 		return MurmurHash3_x64_128(&h, sizeof(size_t), 1);
 	}
 
-	static inline uint64_t *GetBlock(uint32_t h1, uint32_t h2, uint64_t *bit_array) {
-		uint32_t block_idx = h1 % BLOCK_COUNT;
-		uint32_t byte_idx = block_idx * BLOCK_SIZE;
-		return bit_array + byte_idx;
+	static inline uint64_t *GetBlock(uint32_t h1, uint32_t h2, uint64_t *bit_array, uint32_t size) {
+		return bit_array;
 	}
-	static inline bool QueryUtil(T value, uint64_t *bit_array) {
+	static inline bool QueryUtil(T value, uint64_t *bit_array, uint32_t size) {
 		size_t h = hash(value);
 		uint32_t h1 = h & ((1ull << 32) - 1);
 		uint32_t h2 = h >> 32;
 
 		bool result = true;
-		uint64_t *block = GetBlock(h1, h2, bit_array);
+		uint64_t *block = GetBlock(h1, h2, bit_array, size);
 		for (int i = 1; i <= K; i++) {
-			uint32_t bit_pos = (h1 + i * h2) % (64 * BLOCK_SIZE);
+			uint32_t bit_pos = (h1 + i * h2) % (64 * size);
 			uint64_t bit_idx = bit_pos % 64;
 			uint64_t byte_idx = bit_pos / 64;
 			result = result && ((block[byte_idx] >> bit_idx) & 1);
 		}
 		return result;
 	}
-	static inline void Insert(T new_value, uint64_t *bit_array) {
+	static inline void Insert(T new_value, uint64_t *bit_array, uint32_t size) {
 		size_t h = hash(new_value);
 		uint32_t h1 = h & ((1ull << 32) - 1);
 		uint32_t h2 = h >> 32;
 
 		// chosse block
-		uint64_t *block = GetBlock(h1, h2, bit_array);
+		uint64_t *block = GetBlock(h1, h2, bit_array, size);
 
 		// chosse k bits within the block to set
 		for (int i = 1; i <= K; i++) {
-			uint32_t bit_pos = (h1 + i * h2) % (64 * BLOCK_SIZE);
+			uint32_t bit_pos = (h1 + i * h2) % (64 * size);
 			uint64_t bit_idx = bit_pos % 64;
 			uint64_t byte_idx = bit_pos / 64;
 			block[byte_idx] |= (1ull << bit_idx);
@@ -194,9 +198,9 @@ private:
 
 public:
 	static inline const char *GetStaticName() {
-		return "bloom";
+		return "bloom v2";
 	}
-	inline BloomAdditionalStats(std::vector<T> &data) {
+	inline BloomAdditionalStats2(std::vector<T> &data) {
 		this->name = GetStaticName();
 		this->Initialise = &Initialise_implementation;
 		this->Query = &Query_implementation;
@@ -208,10 +212,21 @@ public:
 	}
 
 	inline static void Initialise_implementation(std::vector<T> &data, AdditionalStats<T> *stats) {
-		BloomAdditionalStats<T> *nstats = (BloomAdditionalStats<T> *)stats;
-		std::fill(nstats->bit_array, nstats->bit_array + (BLOCK_COUNT * BLOCK_SIZE), 0);
+		BloomAdditionalStats2<T> *nstats = (BloomAdditionalStats2<T> *)stats;
+		std::unordered_set<T> dictionary;
 		for (T element : data) {
-			Insert(element, nstats->bit_array);
+			dictionary.insert(element);
+		}
+
+		if (dictionary.size() * MIN_BITS_PER_KEY > MAX_BLOCK_SIZE * BLOCK_COUNT * 64) {
+			nstats->overfull = true;
+		}
+		nstats->size =
+		    std::min((unsigned int)dictionary.size() * TARGET_BITS_PER_KEY / 64, MAX_BLOCK_SIZE * BLOCK_COUNT);
+		nstats->bit_array.resize(nstats->size);
+
+		for (T element : data) {
+			Insert(element, nstats->bit_array.data(), nstats->size);
 		}
 	}
 
@@ -220,8 +235,8 @@ public:
 		switch (comparison_type) {
 		case ExpressionType::COMPARE_EQUAL:
 		case ExpressionType::COMPARE_NOT_DISTINCT_FROM: {
-			BloomAdditionalStats<T> *nstats = (BloomAdditionalStats<T> *)stats;
-			if (QueryUtil(constant, nstats->bit_array))
+			BloomAdditionalStats2<T> *nstats = (BloomAdditionalStats2<T> *)stats;
+			if (nstats->overfull || QueryUtil(constant, nstats->bit_array.data(), nstats->size))
 				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 
 			return FilterPropagateResult::FILTER_ALWAYS_FALSE;
@@ -236,8 +251,8 @@ public:
 	}
 
 	inline static size_t Size_implementation(AdditionalStats<T> *stats) {
-		BloomAdditionalStats<T> *nstats = (BloomAdditionalStats<T> *)stats;
-		return sizeof(*nstats);
+		BloomAdditionalStats2<T> *nstats = (BloomAdditionalStats2<T> *)stats;
+		return sizeof(*nstats) + 64 * nstats->size;
 	}
 	inline static void Serialise_implementation(AdditionalStats<T> *stats) {
 	}

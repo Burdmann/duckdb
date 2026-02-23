@@ -19,6 +19,8 @@ class ClusterAdditionalStats;
 template <class T>
 class BloomAdditionalStats;
 template <class T>
+class BloomAdditionalStats2;
+template <class T>
 class AlwaysPruneAdditionalStats;
 template <class T>
 class DictionaryAdditionalStats;
