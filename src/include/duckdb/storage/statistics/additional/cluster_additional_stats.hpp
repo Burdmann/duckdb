@@ -46,6 +46,7 @@ public:
 		this->Serialise = &Serialise_implementation;
 		this->Deserialise = &Deserialise_implementation;
 		this->Initialise(data, this);
+		this->type = ADDITIONAL_STATS_TYPE::CLUSTER;
 	}
 
 	inline static void Initialise_implementation(std::vector<T> &data, AdditionalStats<T> *stats) {
@@ -177,9 +178,9 @@ public:
 		ClusterAdditionalStats<T> *nstats = (ClusterAdditionalStats<T> *)stats;
 		return 2 * sizeof(T) * nstats->cluster_count + sizeof(*nstats);
 	}
-	inline static void Serialise_implementation(AdditionalStats<T> *stats) {
+	inline static void Serialise_implementation(AdditionalStats<T> *stats, Serializer &serializer) {
 	}
-	inline static void Deserialise_implementation(AdditionalStats<T> *stats) {
+	inline static void Deserialise_implementation(AdditionalStats<T> *stats, Deserializer &deserializer) {
 	}
 };
 
@@ -357,9 +358,9 @@ public:
 		ClusterAdditionalStats<string_t> *nstats = (ClusterAdditionalStats<string_t> *)stats;
 		return 2 * (sizeof(string_t) + MAX_STRING_MINMAX_SIZE) * nstats->cluster_count + sizeof(*nstats);
 	}
-	inline static void Serialise_implementation(AdditionalStats<string_t> *stats) {
+	inline static void Serialise_implementation(AdditionalStats<string_t> *stats, Serializer &serializer) {
 	}
-	inline static void Deserialise_implementation(AdditionalStats<string_t> *stats) {
+	inline static void Deserialise_implementation(AdditionalStats<string_t> *stats, Deserializer &deserializer) {
 	}
 };
 

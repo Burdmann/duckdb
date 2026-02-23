@@ -209,6 +209,7 @@ public:
 		this->Serialise = &Serialise_implementation;
 		this->Deserialise = &Deserialise_implementation;
 		this->Initialise(data, this);
+		this->type = ADDITIONAL_STATS_TYPE::BLOOM2;
 	}
 
 	inline static void Initialise_implementation(std::vector<T> &data, AdditionalStats<T> *stats) {
@@ -254,9 +255,9 @@ public:
 		BloomAdditionalStats2<T> *nstats = (BloomAdditionalStats2<T> *)stats;
 		return sizeof(*nstats) + 64 * nstats->size;
 	}
-	inline static void Serialise_implementation(AdditionalStats<T> *stats) {
+	inline static void Serialise_implementation(AdditionalStats<T> *stats, Serializer &serializer) {
 	}
-	inline static void Deserialise_implementation(AdditionalStats<T> *stats) {
+	inline static void Deserialise_implementation(AdditionalStats<T> *stats, Deserializer &deserializer) {
 	}
 };
 
