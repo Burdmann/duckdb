@@ -152,8 +152,7 @@ private:
 	unsafe_unique_array<BaseStatistics> child_stats;
 
 public:
-	void *additional_stats_vector = NULL;
-	int additional_stats_index = -1;
+	void *additional_stats = NULL;
 };
 
 template <>

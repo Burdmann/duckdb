@@ -162,20 +162,6 @@ public:
 	shared_ptr<BlockHandle> block;
 
 	// altp
-	static std::vector<ADDITIONAL_STATS<bool>> additional_stats_bool;
-	static std::vector<ADDITIONAL_STATS<uint8_t>> additional_stats_uint8;
-	static std::vector<ADDITIONAL_STATS<uint16_t>> additional_stats_uint16;
-	static std::vector<ADDITIONAL_STATS<uint32_t>> additional_stats_uint32;
-	static std::vector<ADDITIONAL_STATS<uint64_t>> additional_stats_uint64;
-	static std::vector<ADDITIONAL_STATS<uhugeint_t>> additional_stats_uhugeint;
-	static std::vector<ADDITIONAL_STATS<int8_t>> additional_stats_int8;
-	static std::vector<ADDITIONAL_STATS<int16_t>> additional_stats_int16;
-	static std::vector<ADDITIONAL_STATS<int32_t>> additional_stats_int32;
-	static std::vector<ADDITIONAL_STATS<int64_t>> additional_stats_int64;
-	static std::vector<ADDITIONAL_STATS<hugeint_t>> additional_stats_hugeint;
-	static std::vector<ADDITIONAL_STATS<float>> additional_stats_float;
-	static std::vector<ADDITIONAL_STATS<double>> additional_stats_double;
-	static std::vector<ADDITIONAL_STATS<string_t>> additional_stats_string;
 	static uint64_t scanned_count;
 	static uint64_t unnecessary_scanned_count;
 	static bool scanned_first_row;

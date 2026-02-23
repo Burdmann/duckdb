@@ -274,17 +274,14 @@ public:
 	}
 
 	template <class T>
-	void InitAdditionalStats(std::vector<T> &temp_storage, std::vector<ADDITIONAL_STATS<T>> &additional_stats,
-	                         BaseStatistics &stats) {
+	void InitAdditionalStats(std::vector<T> &temp_storage, BaseStatistics &stats) {
 		uint64_t start_time = Util::GetTime();
 		// fprintf(
 		//     stderr,
 		//     "%lx,%lu,%lu,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\"}\"\n",
 		//     Util::session_id, Util::command_count, start_time, &stats, ADDITIONAL_STATS<T>::GetStaticName());
-		additional_stats.push_back(ADDITIONAL_STATS<T>(temp_storage));
-		stats.additional_stats_vector = (void *)&additional_stats;
-		stats.additional_stats_index = additional_stats.size() - 1;
-		AdditionalStats<T> &astats = additional_stats.back();
+		stats.additional_stats = new ADDITIONAL_STATS<T>(temp_storage);
+		AdditionalStats<T> &astats = *((ADDITIONAL_STATS<T> *)stats.additional_stats);
 		temp_storage.clear();
 		fprintf(stderr,
 		        "%lx,%lu,%lu,END_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
@@ -297,59 +294,59 @@ public:
 		map_mutex.lock();
 		switch (type.InternalType()) {
 		case PhysicalType::BOOL:
-			InitAdditionalStats(bool_temp_vectors[this], ColumnSegment::additional_stats_bool, stats);
+			InitAdditionalStats(bool_temp_vectors[this], stats);
 			bool_temp_vectors.erase(this);
 			break;
 		case PhysicalType::INT8:
-			InitAdditionalStats(int8_temp_vectors[this], ColumnSegment::additional_stats_int8, stats);
+			InitAdditionalStats(int8_temp_vectors[this], stats);
 			int8_temp_vectors.erase(this);
 			break;
 		case PhysicalType::INT16:
-			InitAdditionalStats(int16_temp_vectors[this], ColumnSegment::additional_stats_int16, stats);
+			InitAdditionalStats(int16_temp_vectors[this], stats);
 			int16_temp_vectors.erase(this);
 			break;
 		case PhysicalType::INT32:
-			InitAdditionalStats(int32_temp_vectors[this], ColumnSegment::additional_stats_int32, stats);
+			InitAdditionalStats(int32_temp_vectors[this], stats);
 			int32_temp_vectors.erase(this);
 			break;
 		case PhysicalType::INT64:
-			InitAdditionalStats(int64_temp_vectors[this], ColumnSegment::additional_stats_int64, stats);
+			InitAdditionalStats(int64_temp_vectors[this], stats);
 			int64_temp_vectors.erase(this);
 			break;
 		case PhysicalType::INT128:
-			InitAdditionalStats(hugeint_temp_vectors[this], ColumnSegment::additional_stats_hugeint, stats);
+			InitAdditionalStats(hugeint_temp_vectors[this], stats);
 			hugeint_temp_vectors.erase(this);
 			break;
 		case PhysicalType::UINT8:
-			InitAdditionalStats(uint8_temp_vectors[this], ColumnSegment::additional_stats_uint8, stats);
+			InitAdditionalStats(uint8_temp_vectors[this], stats);
 			uint8_temp_vectors.erase(this);
 			break;
 		case PhysicalType::UINT16:
-			InitAdditionalStats(uint16_temp_vectors[this], ColumnSegment::additional_stats_uint16, stats);
+			InitAdditionalStats(uint16_temp_vectors[this], stats);
 			uint16_temp_vectors.erase(this);
 			break;
 		case PhysicalType::UINT32:
-			InitAdditionalStats(uint32_temp_vectors[this], ColumnSegment::additional_stats_uint32, stats);
+			InitAdditionalStats(uint32_temp_vectors[this], stats);
 			uint32_temp_vectors.erase(this);
 			break;
 		case PhysicalType::UINT64:
-			InitAdditionalStats(uint64_temp_vectors[this], ColumnSegment::additional_stats_uint64, stats);
+			InitAdditionalStats(uint64_temp_vectors[this], stats);
 			uint64_temp_vectors.erase(this);
 			break;
 		case PhysicalType::UINT128:
-			InitAdditionalStats(uhugeint_temp_vectors[this], ColumnSegment::additional_stats_uhugeint, stats);
+			InitAdditionalStats(uhugeint_temp_vectors[this], stats);
 			uhugeint_temp_vectors.erase(this);
 			break;
 		case PhysicalType::FLOAT:
-			InitAdditionalStats(float_temp_vectors[this], ColumnSegment::additional_stats_float, stats);
+			InitAdditionalStats(float_temp_vectors[this], stats);
 			float_temp_vectors.erase(this);
 			break;
 		case PhysicalType::DOUBLE:
-			InitAdditionalStats(double_temp_vectors[this], ColumnSegment::additional_stats_double, stats);
+			InitAdditionalStats(double_temp_vectors[this], stats);
 			double_temp_vectors.erase(this);
 			break;
 		case PhysicalType::VARCHAR:
-			InitAdditionalStats(string_temp_vectors[this], ColumnSegment::additional_stats_string, stats);
+			InitAdditionalStats(string_temp_vectors[this], stats);
 			string_temp_vectors.erase(this);
 			break;
 		default:
@@ -362,60 +359,59 @@ public:
 		map_mutex.lock();
 		switch (type.InternalType()) {
 		case PhysicalType::BOOL:
-			InitAdditionalStats(bool_temp_vectors[this], ColumnSegment::additional_stats_bool, stats->statistics);
+			InitAdditionalStats(bool_temp_vectors[this], stats->statistics);
 			bool_temp_vectors.erase(this);
 			break;
 		case PhysicalType::INT8:
-			InitAdditionalStats(int8_temp_vectors[this], ColumnSegment::additional_stats_int8, stats->statistics);
+			InitAdditionalStats(int8_temp_vectors[this], stats->statistics);
 			int8_temp_vectors.erase(this);
 			break;
 		case PhysicalType::INT16:
-			InitAdditionalStats(int16_temp_vectors[this], ColumnSegment::additional_stats_int16, stats->statistics);
+			InitAdditionalStats(int16_temp_vectors[this], stats->statistics);
 			int16_temp_vectors.erase(this);
 			break;
 		case PhysicalType::INT32:
-			InitAdditionalStats(int32_temp_vectors[this], ColumnSegment::additional_stats_int32, stats->statistics);
+			InitAdditionalStats(int32_temp_vectors[this], stats->statistics);
 			int32_temp_vectors.erase(this);
 			break;
 		case PhysicalType::INT64:
-			InitAdditionalStats(int64_temp_vectors[this], ColumnSegment::additional_stats_int64, stats->statistics);
+			InitAdditionalStats(int64_temp_vectors[this], stats->statistics);
 			int64_temp_vectors.erase(this);
 			break;
 		case PhysicalType::INT128:
-			InitAdditionalStats(hugeint_temp_vectors[this], ColumnSegment::additional_stats_hugeint, stats->statistics);
+			InitAdditionalStats(hugeint_temp_vectors[this], stats->statistics);
 			hugeint_temp_vectors.erase(this);
 			break;
 		case PhysicalType::UINT8:
-			InitAdditionalStats(uint8_temp_vectors[this], ColumnSegment::additional_stats_uint8, stats->statistics);
+			InitAdditionalStats(uint8_temp_vectors[this], stats->statistics);
 			uint8_temp_vectors.erase(this);
 			break;
 		case PhysicalType::UINT16:
-			InitAdditionalStats(uint16_temp_vectors[this], ColumnSegment::additional_stats_uint16, stats->statistics);
+			InitAdditionalStats(uint16_temp_vectors[this], stats->statistics);
 			uint16_temp_vectors.erase(this);
 			break;
 		case PhysicalType::UINT32:
-			InitAdditionalStats(uint32_temp_vectors[this], ColumnSegment::additional_stats_uint32, stats->statistics);
+			InitAdditionalStats(uint32_temp_vectors[this], stats->statistics);
 			uint32_temp_vectors.erase(this);
 			break;
 		case PhysicalType::UINT64:
-			InitAdditionalStats(uint64_temp_vectors[this], ColumnSegment::additional_stats_uint64, stats->statistics);
+			InitAdditionalStats(uint64_temp_vectors[this], stats->statistics);
 			uint64_temp_vectors.erase(this);
 			break;
 		case PhysicalType::UINT128:
-			InitAdditionalStats(uhugeint_temp_vectors[this], ColumnSegment::additional_stats_uhugeint,
-			                    stats->statistics);
+			InitAdditionalStats(uhugeint_temp_vectors[this], stats->statistics);
 			uhugeint_temp_vectors.erase(this);
 			break;
 		case PhysicalType::FLOAT:
-			InitAdditionalStats(float_temp_vectors[this], ColumnSegment::additional_stats_float, stats->statistics);
+			InitAdditionalStats(float_temp_vectors[this], stats->statistics);
 			float_temp_vectors.erase(this);
 			break;
 		case PhysicalType::DOUBLE:
-			InitAdditionalStats(double_temp_vectors[this], ColumnSegment::additional_stats_double, stats->statistics);
+			InitAdditionalStats(double_temp_vectors[this], stats->statistics);
 			double_temp_vectors.erase(this);
 			break;
 		case PhysicalType::VARCHAR:
-			InitAdditionalStats(string_temp_vectors[this], ColumnSegment::additional_stats_string, stats->statistics);
+			InitAdditionalStats(string_temp_vectors[this], stats->statistics);
 			string_temp_vectors.erase(this);
 			break;
 		default:
@@ -427,13 +423,11 @@ public:
 	template <class T>
 	static inline FilterPropagateResult QueryAdditionalStats(BaseStatistics &stats, ExpressionType comparison_type,
 	                                                         const T constant) {
-		if (stats.additional_stats_vector == NULL)
+		if (stats.additional_stats == NULL)
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
-		std::vector<ADDITIONAL_STATS<T>> &astats_vector =
-		    *((std::vector<ADDITIONAL_STATS<T>> *)stats.additional_stats_vector);
-		ADDITIONAL_STATS<T> *astats = &astats_vector[stats.additional_stats_index];
+		ADDITIONAL_STATS<T> &astats = *((ADDITIONAL_STATS<T> *)stats.additional_stats);
 		uint64_t start_time = Util::GetTime();
-		FilterPropagateResult result = astats->Query(astats, comparison_type, constant);
+		FilterPropagateResult result = astats.Query(&astats, comparison_type, constant);
 		// fprintf(stderr,
 		//         "%lx,%lu,%lu,EVAL_ADDITIONAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
 		//         "\"\"start_time\"\":%lu,\"\"result\"\":%u}\"\n",
@@ -480,13 +474,11 @@ public:
 
 	template <class T>
 	static inline FilterPropagateResult RangeQueryAdditionalStats(BaseStatistics &stats, const T start, const T end) {
-		if (stats.additional_stats_vector == NULL)
+		if (stats.additional_stats == NULL)
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
-		std::vector<ADDITIONAL_STATS<T>> &astats_vector =
-		    *((std::vector<ADDITIONAL_STATS<T>> *)stats.additional_stats_vector);
-		ADDITIONAL_STATS<T> *astats = &astats_vector[stats.additional_stats_index];
+		ADDITIONAL_STATS<T> &astats = *((ADDITIONAL_STATS<T> *)stats.additional_stats);
 		uint64_t start_time = Util::GetTime();
-		FilterPropagateResult result = astats->QueryRange(astats, start, end);
+		FilterPropagateResult result = astats.QueryRange(&astats, start, end);
 		// fprintf(stderr,
 		//         "%lx,%lu,%lu,EVAL_ADDITIONAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
 		//         "\"\"start_time\"\":%lu,\"\"result\"\":%u}\"\n",

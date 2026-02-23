@@ -41,6 +41,7 @@ void BaseStatistics::Construct(BaseStatistics &stats, LogicalType type) {
 }
 
 BaseStatistics::~BaseStatistics() {
+	delete this->additional_stats;
 }
 
 BaseStatistics::BaseStatistics(BaseStatistics &&other) noexcept {
@@ -49,8 +50,7 @@ BaseStatistics::BaseStatistics(BaseStatistics &&other) noexcept {
 	has_no_null = other.has_no_null;
 	distinct_count = other.distinct_count;
 	stats_union = other.stats_union;
-	additional_stats_vector = other.additional_stats_vector;
-	additional_stats_index = other.additional_stats_index;
+	additional_stats = other.additional_stats;
 	std::swap(child_stats, other.child_stats);
 }
 
@@ -60,8 +60,7 @@ BaseStatistics &BaseStatistics::operator=(BaseStatistics &&other) noexcept {
 	has_no_null = other.has_no_null;
 	distinct_count = other.distinct_count;
 	stats_union = other.stats_union;
-	additional_stats_vector = other.additional_stats_vector;
-	additional_stats_index = other.additional_stats_index;
+	additional_stats = other.additional_stats;
 	std::swap(child_stats, other.child_stats);
 	return *this;
 }
@@ -145,9 +144,8 @@ bool BaseStatistics::IsConstant() const {
 void BaseStatistics::Merge(const BaseStatistics &other) {
 	has_null = has_null || other.has_null;
 	has_no_null = has_no_null || other.has_no_null;
-	if (additional_stats_vector == NULL) {
-		additional_stats_vector = other.additional_stats_vector;
-		additional_stats_index = other.additional_stats_index;
+	if (additional_stats == NULL) {
+		additional_stats = other.additional_stats;
 	}
 	switch (GetStatsType()) {
 	case StatisticsType::NUMERIC_STATS:
@@ -263,8 +261,7 @@ void BaseStatistics::CopyBase(const BaseStatistics &other) {
 	has_null = other.has_null;
 	has_no_null = other.has_no_null;
 	distinct_count = other.distinct_count;
-	additional_stats_vector = other.additional_stats_vector;
-	additional_stats_index = other.additional_stats_index;
+	additional_stats = other.additional_stats;
 }
 
 void BaseStatistics::Set(StatsInfo info) {
@@ -347,8 +344,6 @@ void BaseStatistics::Serialize(Serializer &serializer) const {
 			break;
 		}
 	});
-	serializer.WriteProperty(104, "additional_stats_vector", (uint64_t)additional_stats_vector);
-	serializer.WriteProperty(105, "additional_stats_index", additional_stats_index);
 }
 
 BaseStatistics BaseStatistics::Deserialize(Deserializer &deserializer) {
@@ -387,12 +382,6 @@ BaseStatistics BaseStatistics::Deserialize(Deserializer &deserializer) {
 			break;
 		}
 	});
-
-	auto additional_stats_vector = (void *)deserializer.ReadProperty<uint64_t>(104, "additional_stats_vector");
-	auto additional_stats_index = deserializer.ReadProperty<int>(105, "additional_stats_index");
-
-	stats.additional_stats_vector = additional_stats_vector;
-	stats.additional_stats_index = additional_stats_index;
 
 	return stats;
 }
