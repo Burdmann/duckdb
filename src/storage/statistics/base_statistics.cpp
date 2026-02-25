@@ -9,6 +9,7 @@
 
 #include "duckdb/common/serializer/serializer.hpp"
 #include "duckdb/common/serializer/deserializer.hpp"
+#include "duckdb/storage/statistics/additional/additional_stats_util.hpp"
 
 #include <ctime>
 
@@ -41,7 +42,6 @@ void BaseStatistics::Construct(BaseStatistics &stats, LogicalType type) {
 }
 
 BaseStatistics::~BaseStatistics() {
-	delete this->additional_stats;
 }
 
 BaseStatistics::BaseStatistics(BaseStatistics &&other) noexcept {
@@ -344,6 +344,56 @@ void BaseStatistics::Serialize(Serializer &serializer) const {
 			break;
 		}
 	});
+	serializer.WriteProperty(104, "additional_stats", (uint64_t)additional_stats);
+	if (additional_stats != NULL) {
+		switch (GetType().InternalType()) {
+		case PhysicalType::BOOL:
+			AdditionalStatsUtil::SerialiseStats<bool>(serializer, (AdditionalStats<bool> *)additional_stats);
+			break;
+		case PhysicalType::INT8:
+			AdditionalStatsUtil::SerialiseStats<int8_t>(serializer, (AdditionalStats<int8_t> *)additional_stats);
+			break;
+		case PhysicalType::INT16:
+			AdditionalStatsUtil::SerialiseStats<int16_t>(serializer, (AdditionalStats<int16_t> *)additional_stats);
+			break;
+		case PhysicalType::INT32:
+			AdditionalStatsUtil::SerialiseStats<int32_t>(serializer, (AdditionalStats<int32_t> *)additional_stats);
+			break;
+		case PhysicalType::INT64:
+			AdditionalStatsUtil::SerialiseStats<int64_t>(serializer, (AdditionalStats<int64_t> *)additional_stats);
+			break;
+		case PhysicalType::INT128:
+			AdditionalStatsUtil::SerialiseStats<hugeint_t>(serializer, (AdditionalStats<hugeint_t> *)additional_stats);
+			break;
+		case PhysicalType::UINT8:
+			AdditionalStatsUtil::SerialiseStats<uint8_t>(serializer, (AdditionalStats<uint8_t> *)additional_stats);
+			break;
+		case PhysicalType::UINT16:
+			AdditionalStatsUtil::SerialiseStats<uint16_t>(serializer, (AdditionalStats<uint16_t> *)additional_stats);
+			break;
+		case PhysicalType::UINT32:
+			AdditionalStatsUtil::SerialiseStats<uint32_t>(serializer, (AdditionalStats<uint32_t> *)additional_stats);
+			break;
+		case PhysicalType::UINT64:
+			AdditionalStatsUtil::SerialiseStats<uint64_t>(serializer, (AdditionalStats<uint64_t> *)additional_stats);
+			break;
+		case PhysicalType::UINT128:
+			AdditionalStatsUtil::SerialiseStats<uhugeint_t>(serializer,
+			                                                (AdditionalStats<uhugeint_t> *)additional_stats);
+			break;
+		case PhysicalType::FLOAT:
+			AdditionalStatsUtil::SerialiseStats<float>(serializer, (AdditionalStats<float> *)additional_stats);
+			break;
+		case PhysicalType::DOUBLE:
+			AdditionalStatsUtil::SerialiseStats<double>(serializer, (AdditionalStats<double> *)additional_stats);
+			break;
+		case PhysicalType::VARCHAR:
+			AdditionalStatsUtil::SerialiseStats<string_t>(serializer, (AdditionalStats<string_t> *)additional_stats);
+			break;
+		default:
+			throw InternalException("Unsupported type querying additional stats");
+		}
+	}
 }
 
 BaseStatistics BaseStatistics::Deserialize(Deserializer &deserializer) {
@@ -382,7 +432,57 @@ BaseStatistics BaseStatistics::Deserialize(Deserializer &deserializer) {
 			break;
 		}
 	});
-
+	stats.additional_stats = (void *)deserializer.ReadProperty<uint64_t>(104, "additional_stats");
+	if (stats.additional_stats != NULL) {
+		void *additional_stats;
+		switch (stats.GetType().InternalType()) {
+		case PhysicalType::BOOL:
+			additional_stats = AdditionalStatsUtil::DeserialiseStats<bool>(deserializer);
+			break;
+		case PhysicalType::INT8:
+			additional_stats = AdditionalStatsUtil::DeserialiseStats<int8_t>(deserializer);
+			break;
+		case PhysicalType::INT16:
+			additional_stats = AdditionalStatsUtil::DeserialiseStats<int16_t>(deserializer);
+			break;
+		case PhysicalType::INT32:
+			additional_stats = AdditionalStatsUtil::DeserialiseStats<int32_t>(deserializer);
+			break;
+		case PhysicalType::INT64:
+			additional_stats = AdditionalStatsUtil::DeserialiseStats<int64_t>(deserializer);
+			break;
+		case PhysicalType::INT128:
+			additional_stats = AdditionalStatsUtil::DeserialiseStats<hugeint_t>(deserializer);
+			break;
+		case PhysicalType::UINT8:
+			additional_stats = AdditionalStatsUtil::DeserialiseStats<uint8_t>(deserializer);
+			break;
+		case PhysicalType::UINT16:
+			additional_stats = AdditionalStatsUtil::DeserialiseStats<uint16_t>(deserializer);
+			break;
+		case PhysicalType::UINT32:
+			additional_stats = AdditionalStatsUtil::DeserialiseStats<uint32_t>(deserializer);
+			break;
+		case PhysicalType::UINT64:
+			additional_stats = AdditionalStatsUtil::DeserialiseStats<uint64_t>(deserializer);
+			break;
+		case PhysicalType::UINT128:
+			additional_stats = AdditionalStatsUtil::DeserialiseStats<uhugeint_t>(deserializer);
+			break;
+		case PhysicalType::FLOAT:
+			additional_stats = AdditionalStatsUtil::DeserialiseStats<float>(deserializer);
+			break;
+		case PhysicalType::DOUBLE:
+			additional_stats = AdditionalStatsUtil::DeserialiseStats<double>(deserializer);
+			break;
+		case PhysicalType::VARCHAR:
+			additional_stats = AdditionalStatsUtil::DeserialiseStats<string_t>(deserializer);
+			break;
+		default:
+			throw InternalException("Unsupported type querying additional stats");
+		}
+	}
+	// delete additional_stats; // TODO: maybe don't delete in the future
 	return stats;
 }
 
@@ -446,14 +546,14 @@ void BaseStatistics::Verify(Vector &vector, const SelectionVector &sel, idx_t co
 		auto index = vdata.sel->get_index(idx);
 		bool row_is_valid = vdata.validity.RowIsValid(index);
 		if (row_is_valid && !has_no_null) {
-			throw InternalException(
-			    "Statistics mismatch: vector labeled as having only NULL values, but vector contains valid values: %s",
-			    vector.ToString(count));
+			throw InternalException("Statistics mismatch: vector labeled as having only NULL values, but vector "
+			                        "contains valid values: %s",
+			                        vector.ToString(count));
 		}
 		if (!row_is_valid && !has_null && !ignore_has_null) {
-			throw InternalException(
-			    "Statistics mismatch: vector labeled as not having NULL values, but vector contains null values: %s",
-			    vector.ToString(count));
+			throw InternalException("Statistics mismatch: vector labeled as not having NULL values, but vector "
+			                        "contains null values: %s",
+			                        vector.ToString(count));
 		}
 	}
 }
