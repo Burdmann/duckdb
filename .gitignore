@@ -363,6 +363,7 @@ test-big.csv
 lineitem-shuffled.csv
 customer.csv
 lineitem.csv
+
 nation.csv
 orders.csv
 part.csv
@@ -416,3 +417,7 @@ query_time.png
 size.png
 hits.csv
 hits-small.csv
+longs-sorted.csv
+.gitignore
+longs-queries.csv
+longs.csv
