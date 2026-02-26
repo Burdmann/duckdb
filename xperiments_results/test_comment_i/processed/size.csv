@@ -1,2 +1,0 @@
-Name,Unit,Table_name,Min/max,Min/max clusters,Bloom filter,Prune everything
-Size,B,lineitem,1460800,13556224,293620800,1460800

@@ -1,2 +1,0 @@
-Name,Unit,Table_name,Min/max,Min/max clusters,Bloom filter,Prune everything
-Ingestion,s,lineitem,9.82201,55.83773,13.9003,8.25515

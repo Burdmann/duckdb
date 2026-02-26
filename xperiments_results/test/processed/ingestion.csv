@@ -1,2 +1,0 @@
-Table_name,min_max_ingestion_time,cluster_ingestion_time,bloom_ingestion_time
-lineitem,1.90094,5.49777,2.68672

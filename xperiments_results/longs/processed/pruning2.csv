@@ -1,0 +1,2 @@
+Name,Unit,Query,Min/max,Min/max clusters,Bloom filter,Dictionary
+Rows scanned,millions,1,2000.0,1871.3959150000007,244.09641059999987,2000.0

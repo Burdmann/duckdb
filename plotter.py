@@ -27,8 +27,8 @@ X_LABEL_PAD = 24
 def plot_from_csv(csv_path, out_path):
     df = pd.read_csv(csv_path)
 
-    # Ignore first two rows
-    df = df.iloc[2:].reset_index(drop=True)
+    # Ignore first row
+    df = df.reset_index(drop=True)
 
     # Method columns (everything after column index 2)
     method_cols = df.columns[3:]
@@ -67,7 +67,7 @@ def plot_from_csv(csv_path, out_path):
     ax.tick_params(axis='y',
                    labelsize=FONTS["ytick"])
 
-    ax.set_ylabel("Rows Scanned (millions)",
+    ax.set_ylabel("Query time (seconds)",
                   fontsize=FONTS["ylabel"])
     ax.set_xlabel(X_LABEL_TEXT,
                   fontsize=FONTS["xlabel"],

@@ -1,2 +1,0 @@
-Table_name,min_max_size,cluster_size,bloom_size
-lineitem,1454800,7681344,292414800

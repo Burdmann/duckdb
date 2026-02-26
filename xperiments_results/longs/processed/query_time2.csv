@@ -1,0 +1,2 @@
+Name,Unit,Query,Min/max,Min/max clusters,Bloom filter,Dictionary
+Time,s,1,0.1786997540000017,0.17319082900000013,0.0639825139999998,0.17997483900000097
