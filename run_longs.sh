@@ -1,4 +1,4 @@
-dir="xperiments_results/tpch"
+dir="xperiments_results/longs"
 # dir="."
 mkdir -p $dir/processed
 cat template.csv > $dir/raw_data_min_max.csv
@@ -19,4 +19,3 @@ mv pruning.csv $dir/processed/
 mv query_time.csv $dir/processed/
 mv size.csv $dir/processed/
 mv ingestion.csv $dir/processed/
-python3 data_visualiser.py $dir/processed

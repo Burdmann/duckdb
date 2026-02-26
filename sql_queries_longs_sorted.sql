@@ -1,7 +1,7 @@
 ATTACH 'test.db';
 USE test;
 CREATE TABLE longs(longs UBIGINT NOT NULL);;
-COPY lineitem FROM 'longs-sorted.csv' (FORMAT 'csv', force_not_null ('longs'), delimiter ',', header 1);
+COPY longs FROM 'longs-sorted.csv' (FORMAT 'csv', force_not_null ('longs'), delimiter ',', header 1);
 SET threads TO 1;
 SELECT * FROM longs WHERE longs = 5596367027210521889;
 SELECT * FROM longs WHERE longs = 13212215280795447444;
@@ -103,7 +103,7 @@ SELECT * FROM longs WHERE longs = 3828170769420457620;
 SELECT * FROM longs WHERE longs = 15775860801483437805;
 SELECT * FROM longs WHERE longs = 1682549269306116839;
 SELECT * FROM longs WHERE longs = 2732424763965800344;
-RESET threads
+RESET threads;
 SELECT * FROM longs WHERE longs = 5596367027210521889;
 SELECT * FROM longs WHERE longs = 5596367027210521889;
 SELECT * FROM longs WHERE longs = 5596367027210521889;

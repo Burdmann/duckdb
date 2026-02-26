@@ -1,0 +1,25 @@
+Name,Unit,Table_name,Min/max,Min/max clusters,Bloom filter,Dictionary
+Ingestion,s,call_center,0.01054,0.01112,0.01589,0.01182
+Ingestion,s,catalog_page,0.04377,0.08162,0.05447,0.05385
+Ingestion,s,catalog_returns,0.61214,3.34816,0.79682,1.08136
+Ingestion,s,catalog_sales,6.04735,28.4651,7.08418,10.65521
+Ingestion,s,customer,0.50953,1.01748,0.58743,0.54855
+Ingestion,s,customer_address,0.5364,0.70753,0.56098,0.56739
+Ingestion,s,customer_demographics,0.5403,1.01127,0.69234,0.70366
+Ingestion,s,date_dim,0.48789,0.56472,0.50808,0.5556
+Ingestion,s,household_demographics,0.0081,0.00923,0.01129,0.00927
+Ingestion,s,income_band,0.00258,0.00274,0.00479,0.00585
+Ingestion,s,inventory,4.52255,20.501,7.84326,7.45346
+Ingestion,s,item,0.89013,1.05179,1.01259,0.87461
+Ingestion,s,promotion,0.00606,0.01591,0.00537,0.00701
+Ingestion,s,reason,0.00289,0.00515,0.00251,0.00426
+Ingestion,s,ship_mode,0.0028,0.00542,0.00276,0.00426
+Ingestion,s,store,0.00421,0.00659,0.00394,0.00464
+Ingestion,s,store_returns,1.24086,5.13625,2.53269,1.65207
+Ingestion,s,store_sales,8.52275,42.67457,10.58232,11.34758
+Ingestion,s,time_dim,0.13393,0.14952,0.15217,0.09952
+Ingestion,s,warehouse,0.00383,0.00429,0.0039,0.00407
+Ingestion,s,web_page,0.00842,0.00774,0.00876,0.01771
+Ingestion,s,web_returns,1.75213,2.71703,1.92321,1.47933
+Ingestion,s,web_sales,4.83676,15.60382,6.32891,5.56157
+Ingestion,s,web_site,0.00595,0.00534,0.00673,0.00479

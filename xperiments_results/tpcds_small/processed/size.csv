@@ -1,0 +1,49 @@
+Name,Unit,Table_name,Min/max,Min/max clusters,Bloom filter,Dictionary
+Size,B,call_center,6448,17208,155248,15444
+Max Size,B,call_center,208,1216,5008,816
+Size,B,catalog_page,3744,29808,90144,13984
+Max Size,B,catalog_page,208,5056,5008,1724
+Size,B,catalog_returns,1016496,4706072,24474096,3808280
+Max Size,B,catalog_returns,208,1056,5008,11356
+Size,B,catalog_sales,10806016,50387832,260175616,227391572
+Max Size,B,catalog_sales,208,1056,5008,13080
+Size,B,customer,254592,2413168,6129792,1491840
+Max Size,B,customer,208,5056,5008,22752
+Size,B,customer_address,86528,1285536,2083328,1413888
+Max Size,B,customer_address,208,5056,5008,25136
+Size,B,customer_demographics,451152,991360,10862352,940384
+Max Size,B,customer_demographics,208,1056,5008,11660
+Size,B,date_dim,52416,238672,1262016,278988
+Max Size,B,date_dim,208,5056,5008,5672
+Size,B,household_demographics,1040,2656,25040,2120
+Max Size,B,household_demographics,208,1056,5008,576
+Size,B,income_band,624,1248,15024,1728
+Max Size,B,income_band,208,416,5008,576
+Size,B,inventory,13415168,42590152,322995968,92996332
+Max Size,B,inventory,208,1056,5008,13136
+Size,B,item,68640,753064,1652640,1330564
+Max Size,B,item,208,5056,5008,24032
+Size,B,promotion,3952,18696,95152,55536
+Max Size,B,promotion,208,5056,5008,12592
+Size,B,reason,624,5352,15024,3812
+Max Size,B,reason,208,2416,5008,1456
+Size,B,ship_mode,1248,5056,30048,3920
+Max Size,B,ship_mode,208,1216,5008,816
+Size,B,store,6032,36576,145232,28528
+Max Size,B,store,208,4384,5008,2656
+Size,B,store_returns,1464320,7138488,35256320,2964992
+Max Size,B,store_returns,208,1056,5008,3124
+Size,B,store_sales,16691376,83320808,401876976,326827640
+Max Size,B,store_sales,208,1056,5008,11952
+Size,B,time_dim,22880,111648,550880,63424
+Max Size,B,time_dim,208,5056,5008,1520
+Size,B,warehouse,2912,7056,70112,6336
+Max Size,B,warehouse,208,736,5008,528
+Size,B,web_page,2912,11952,70112,15432
+Max Size,B,web_page,208,5056,5008,3120
+Size,B,web_returns,444288,2215848,10697088,1031740
+Max Size,B,web_returns,208,1056,5008,3120
+Size,B,web_sales,5431296,26172968,130768896,111325904
+Max Size,B,web_sales,208,1056,5008,13008
+Size,B,web_site,5408,22512,130208,18456
+Max Size,B,web_site,208,2272,5008,1408

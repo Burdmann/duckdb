@@ -25,9 +25,9 @@ private:
 	// constexpr static uint32_t BLOCK_SIZE = 8; // the unit here is word lengths (64 bits)
 
 	// for register-sized blocks
-	constexpr static uint32_t K = 2;
+	constexpr static uint32_t K = 3;
 	constexpr static uint32_t BLOCK_COUNT = 1;
-	constexpr static uint32_t BLOCK_SIZE = 400; // the unit here is word lengths (64 bits)
+	constexpr static uint32_t BLOCK_SIZE = 600; // the unit here is word lengths (64 bits)
 	uint64_t bit_array[BLOCK_COUNT * BLOCK_SIZE];
 
 	// https://github.com/PeterScott/murmur3

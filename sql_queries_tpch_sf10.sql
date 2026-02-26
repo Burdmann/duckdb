@@ -8,14 +8,14 @@ CREATE TABLE part(p_partkey BIGINT NOT NULL, p_name VARCHAR NOT NULL, p_mfgr VAR
 CREATE TABLE partsupp(ps_partkey BIGINT NOT NULL, ps_suppkey BIGINT NOT NULL, ps_availqty BIGINT NOT NULL, ps_supplycost DECIMAL(15,2) NOT NULL, ps_comment VARCHAR NOT NULL);;
 CREATE TABLE region(r_regionkey INTEGER NOT NULL, r_name VARCHAR NOT NULL, r_comment VARCHAR NOT NULL);;
 CREATE TABLE supplier(s_suppkey BIGINT NOT NULL, s_name VARCHAR NOT NULL, s_address VARCHAR NOT NULL, s_nationkey INTEGER NOT NULL, s_phone VARCHAR NOT NULL, s_acctbal DECIMAL(15,2) NOT NULL, s_comment VARCHAR NOT NULL);;
-COPY customer FROM 'tpch/customer.csv' (FORMAT 'csv', force_not_null ('c_custkey', 'c_name', 'c_address', 'c_nationkey', 'c_phone', 'c_acctbal', 'c_mktsegment', 'c_comment'), delimiter ',', header 1);
-COPY lineitem FROM 'tpch/lineitem.csv' (FORMAT 'csv', force_not_null ('l_orderkey', 'l_partkey', 'l_suppkey', 'l_linenumber', 'l_quantity', 'l_extendedprice', 'l_discount', 'l_tax', 'l_returnflag', 'l_linestatus', 'l_shipdate', 'l_commitdate', 'l_receiptdate', 'l_shipinstruct', 'l_shipmode', 'l_comment'), delimiter ',', header 1);
-COPY nation FROM 'tpch/nation.csv' (FORMAT 'csv', force_not_null ('n_nationkey', 'n_name', 'n_regionkey', 'n_comment'), delimiter ',', header 1);
-COPY orders FROM 'tpch/orders.csv' (FORMAT 'csv', force_not_null ('o_orderkey', 'o_custkey', 'o_orderstatus', 'o_totalprice', 'o_orderdate', 'o_orderpriority', 'o_clerk', 'o_shippriority', 'o_comment'), delimiter ',', header 1);
-COPY part FROM 'tpch/part.csv' (FORMAT 'csv', force_not_null ('p_partkey', 'p_name', 'p_mfgr', 'p_brand', 'p_type', 'p_size', 'p_container', 'p_retailprice', 'p_comment'), delimiter ',', header 1);
-COPY partsupp FROM 'tpch/partsupp.csv' (FORMAT 'csv', force_not_null ('ps_partkey', 'ps_suppkey', 'ps_availqty', 'ps_supplycost', 'ps_comment'), delimiter ',', header 1);
-COPY region FROM 'tpch/region.csv' (FORMAT 'csv', force_not_null ('r_regionkey', 'r_name', 'r_comment'), delimiter ',', header 1);
-COPY supplier FROM 'tpch/supplier.csv' (FORMAT 'csv', force_not_null ('s_suppkey', 's_name', 's_address', 's_nationkey', 's_phone', 's_acctbal', 's_comment'), delimiter ',', header 1);
+COPY customer FROM 'tpch_sf10/customer.csv' (FORMAT 'csv', force_not_null ('c_custkey', 'c_name', 'c_address', 'c_nationkey', 'c_phone', 'c_acctbal', 'c_mktsegment', 'c_comment'), delimiter ',', header 1);
+COPY lineitem FROM 'tpch_sf10/lineitem.csv' (FORMAT 'csv', force_not_null ('l_orderkey', 'l_partkey', 'l_suppkey', 'l_linenumber', 'l_quantity', 'l_extendedprice', 'l_discount', 'l_tax', 'l_returnflag', 'l_linestatus', 'l_shipdate', 'l_commitdate', 'l_receiptdate', 'l_shipinstruct', 'l_shipmode', 'l_comment'), delimiter ',', header 1);
+COPY nation FROM 'tpch_sf10/nation.csv' (FORMAT 'csv', force_not_null ('n_nationkey', 'n_name', 'n_regionkey', 'n_comment'), delimiter ',', header 1);
+COPY orders FROM 'tpch_sf10/orders.csv' (FORMAT 'csv', force_not_null ('o_orderkey', 'o_custkey', 'o_orderstatus', 'o_totalprice', 'o_orderdate', 'o_orderpriority', 'o_clerk', 'o_shippriority', 'o_comment'), delimiter ',', header 1);
+COPY part FROM 'tpch_sf10/part.csv' (FORMAT 'csv', force_not_null ('p_partkey', 'p_name', 'p_mfgr', 'p_brand', 'p_type', 'p_size', 'p_container', 'p_retailprice', 'p_comment'), delimiter ',', header 1);
+COPY partsupp FROM 'tpch_sf10/partsupp.csv' (FORMAT 'csv', force_not_null ('ps_partkey', 'ps_suppkey', 'ps_availqty', 'ps_supplycost', 'ps_comment'), delimiter ',', header 1);
+COPY region FROM 'tpch_sf10/region.csv' (FORMAT 'csv', force_not_null ('r_regionkey', 'r_name', 'r_comment'), delimiter ',', header 1);
+COPY supplier FROM 'tpch_sf10/supplier.csv' (FORMAT 'csv', force_not_null ('s_suppkey', 's_name', 's_address', 's_nationkey', 's_phone', 's_acctbal', 's_comment'), delimiter ',', header 1);
 SET threads TO 1;
 SELECT
     l_returnflag,

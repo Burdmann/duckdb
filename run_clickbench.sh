@@ -1,4 +1,4 @@
-dir="xperiments_results/clickbench_2gb_metadata"
+dir="xperiments_results/clickbench"
 # dir="."
 mkdir -p $dir/processed
 cat template.csv > $dir/raw_data_min_max.csv
@@ -14,9 +14,8 @@ rm test.db
 rm test.db
 ./build/release/duckdb_dictionary -f sql_queries_clickbench.sql 2>> $dir/raw_data_dictionary.csv
 rm test.db
-python3 data_processor.py 1 43 1 $dir/raw_data_min_max.csv $dir/raw_data_cluster.csv $dir/raw_data_bloom.csv $dir/raw_data_dictionary.csv
+python3 data_processor.py 1 43 100 $dir/raw_data_min_max.csv $dir/raw_data_cluster.csv $dir/raw_data_bloom.csv $dir/raw_data_dictionary.csv
 mv pruning.csv $dir/processed/
 mv query_time.csv $dir/processed/
 mv size.csv $dir/processed/
 mv ingestion.csv $dir/processed/
-python3 data_visualiser.py $dir/processed ClickBench

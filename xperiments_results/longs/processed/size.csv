@@ -1,0 +1,3 @@
+Name,Unit,Table_name,Min/max,Min/max clusters,Bloom filter,Dictionary
+Size,B,longs,24929216,222445312,600218816,33558560
+Max Size,B,longs,208,1856,5008,280

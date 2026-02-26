@@ -1,0 +1,23 @@
+Name,Unit,Query,Min/max,Min/max clusters,Bloom filter,Dictionary
+Rows scanned,millions,1,839.80475,839.80475,839.80475,839.80475
+Rows scanned,millions,2,16.62425,16.62425,16.62425,16.62425
+Rows scanned,millions,3,575.8884,575.8884,575.8884,575.8884
+Rows scanned,millions,4,449.91632,449.91632,449.91632,449.91632
+Rows scanned,millions,5,96.06566,96.06566,96.06566,96.06566
+Rows scanned,millions,6,479.88806,479.88806,479.88806,479.88824
+Rows scanned,millions,7,6.02887,6.02887,6.02887,6.02887
+Rows scanned,millions,8,703.8607,703.8607,703.8607,695.97144
+Rows scanned,millions,9,68.03696,68.03696,68.03696,68.03696
+Rows scanned,millions,10,590.84033,590.84033,590.84033,590.84033
+Rows scanned,millions,11,0.02887,0.02887,0.02887,0.02887
+Rows scanned,millions,12,659.86053,659.86053,659.86053,659.86053
+Rows scanned,millions,13,93.0,93.0,93.0,93.0
+Rows scanned,millions,14,487.88608,487.88608,487.88608,487.88608
+Rows scanned,millions,15,479.88614,479.88614,479.88614,479.88614
+Rows scanned,millions,16,48.0,48.0,48.0,48.0
+Rows scanned,millions,17,611.3388,611.3388,611.3388,611.3388
+Rows scanned,millions,18,605.8719,605.8719,605.8719,605.8719
+Rows scanned,millions,19,735.83264,735.83264,735.83264,55.86386
+Rows scanned,millions,20,535.88855,535.88855,535.88855,535.88855
+Rows scanned,millions,21,0.04925,0.04925,0.04925,0.04925
+Rows scanned,millions,22,45.0,45.0,45.0,45.0
