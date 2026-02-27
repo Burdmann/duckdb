@@ -1,7 +1,7 @@
+#include "duckdb/common/type_visitor.hpp"
 #include "duckdb/common/types/data_chunk.hpp"
 #include "duckdb/common/types/string_type.hpp"
 #include "duckdb/main/capi/capi_internal.hpp"
-#include "duckdb/common/type_visitor.hpp"
 
 #include <string.h>
 
@@ -48,8 +48,12 @@ void duckdb_data_chunk_reset(duckdb_data_chunk chunk) {
 
 duckdb_vector duckdb_create_vector(duckdb_logical_type type, idx_t capacity) {
 	auto dtype = reinterpret_cast<duckdb::LogicalType *>(type);
-	auto vector = new duckdb::Vector(*dtype, capacity);
-	return reinterpret_cast<duckdb_vector>(vector);
+	try {
+		auto vector = new duckdb::Vector(*dtype, capacity);
+		return reinterpret_cast<duckdb_vector>(vector);
+	} catch (...) {
+		return nullptr;
+	}
 }
 
 void duckdb_destroy_vector(duckdb_vector *vector) {

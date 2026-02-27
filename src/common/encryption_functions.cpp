@@ -33,6 +33,9 @@ idx_t EncryptionNonce::size() const {
 EncryptionEngine::EncryptionEngine() {
 }
 
+EncryptionEngine::~EncryptionEngine() {
+}
+
 const_data_ptr_t EncryptionEngine::GetKeyFromCache(DatabaseInstance &db, const string &key_name) {
 	auto &keys = EncryptionKeyManager::Get(db);
 	return keys.GetKey(key_name);
@@ -48,8 +51,8 @@ void EncryptionEngine::AddKeyToCache(DatabaseInstance &db, data_ptr_t key, const
 	if (!keys.HasKey(key_name)) {
 		keys.AddKey(key_name, key);
 	} else {
-		// wipe out the key
-		std::memset(key, 0, MainHeader::DEFAULT_ENCRYPTION_KEY_LENGTH);
+		duckdb_mbedtls::MbedTlsWrapper::AESStateMBEDTLS::SecureClearData(key,
+		                                                                 MainHeader::DEFAULT_ENCRYPTION_KEY_LENGTH);
 	}
 }
 
@@ -60,8 +63,8 @@ string EncryptionEngine::AddKeyToCache(DatabaseInstance &db, data_ptr_t key) {
 	if (!keys.HasKey(key_id)) {
 		keys.AddKey(key_id, key);
 	} else {
-		// wipe out the original key
-		std::memset(key, 0, MainHeader::DEFAULT_ENCRYPTION_KEY_LENGTH);
+		duckdb_mbedtls::MbedTlsWrapper::AESStateMBEDTLS::SecureClearData(key,
+		                                                                 MainHeader::DEFAULT_ENCRYPTION_KEY_LENGTH);
 	}
 
 	return key_id;
@@ -73,7 +76,7 @@ void EncryptionEngine::AddTempKeyToCache(DatabaseInstance &db) {
 	data_t temp_key[length];
 
 	auto encryption_state = db.GetEncryptionUtil()->CreateEncryptionState(
-	    /* only for random generator */ EncryptionTypes::GCM, temp_key, length);
+	    /* only for random generator */ EncryptionTypes::GCM, length);
 	encryption_state->GenerateRandomData(temp_key, length);
 
 	string key_id = "temp_key";
@@ -85,8 +88,8 @@ void EncryptionEngine::EncryptBlock(AttachedDatabase &attached_db, const string 
 	auto &db = attached_db.GetDatabase();
 	data_ptr_t block_offset_internal = temp_buffer_manager.InternalBuffer();
 	auto encrypt_key = GetKeyFromCache(db, key_id);
-	auto encryption_state = db.GetEncryptionUtil()->CreateEncryptionState(
-	    attached_db.GetStorageManager().GetCipher(), encrypt_key, MainHeader::DEFAULT_ENCRYPTION_KEY_LENGTH);
+	auto encryption_state = db.GetEncryptionUtil()->CreateEncryptionState(attached_db.GetStorageManager().GetCipher(),
+	                                                                      MainHeader::DEFAULT_ENCRYPTION_KEY_LENGTH);
 
 	EncryptionTag tag;
 	EncryptionNonce nonce;
@@ -121,8 +124,8 @@ void EncryptionEngine::DecryptBlock(AttachedDatabase &attached_db, const string 
 	auto &db = attached_db.GetDatabase();
 
 	auto decrypt_key = GetKeyFromCache(db, key_id);
-	auto encryption_state = db.GetEncryptionUtil()->CreateEncryptionState(
-	    attached_db.GetStorageManager().GetCipher(), decrypt_key, MainHeader::DEFAULT_ENCRYPTION_KEY_LENGTH);
+	auto encryption_state = db.GetEncryptionUtil()->CreateEncryptionState(attached_db.GetStorageManager().GetCipher(),
+	                                                                      MainHeader::DEFAULT_ENCRYPTION_KEY_LENGTH);
 
 	//! load the stored nonce and tag
 	EncryptionTag tag;
@@ -158,8 +161,8 @@ void EncryptionEngine::EncryptTemporaryBuffer(DatabaseInstance &db, data_ptr_t b
 
 	auto encryption_util = db.GetEncryptionUtil();
 	// we hard-code GCM here for now, it's the safest and we don't know what is configured here
-	auto encryption_state = encryption_util->CreateEncryptionState(EncryptionTypes::GCM, temp_key,
-	                                                               MainHeader::DEFAULT_ENCRYPTION_KEY_LENGTH);
+	auto encryption_state =
+	    encryption_util->CreateEncryptionState(EncryptionTypes::GCM, MainHeader::DEFAULT_ENCRYPTION_KEY_LENGTH);
 
 	// zero-out the metadata buffer
 	memset(metadata, 0, DEFAULT_ENCRYPTED_BUFFER_HEADER_SIZE);
@@ -219,8 +222,8 @@ void EncryptionEngine::DecryptTemporaryBuffer(DatabaseInstance &db, data_ptr_t b
 	//! initialize encryption state
 	auto encryption_util = db.GetEncryptionUtil();
 	auto temp_key = GetKeyFromCache(db, "temp_key");
-	auto encryption_state = encryption_util->CreateEncryptionState(EncryptionTypes::GCM, temp_key,
-	                                                               MainHeader::DEFAULT_ENCRYPTION_KEY_LENGTH);
+	auto encryption_state =
+	    encryption_util->CreateEncryptionState(EncryptionTypes::GCM, MainHeader::DEFAULT_ENCRYPTION_KEY_LENGTH);
 
 	DecryptBuffer(*encryption_state, temp_key, buffer, buffer_size, metadata);
 }

@@ -39,11 +39,12 @@ void StorageOptions::Initialize(const unordered_map<string, Value> &options) {
 			block_header_size = DEFAULT_ENCRYPTION_BLOCK_HEADER_SIZE;
 			encryption = true;
 		} else if (entry.first == "encryption_cipher") {
-			encryption_cipher = StringUtil::Lower(entry.second.ToString());
-			auto parsed_cipher = EncryptionTypes::StringToCipher(encryption_cipher);
-			if (parsed_cipher == EncryptionTypes::CipherType::INVALID) {
-				throw BinderException("\"%s\" is not a valid cipher. Try 'GCM', 'CTR', or 'CBC'.", encryption_cipher);
+			auto parsed_cipher = EncryptionTypes::StringToCipher(entry.second.ToString());
+			if (parsed_cipher != EncryptionTypes::CipherType::GCM &&
+			    parsed_cipher != EncryptionTypes::CipherType::CTR) {
+				throw BinderException("\"%s\" is not a valid cipher. Try 'GCM' or 'CTR'.", entry.second.ToString());
 			}
+			encryption_cipher = parsed_cipher;
 		} else if (entry.first == "row_group_size") {
 			row_group_size = entry.second.GetValue<uint64_t>();
 		} else if (entry.first == "storage_version") {
@@ -141,6 +142,14 @@ bool StorageManager::InMemory() const {
 	return path == IN_MEMORY_PATH;
 }
 
+inline void ClearUserKey(shared_ptr<string> const &encryption_key) {
+	if (encryption_key && !encryption_key->empty()) {
+		duckdb_mbedtls::MbedTlsWrapper::AESStateMBEDTLS::SecureClearData(data_ptr_cast(&(*encryption_key)[0]),
+		                                                                 encryption_key->size());
+		encryption_key->clear();
+	}
+}
+
 void StorageManager::Initialize(QueryContext context) {
 	bool in_memory = InMemory();
 	if (in_memory && read_only) {
@@ -210,7 +219,6 @@ void SingleFileStorageManager::LoadDatabase(QueryContext context) {
 		// key is given upon ATTACH
 		D_ASSERT(storage_options.block_header_size == DEFAULT_ENCRYPTION_BLOCK_HEADER_SIZE);
 		options.encryption_options.encryption_enabled = true;
-		options.encryption_options.cipher = EncryptionTypes::StringToCipher(storage_options.encryption_cipher);
 		options.encryption_options.user_key = std::move(storage_options.user_key);
 	}
 

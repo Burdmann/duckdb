@@ -66,8 +66,8 @@ void DeserializeEncryptionData(ReadStream &stream, data_t *dest, idx_t size) {
 
 void GenerateDBIdentifier(uint8_t *db_identifier) {
 	memset(db_identifier, 0, MainHeader::DB_IDENTIFIER_LEN);
-	duckdb_mbedtls::MbedTlsWrapper::AESStateMBEDTLS::GenerateRandomDataStatic(db_identifier,
-	                                                                          MainHeader::DB_IDENTIFIER_LEN);
+	RandomEngine engine;
+	engine.RandomData(db_identifier, MainHeader::DB_IDENTIFIER_LEN);
 }
 
 void EncryptCanary(MainHeader &main_header, const shared_ptr<EncryptionState> &encryption_state,
@@ -76,11 +76,11 @@ void EncryptCanary(MainHeader &main_header, const shared_ptr<EncryptionState> &e
 	uint8_t canary_buffer[MainHeader::CANARY_BYTE_SIZE];
 
 	// we zero-out the iv and the (not yet) encrypted canary
-	uint8_t iv[16];
-	memset(iv, 0, sizeof(iv));
+	uint8_t iv[MainHeader::AES_IV_LEN];
+	memset(iv, 0, MainHeader::AES_IV_LEN);
 	memset(canary_buffer, 0, MainHeader::CANARY_BYTE_SIZE);
 
-	encryption_state->InitializeEncryption(iv, MainHeader::AES_NONCE_LEN, derived_key,
+	encryption_state->InitializeEncryption(iv, MainHeader::AES_IV_LEN, derived_key,
 	                                       MainHeader::DEFAULT_ENCRYPTION_KEY_LENGTH);
 	encryption_state->Process(reinterpret_cast<const_data_ptr_t>(MainHeader::CANARY), MainHeader::CANARY_BYTE_SIZE,
 	                          canary_buffer, MainHeader::CANARY_BYTE_SIZE);
@@ -91,15 +91,15 @@ void EncryptCanary(MainHeader &main_header, const shared_ptr<EncryptionState> &e
 bool DecryptCanary(MainHeader &main_header, const shared_ptr<EncryptionState> &encryption_state,
                    data_ptr_t derived_key) {
 	// just zero-out the iv
-	uint8_t iv[16];
-	memset(iv, 0, sizeof(iv));
+	uint8_t iv[MainHeader::AES_IV_LEN];
+	memset(iv, 0, MainHeader::AES_IV_LEN);
 
 	//! allocate a buffer for the decrypted canary
 	data_t decrypted_canary[MainHeader::CANARY_BYTE_SIZE];
 	memset(decrypted_canary, 0, MainHeader::CANARY_BYTE_SIZE);
 
 	//! Decrypt the canary
-	encryption_state->InitializeDecryption(iv, MainHeader::AES_NONCE_LEN, derived_key,
+	encryption_state->InitializeDecryption(iv, MainHeader::AES_IV_LEN, derived_key,
 	                                       MainHeader::DEFAULT_ENCRYPTION_KEY_LENGTH);
 	encryption_state->Process(main_header.GetEncryptedCanary(), MainHeader::CANARY_BYTE_SIZE, decrypted_canary,
 	                          MainHeader::CANARY_BYTE_SIZE);
@@ -123,7 +123,7 @@ void MainHeader::Write(WriteStream &ser) {
 	SerializeVersionNumber(ser, DuckDB::SourceID());
 
 	// We always serialize, and write zeros, if not set.
-	auto encryption_enabled = flags[0] & MainHeader::ENCRYPTED_DATABASE_FLAG;
+	auto encryption_enabled = IsEncrypted();
 	SerializeEncryptionMetadata(ser, encryption_metadata, encryption_enabled);
 	SerializeDBIdentifier(ser, db_identifier);
 	SerializeEncryptionMetadata(ser, encrypted_canary, encryption_enabled);
@@ -168,7 +168,7 @@ MainHeader MainHeader::Read(ReadStream &source) {
 		    "%lld.\n"
 		    "The database file was created with %s.\n\n"
 		    "Newer DuckDB version might introduce backward incompatible changes (possibly guarded by compatibility "
-		    "settings)"
+		    "settings).\n"
 		    "See the storage page for migration strategy and more information: https://duckdb.org/internals/storage",
 		    header.version_number, VERSION_NUMBER_LOWER, VERSION_NUMBER_UPPER, version_text);
 	}
@@ -299,7 +299,7 @@ void SingleFileBlockManager::StoreEncryptedCanary(AttachedDatabase &db, MainHead
 	const_data_ptr_t key = EncryptionEngine::GetKeyFromCache(db.GetDatabase(), key_id);
 	// Encrypt canary with the derived key
 	auto encryption_state = db.GetDatabase().GetEncryptionUtil()->CreateEncryptionState(
-	    db.GetStorageManager().GetCipher(), key, MainHeader::DEFAULT_ENCRYPTION_KEY_LENGTH);
+	    main_header.GetEncryptionCipher(), MainHeader::DEFAULT_ENCRYPTION_KEY_LENGTH);
 	EncryptCanary(main_header, encryption_state, key);
 }
 
@@ -322,7 +322,7 @@ void SingleFileBlockManager::StoreEncryptionMetadata(MainHeader &main_header) co
 	offset++;
 	Store<uint8_t>(options.encryption_options.additional_authenticated_data, offset);
 	offset++;
-	Store<uint8_t>(options.encryption_options.cipher, offset);
+	Store<uint8_t>(db.GetStorageManager().GetCipher(), offset);
 	offset += 2;
 	Store<uint32_t>(options.encryption_options.key_length, offset);
 
@@ -341,7 +341,7 @@ void SingleFileBlockManager::CheckAndAddEncryptionKey(MainHeader &main_header, s
 	EncryptionKeyManager::DeriveKey(user_key, db_identifier, derived_key);
 
 	auto encryption_state = db.GetDatabase().GetEncryptionUtil()->CreateEncryptionState(
-	    db.GetStorageManager().GetCipher(), derived_key, MainHeader::DEFAULT_ENCRYPTION_KEY_LENGTH);
+	    main_header.GetEncryptionCipher(), MainHeader::DEFAULT_ENCRYPTION_KEY_LENGTH);
 	if (!DecryptCanary(main_header, encryption_state, derived_key)) {
 		throw IOException("Wrong encryption key used to open the database file");
 	}
@@ -362,6 +362,15 @@ void SingleFileBlockManager::CheckAndAddEncryptionKey(MainHeader &main_header) {
 void SingleFileBlockManager::CreateNewDatabase(QueryContext context) {
 	auto flags = GetFileFlags(true);
 
+	auto encryption_enabled = options.encryption_options.encryption_enabled;
+	if (encryption_enabled) {
+		if (!db.GetDatabase().GetEncryptionUtil()->SupportsEncryption() && !options.read_only) {
+			throw InvalidConfigurationException(
+			    "The database was opened with encryption enabled, but DuckDB currently has a read-only crypto module "
+			    "loaded. Please re-open using READONLY, or ensure httpfs is loaded using `LOAD httpfs`.");
+		}
+	}
+
 	// open the RDBMS handle
 	auto &fs = FileSystem::Get(db);
 	handle = fs.OpenFile(path, flags);
@@ -376,7 +385,6 @@ void SingleFileBlockManager::CreateNewDatabase(QueryContext context) {
 	// Derive the encryption key and add it to the cache.
 	// Not used for plain databases.
 	data_t derived_key[MainHeader::DEFAULT_ENCRYPTION_KEY_LENGTH];
-	auto encryption_enabled = options.encryption_options.encryption_enabled;
 
 	// We need the unique database identifier, if the storage version is new enough.
 	// If encryption is enabled, we also use it as the salt.
@@ -390,8 +398,13 @@ void SingleFileBlockManager::CreateNewDatabase(QueryContext context) {
 		EncryptionKeyManager::DeriveKey(*options.encryption_options.user_key, options.db_identifier, derived_key);
 		options.encryption_options.user_key = nullptr;
 
+		// if no encryption cipher is specified, use GCM
+		if (db.GetStorageManager().GetCipher() == EncryptionTypes::INVALID) {
+			db.GetStorageManager().SetCipher(EncryptionTypes::GCM);
+		}
+
 		// Set the encrypted DB bit to 1.
-		main_header.flags[0] |= MainHeader::ENCRYPTED_DATABASE_FLAG;
+		main_header.SetEncrypted();
 
 		// The derived key is wiped in AddKeyToCache.
 		options.encryption_options.derived_key_id = EncryptionEngine::AddKeyToCache(db.GetDatabase(), derived_key);
@@ -482,6 +495,15 @@ void SingleFileBlockManager::LoadExistingDatabase(QueryContext context) {
 	if (main_header.IsEncrypted()) {
 		if (options.encryption_options.encryption_enabled) {
 			//! Encryption is set
+
+			//! Check if our encryption module can write, if not, we should throw here
+			if (!db.GetDatabase().GetEncryptionUtil()->SupportsEncryption() && !options.read_only) {
+				throw InvalidConfigurationException(
+				    "The database is encrypted, but DuckDB currently has a read-only crypto module loaded. Either "
+				    "re-open the database using `ATTACH '..' (READONLY)`, or ensure httpfs is loaded using `LOAD "
+				    "httpfs`.");
+			}
+
 			//! Check if the given key upon attach is correct
 			// Derive the encryption key and add it to cache
 			CheckAndAddEncryptionKey(main_header);
@@ -491,6 +513,31 @@ void SingleFileBlockManager::LoadExistingDatabase(QueryContext context) {
 			// if encrypted, but no encryption key given
 			throw CatalogException("Cannot open encrypted database \"%s\" without a key", path);
 		}
+
+		// if a cipher was provided, check if it is the same as in the config
+		auto stored_cipher = main_header.GetEncryptionCipher();
+		auto config_cipher = db.GetStorageManager().GetCipher();
+		if (config_cipher != EncryptionTypes::INVALID && config_cipher != stored_cipher) {
+			throw CatalogException("Cannot open encrypted database \"%s\" with a different cipher (%s) than the one "
+			                       "used to create it (%s)",
+			                       path, EncryptionTypes::CipherToString(config_cipher),
+			                       EncryptionTypes::CipherToString(stored_cipher));
+		}
+
+		// This avoids the cipher from being downgrades by an attacker FIXME: we likely want to have a propervalidation
+		// of the cipher used instead of this trick to avoid downgrades
+		if (stored_cipher != EncryptionTypes::GCM) {
+			if (config_cipher == EncryptionTypes::INVALID) {
+				throw CatalogException(
+				    "Cannot open encrypted database \"%s\" without explicitly specifying the "
+				    "encryption cipher for security reasons. Please make sure you understand the security implications "
+				    "and re-attach the database specifying the desired cipher.",
+				    path);
+			}
+		}
+
+		// this is ugly, but the storage manager does not know the cipher type before
+		db.GetStorageManager().SetCipher(stored_cipher);
 	}
 
 	options.version_number = main_header.version_number;

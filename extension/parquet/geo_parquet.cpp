@@ -208,17 +208,19 @@ unique_ptr<GeoParquetFileMetadata> GeoParquetFileMetadata::TryRead(const duckdb_
 					throw InvalidInputException("Geoparquet metadata is not an object");
 				}
 
-				auto result = make_uniq<GeoParquetFileMetadata>();
+				// We dont actually care about the version for now, as we only support V1+native
+				auto result = make_uniq<GeoParquetFileMetadata>(GeoParquetVersion::BOTH);
 
 				// Check and parse the version
 				const auto version_val = yyjson_obj_get(root, "version");
 				if (!yyjson_is_str(version_val)) {
 					throw InvalidInputException("Geoparquet metadata does not have a version");
 				}
-				result->version = yyjson_get_str(version_val);
-				if (StringUtil::StartsWith(result->version, "2")) {
-					// Guard against a breaking future 2.0 version
-					throw InvalidInputException("Geoparquet version %s is not supported", result->version);
+
+				auto version = yyjson_get_str(version_val);
+				if (StringUtil::StartsWith(version, "3")) {
+					// Guard against a breaking future 3.0 version
+					throw InvalidInputException("Geoparquet version %s is not supported", version);
 				}
 
 				// Check and parse the geometry columns
@@ -344,7 +346,20 @@ void GeoParquetFileMetadata::Write(duckdb_parquet::FileMetaData &file_meta_data)
 	yyjson_mut_doc_set_root(doc, root);
 
 	// Add the version
-	yyjson_mut_obj_add_strncpy(doc, root, "version", version.c_str(), version.size());
+	switch (version) {
+	case GeoParquetVersion::V1:
+	case GeoParquetVersion::BOTH:
+		yyjson_mut_obj_add_strcpy(doc, root, "version", "1.0.0");
+		break;
+	case GeoParquetVersion::V2:
+		yyjson_mut_obj_add_strcpy(doc, root, "version", "2.0.0");
+		break;
+	case GeoParquetVersion::NONE:
+	default:
+		// Should never happen, we should not be writing anything
+		yyjson_mut_doc_free(doc);
+		throw InternalException("GeoParquetVersion::NONE should not write metadata");
+	}
 
 	// Add the primary column
 	yyjson_mut_obj_add_strncpy(doc, root, "primary_column", primary_geometry_column.c_str(),
@@ -361,21 +376,26 @@ void GeoParquetFileMetadata::Write(duckdb_parquet::FileMetaData &file_meta_data)
 		for (auto &type_name : column.second.stats.types.ToString(false)) {
 			yyjson_mut_arr_add_strcpy(doc, geometry_types, type_name.c_str());
 		}
-		const auto bbox_arr = yyjson_mut_obj_add_arr(doc, column_json, "bbox");
+
 		const auto &bbox = column.second.stats.bbox;
 
-		if (!column.second.stats.bbox.HasZ()) {
-			yyjson_mut_arr_add_real(doc, bbox_arr, bbox.xmin);
-			yyjson_mut_arr_add_real(doc, bbox_arr, bbox.ymin);
-			yyjson_mut_arr_add_real(doc, bbox_arr, bbox.xmax);
-			yyjson_mut_arr_add_real(doc, bbox_arr, bbox.ymax);
-		} else {
-			yyjson_mut_arr_add_real(doc, bbox_arr, bbox.xmin);
-			yyjson_mut_arr_add_real(doc, bbox_arr, bbox.ymin);
-			yyjson_mut_arr_add_real(doc, bbox_arr, bbox.zmin);
-			yyjson_mut_arr_add_real(doc, bbox_arr, bbox.xmax);
-			yyjson_mut_arr_add_real(doc, bbox_arr, bbox.ymax);
-			yyjson_mut_arr_add_real(doc, bbox_arr, bbox.zmax);
+		if (bbox.IsSet()) {
+
+			const auto bbox_arr = yyjson_mut_obj_add_arr(doc, column_json, "bbox");
+
+			if (!column.second.stats.bbox.HasZ()) {
+				yyjson_mut_arr_add_real(doc, bbox_arr, bbox.xmin);
+				yyjson_mut_arr_add_real(doc, bbox_arr, bbox.ymin);
+				yyjson_mut_arr_add_real(doc, bbox_arr, bbox.xmax);
+				yyjson_mut_arr_add_real(doc, bbox_arr, bbox.ymax);
+			} else {
+				yyjson_mut_arr_add_real(doc, bbox_arr, bbox.xmin);
+				yyjson_mut_arr_add_real(doc, bbox_arr, bbox.ymin);
+				yyjson_mut_arr_add_real(doc, bbox_arr, bbox.zmin);
+				yyjson_mut_arr_add_real(doc, bbox_arr, bbox.xmax);
+				yyjson_mut_arr_add_real(doc, bbox_arr, bbox.ymax);
+				yyjson_mut_arr_add_real(doc, bbox_arr, bbox.zmax);
+			}
 		}
 
 		// If the CRS is present, add it

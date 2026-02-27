@@ -38,10 +38,12 @@ bool QueryProfiler::IsDetailedEnabled() const {
 
 ProfilerPrintFormat QueryProfiler::GetPrintFormat(ExplainFormat format) const {
 	auto print_format = ClientConfig::GetConfig(context).profiler_print_format;
-	if (format == ExplainFormat::DEFAULT) {
-		return print_format;
-	}
 	switch (format) {
+	case ExplainFormat::DEFAULT:
+		if (print_format != ProfilerPrintFormat::NO_OUTPUT) {
+			return print_format;
+		}
+		DUCKDB_EXPLICIT_FALLTHROUGH;
 	case ExplainFormat::TEXT:
 		return ProfilerPrintFormat::QUERY_TREE;
 	case ExplainFormat::JSON:
@@ -294,6 +296,9 @@ void QueryProfiler::EndQuery() {
 	is_explain_analyze = false;
 
 	guard.unlock();
+
+	// To log is inexpensive, whether to log or not depends on whether logging is active
+	ToLog();
 
 	if (emit_output) {
 		string tree = ToString();
@@ -793,6 +798,19 @@ static string StringifyAndFree(yyjson_mut_doc *doc, yyjson_mut_val *object) {
 	free(data);
 	yyjson_mut_doc_free(doc);
 	return result;
+}
+
+void QueryProfiler::ToLog() const {
+	lock_guard<std::mutex> guard(lock);
+
+	if (!root) {
+		// No root, not much to do
+		return;
+	}
+
+	auto &settings = root->GetProfilingInfo();
+
+	settings.WriteMetricsToLog(context);
 }
 
 string QueryProfiler::ToJSON() const {
