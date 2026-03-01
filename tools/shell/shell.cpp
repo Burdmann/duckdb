@@ -4609,10 +4609,9 @@ int ShellState::ProcessInput(InputMode mode) {
 			fprintf(stderr, "%lx,%lu,%lu,SQL_COMMAND_RUN_START,\"{\"\"command\"\":\"\"%s\"\"}\"\n",
 			        duckdb::Util::session_id, duckdb::Util::command_count, start_time, zSql_fixed);
 			duckdb::ColumnSegment::scanned_count = 0;
-			duckdb::ColumnSegment::unnecessary_scanned_count = 0;
 			duckdb::ColumnSegment::scanned_first_row = false;
 			errCnt += RunOneSqlLine(mode, zSql);
-			fprintf(stderr, "%lx,%lu,%lu,SCANNED_ROWS,\"{\"\"count\"\":%lu}\"\n", duckdb::Util::session_id,
+			fprintf(stderr, "%lx,%lu,%lu,SCANNED_PARTITIONS,\"{\"\"count\"\":%lu}\"\n", duckdb::Util::session_id,
 			        duckdb::Util::command_count, duckdb::Util::GetTime(), duckdb::ColumnSegment::scanned_count);
 			auto end_time = duckdb::Util::GetTime();
 			fprintf(stderr, "%lx,%lu,%lu,SQL_COMMAND_RUN_END,\"{\"\"command\"\":\"\"%s\"\",\"\"start_time\"\":%lu}\"\n",

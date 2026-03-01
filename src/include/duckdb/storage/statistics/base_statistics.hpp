@@ -153,6 +153,7 @@ private:
 
 public:
 	void *additional_stats = NULL;
+	idx_t last_scanned_id = -1;
 };
 
 template <>

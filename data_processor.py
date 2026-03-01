@@ -29,7 +29,7 @@ if os.path.exists("test.db"):
 duckdb.execute("ATTACH 'test.db'")
 duckdb.execute("USE test")
 duckdb.execute(f"CREATE TABLE Result_time (Name VARCHAR, Unit VARCHAR, Query INT, {", ".join([f'"{name}" FLOAT' for name in names])});")
-duckdb.execute(f"CREATE TABLE Result_pruning (Name VARCHAR, Unit VARCHAR, Query INT, {", ".join([f'"{name}" FLOAT' for name in names])});")
+duckdb.execute(f"CREATE TABLE Result_pruning (Name VARCHAR, Unit VARCHAR, Query INT, {", ".join([f'"{name}" INT64' for name in names])});")
 duckdb.execute(f"CREATE TABLE Result_size (Name VARCHAR, Unit VARCHAR, Table_name VARCHAR, {", ".join([f'"{name}" INT64' for name in names])});")
 duckdb.execute(f"CREATE TABLE Result_ingestion (Name VARCHAR, Unit VARCHAR, Table_name VARCHAR, {", ".join([f'"{name}" FLOAT' for name in names])});")
 for idx,in_file in enumerate(in_files):
@@ -44,14 +44,14 @@ for idx,in_file in enumerate(in_files):
 
     for i in range(NUM_QUERIES):
         times[idx] += [l[0] for l in duckdb.execute(f"SELECT ROUND((end_time-start_time)/1000000.0,5) FROM times WHERE CommandID >= {QUERIES_START+NUM_ITERATIONS*i} AND CommandID < {QUERIES_START+NUM_ITERATIONS*(1+i)};").fetchall()]
-        rows_scanned[idx].append(duckdb.execute(f"SELECT ROUND(SUM(CAST(Data->'count' AS HUGEINT))/1000000.0,5) AS val FROM tbl WHERE type = 'SCANNED_ROWS' and CommandID = {2*NUM_TABLES+1+i+(2 if ATTACHED else 0)};").fetchone()[0])
+        rows_scanned[idx].append(duckdb.execute(f"SELECT SUM(CAST(Data->'count' AS HUGEINT)) AS val FROM tbl WHERE type = 'SCANNED_PARTITIONS' and CommandID = {2*NUM_TABLES+1+i+(2 if ATTACHED else 0)};").fetchone()[0])
     duckdb.execute(f"DROP TABLE tbl;")
     duckdb.execute(f"DROP TABLE times;")
 for i in range(NUM_QUERIES):
     for j in range(NUM_ITERATIONS):
         idx = i*NUM_ITERATIONS+j
         duckdb.execute(f"INSERT INTO Result_time VALUES ('Time','s',{i+1},{",".join([str(time[idx]) for time in times])});")
-    duckdb.execute(f"INSERT INTO Result_pruning VALUES ('Rows scanned','millions',{i+1},{",".join([str(scanned[i]) for scanned in rows_scanned])});")
+    duckdb.execute(f"INSERT INTO Result_pruning VALUES ('Partitions scanned',NULL,{i+1},{",".join([str(scanned[i]) for scanned in rows_scanned])});")
 for i in range(NUM_TABLES):
     if (len(set([tables[j][i] for j in range(NUM_STATS)]))) != 1:
         raise "tables are not in the same order in given input files"

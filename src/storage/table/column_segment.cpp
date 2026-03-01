@@ -23,7 +23,6 @@ namespace duckdb {
 
 // altp
 uint64_t ColumnSegment::scanned_count;
-uint64_t ColumnSegment::unnecessary_scanned_count;
 bool ColumnSegment::scanned_first_row;
 
 //===--------------------------------------------------------------------===//
@@ -120,7 +119,11 @@ void ColumnSegment::InitializeScan(ColumnScanState &state) {
 
 void ColumnSegment::Scan(ColumnScanState &state, idx_t scan_count, Vector &result, idx_t result_offset,
                          ScanVectorType scan_type) {
-	ColumnSegment::scanned_count += scan_count;
+	// ColumnSegment::scanned_count += scan_count;
+	if (this->stats.statistics.last_scanned_id != Util::command_count) {
+		this->stats.statistics.last_scanned_id = Util::command_count;
+		ColumnSegment::scanned_count++;
+	}
 	if (scan_type == ScanVectorType::SCAN_ENTIRE_VECTOR) {
 		D_ASSERT(result_offset == 0);
 		Scan(state, scan_count, result);

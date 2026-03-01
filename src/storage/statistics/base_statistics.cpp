@@ -344,7 +344,8 @@ void BaseStatistics::Serialize(Serializer &serializer) const {
 			break;
 		}
 	});
-	serializer.WriteProperty(104, "additional_stats", (uint64_t)additional_stats);
+	serializer.WriteProperty(104, "last_scanned_id", last_scanned_id);
+	serializer.WriteProperty(105, "additional_stats", (uint64_t)additional_stats);
 	if (additional_stats != NULL) {
 		switch (GetType().InternalType()) {
 		case PhysicalType::BOOL:
@@ -432,7 +433,8 @@ BaseStatistics BaseStatistics::Deserialize(Deserializer &deserializer) {
 			break;
 		}
 	});
-	stats.additional_stats = (void *)deserializer.ReadProperty<uint64_t>(104, "additional_stats");
+	stats.last_scanned_id = deserializer.ReadProperty<uint32_t>(104, "last_scanned_id");
+	stats.additional_stats = (void *)deserializer.ReadProperty<uint64_t>(105, "additional_stats");
 	if (stats.additional_stats != NULL) {
 		void *additional_stats;
 		switch (stats.GetType().InternalType()) {

@@ -163,7 +163,6 @@ public:
 
 	// altp
 	static uint64_t scanned_count;
-	static uint64_t unnecessary_scanned_count;
 	static bool scanned_first_row;
 	idx_t column_idx = -1;
 
