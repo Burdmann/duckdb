@@ -4582,7 +4582,9 @@ int ShellState::ProcessInput(InputMode mode) {
 			nSql += nLine;
 		}
 		if (nSql && line_contains_semicolon(&zSql[nSqlPrior], nSql - nSqlPrior) && sqlite3_complete(zSql)) {
+			duckdb::ConstantFilter::clear_set();
 			errCnt += RunOneSqlLine(mode, zSql);
+			fprintf(stderr, "Partitions scanned: %lu\n", duckdb::ConstantFilter::get_count());
 			nSql = 0;
 			if (outCount) {
 				ResetOutput();

@@ -10,7 +10,7 @@
 #include "duckdb/common/serializer/deserializer.hpp"
 
 namespace duckdb {
-
+std::atomic<uint64_t> BaseStatistics::counter = {1};
 BaseStatistics::BaseStatistics() : type(LogicalType::INVALID) {
 }
 
@@ -20,6 +20,7 @@ BaseStatistics::BaseStatistics(LogicalType type) {
 
 void BaseStatistics::Construct(BaseStatistics &stats, LogicalType type) {
 	stats.distinct_count = 0;
+	stats.id = BaseStatistics::counter.fetch_add(1, std::memory_order_relaxed);
 	stats.type = std::move(type);
 	switch (GetStatsType(stats.type)) {
 	case StatisticsType::LIST_STATS:
@@ -45,6 +46,7 @@ BaseStatistics::BaseStatistics(BaseStatistics &&other) noexcept {
 	has_no_null = other.has_no_null;
 	distinct_count = other.distinct_count;
 	stats_union = other.stats_union;
+	id = other.id;
 	std::swap(child_stats, other.child_stats);
 }
 
@@ -54,6 +56,7 @@ BaseStatistics &BaseStatistics::operator=(BaseStatistics &&other) noexcept {
 	has_no_null = other.has_no_null;
 	distinct_count = other.distinct_count;
 	stats_union = other.stats_union;
+	id = other.id;
 	std::swap(child_stats, other.child_stats);
 	return *this;
 }
@@ -137,6 +140,7 @@ bool BaseStatistics::IsConstant() const {
 void BaseStatistics::Merge(const BaseStatistics &other) {
 	has_null = has_null || other.has_null;
 	has_no_null = has_no_null || other.has_no_null;
+	id = std::min(id, other.id);
 	switch (GetStatsType()) {
 	case StatisticsType::NUMERIC_STATS:
 		NumericStats::Merge(*this, other);
@@ -251,6 +255,7 @@ void BaseStatistics::CopyBase(const BaseStatistics &other) {
 	has_null = other.has_null;
 	has_no_null = other.has_no_null;
 	distinct_count = other.distinct_count;
+	id = other.id;
 }
 
 void BaseStatistics::Set(StatsInfo info) {
@@ -333,6 +338,7 @@ void BaseStatistics::Serialize(Serializer &serializer) const {
 			break;
 		}
 	});
+	serializer.WriteProperty(104, "id", id);
 }
 
 BaseStatistics BaseStatistics::Deserialize(Deserializer &deserializer) {
@@ -371,6 +377,7 @@ BaseStatistics BaseStatistics::Deserialize(Deserializer &deserializer) {
 			break;
 		}
 	});
+	stats.id = deserializer.ReadProperty<uint64_t>(104, "id");
 
 	return stats;
 }

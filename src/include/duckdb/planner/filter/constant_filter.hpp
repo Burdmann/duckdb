@@ -35,6 +35,13 @@ public:
 	unique_ptr<Expression> ToExpression(const Expression &column) const override;
 	void Serialize(Serializer &serializer) const override;
 	static unique_ptr<TableFilter> Deserialize(Deserializer &deserializer);
+	static std::unordered_set<uint64_t> scanned_partitions;
+	static inline void clear_set() {
+		scanned_partitions.clear();
+	}
+	static inline idx_t get_count() {
+		return scanned_partitions.size();
+	}
 };
 
 } // namespace duckdb

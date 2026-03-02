@@ -437,7 +437,7 @@ bool RowGroup::CheckZonemap(ScanFilterInfo &filters) {
 		auto &entry = filter_list[i];
 		auto &filter = entry.filter;
 		auto base_column_index = entry.table_column_index;
-
+		GetColumn(base_column_index).stats->statistics.is_segment = true;
 		auto prune_result = GetColumn(base_column_index).CheckZonemap(filter);
 		if (prune_result == FilterPropagateResult::FILTER_ALWAYS_FALSE) {
 			return false;
@@ -465,6 +465,7 @@ bool RowGroup::CheckZonemapSegments(CollectionScanState &state) {
 		auto base_column_idx = entry.table_column_index;
 		auto &filter = entry.filter;
 
+		state.column_scans[column_idx].current->stats.statistics.is_segment = true;
 		auto prune_result = GetColumn(base_column_idx).CheckZonemap(state.column_scans[column_idx], filter);
 		if (prune_result != FilterPropagateResult::FILTER_ALWAYS_FALSE) {
 			continue;
