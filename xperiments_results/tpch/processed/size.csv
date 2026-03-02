@@ -1,0 +1,17 @@
+Name,Unit,Table_name,Min/max,Min/max clusters,Bloom filter,Dictionary
+Size,B,customer,2565888,3158016,22303488,3355392
+Max Size,B,customer,208,256,1808,272
+Size,B,lineitem,235559168,289918976,2047552768,308038912
+Max Size,B,lineitem,208,256,1808,272
+Size,B,nation,0,0,0,0
+Max Size,B,nation,0,0,0,0
+Size,B,orders,33121296,40764672,287900496,43312464
+Max Size,B,orders,208,256,1808,272
+Size,B,part,4273776,5260032,37148976,5588784
+Max Size,B,part,208,256,1808,272
+Size,B,partsupp,9506640,11700480,82634640,12431760
+Max Size,B,partsupp,208,256,1808,272
+Size,B,region,0,0,0,0
+Max Size,B,region,0,0,0,0
+Size,B,supplier,155792,191744,1354192,203728
+Max Size,B,supplier,208,256,1808,272

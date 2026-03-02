@@ -14,7 +14,8 @@ rm test.db
 rm test.db
 ./build/release/duckdb_dictionary -f sql_queries_tpcds.sql 2>> $dir/raw_data_dictionary.csv
 rm test.db
-python3 data_processor.py 24 99 100 $dir/raw_data_min_max.csv $dir/raw_data_cluster.csv $dir/raw_data_bloom.csv $dir/raw_data_dictionary.csv
+python3 data_processor.py 24 99 0 $dir/raw_data_min_max.csv $dir/raw_data_cluster.csv $dir/raw_data_bloom.csv $dir/raw_data_dictionary.csv
+rm test.db
 mv pruning.csv $dir/processed/
 mv query_time.csv $dir/processed/
 mv size.csv $dir/processed/

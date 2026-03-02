@@ -1,0 +1,23 @@
+Name,Unit,Query,Min/max,Min/max clusters,Bloom filter,Dictionary
+Partitions scanned,,1,80893,80893,80893,10112
+Partitions scanned,,2,24045,24045,21694,19737
+Partitions scanned,,3,102649,102649,101107,12633
+Partitions scanned,,4,100798,100798,100798,83070
+Partitions scanned,,5,23609,23609,23609,4374
+Partitions scanned,,6,242679,242679,242679,30336
+Partitions scanned,,7,185519,185519,185519,24615
+Partitions scanned,,8,107340,107340,105057,14791
+Partitions scanned,,9,161911,161911,161911,161852
+Partitions scanned,,10,104500,104500,33719,16026
+Partitions scanned,,11,10791,10791,10684,8811
+Partitions scanned,,12,242679,242679,242679,30336
+Partitions scanned,,13,0,0,0,0
+Partitions scanned,,14,80893,80893,80893,10112
+Partitions scanned,,15,80894,80894,80893,10112
+Partitions scanned,,16,13253,13253,13253,10936
+Partitions scanned,,17,86069,86069,81503,10722
+Partitions scanned,,18,1851,1851,1851,1851
+Partitions scanned,,19,80893,80893,10112,10112
+Partitions scanned,,20,245393,245393,245286,30660
+Partitions scanned,,21,181817,181817,163983,93165
+Partitions scanned,,22,21756,21756,21756,20166
