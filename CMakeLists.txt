@@ -234,6 +234,9 @@ if(${EXPLICIT_EXCEPTIONS})
   set(CXX_EXTRA "${CXX_EXTRA} -fexceptions")
 endif()
 
+option(STATS "" EmptyAdditionalStats)
+set(CXX_EXTRA "${CXX_EXTRA} -DADDITIONAL_STATS=${STATS}")
+
 option(EXPORT_DYNAMIC_SYMBOLS "Export dynamic symbols." FALSE)
 if(${EXPORT_DYNAMIC_SYMBOLS})
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -rdynamic")

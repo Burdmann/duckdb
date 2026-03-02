@@ -152,6 +152,7 @@ public:
 	uint64_t id;
 	bool is_rowgroup = false;
 	static std::atomic<uint64_t> counter;
+	void *additional_stats = NULL;
 };
 
 template <>

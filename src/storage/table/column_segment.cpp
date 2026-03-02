@@ -15,6 +15,7 @@
 #include "duckdb/storage/table/update_segment.hpp"
 #include "duckdb/planner/table_filter_state.hpp"
 #include "duckdb/planner/filter/expression_filter.hpp"
+#include "duckdb/util/util.hpp"
 
 #include <cstring>
 

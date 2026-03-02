@@ -82,6 +82,7 @@
 #include "duckdb_shell_wrapper.h"
 #include "duckdb/common/box_renderer.hpp"
 #include "duckdb/parser/qualified_name.hpp"
+#include "duckdb/util/util.hpp"
 #include "sqlite3.h"
 typedef sqlite3_int64 i64;
 typedef sqlite3_uint64 u64;
@@ -4484,6 +4485,25 @@ int ShellState::RunOneSqlLine(InputMode mode, char *zSql) {
 	return 0;
 }
 
+void ShellState::FixCommandForLog(char *zSql, char **zSql_fixed) {
+	idx_t length = StringLength(zSql);
+	idx_t stop = length;
+	for (int i = 0; i < stop; i++) {
+		if (zSql[i] == '"')
+			length++;
+	}
+	*zSql_fixed = (char *)realloc(*zSql_fixed, length + 1);
+	idx_t idx = 0;
+	for (int i = 0; i < stop; i++) {
+		(*zSql_fixed)[idx++] = zSql[i];
+		if (zSql[i] == '\n')
+			(*zSql_fixed)[idx] = ' ';
+		if (zSql[i] == '"')
+			(*zSql_fixed)[idx++] = '"';
+	}
+	(*zSql_fixed)[length] = '\0';
+}
+
 /*
 ** Read input from *in and process it.  If *in==0 then input
 ** is interactive - the user is typing it it.  Otherwise, input
@@ -4494,14 +4514,16 @@ int ShellState::RunOneSqlLine(InputMode mode, char *zSql) {
 ** Return the number of errors.
 */
 int ShellState::ProcessInput(InputMode mode) {
-	char *zLine = nullptr; /* A single input line */
-	char *zSql = nullptr;  /* Accumulated SQL text */
-	idx_t nLine;           /* Length of current line */
-	idx_t nSql = 0;        /* Bytes of zSql[] used */
-	idx_t nAlloc = 0;      /* Allocated zSql[] space */
-	idx_t nSqlPrior = 0;   /* Bytes of zSql[] used by prior line */
-	int rc;                /* Error code */
-	idx_t errCnt = 0;      /* Number of errors seen */
+	char *zLine = nullptr;      /* A single input line */
+	char *zSql = nullptr;       /* Accumulated SQL text */
+	char *zSql_fixed = nullptr; /* Accumulated SQL text for printing to log CSV file (same as above but with quotes
+	                               replaced by double quotes */
+	idx_t nLine;                /* Length of current line */
+	idx_t nSql = 0;             /* Bytes of zSql[] used */
+	idx_t nAlloc = 0;           /* Allocated zSql[] space */
+	idx_t nSqlPrior = 0;        /* Bytes of zSql[] used by prior line */
+	int rc;                     /* Error code */
+	idx_t errCnt = 0;           /* Number of errors seen */
 	idx_t numCtrlC = 0;
 	lineno = 0;
 	while (errCnt == 0 || !bail_on_error || (!in && stdin_is_interactive)) {
@@ -4582,9 +4604,19 @@ int ShellState::ProcessInput(InputMode mode) {
 			nSql += nLine;
 		}
 		if (nSql && line_contains_semicolon(&zSql[nSqlPrior], nSql - nSqlPrior) && sqlite3_complete(zSql)) {
+			FixCommandForLog(zSql, &zSql_fixed);
+			auto start_time = duckdb::Util::GetTime();
+			fprintf(stderr, "%lx,%lu,%lu,SQL_COMMAND_RUN_START,\"{\"\"command\"\":\"\"%s\"\"}\"\n",
+			        duckdb::Util::session_id, duckdb::Util::command_count, start_time, zSql_fixed);
 			duckdb::ConstantFilter::clear_set();
 			errCnt += RunOneSqlLine(mode, zSql);
-			fprintf(stderr, "Partitions scanned: %lu\n", duckdb::ConstantFilter::get_count());
+			fprintf(stderr, "%lx,%lu,%lu,SCANNED_PARTITIONS,\"{\"\"count\"\":%lu}\"\n", duckdb::Util::session_id,
+			        duckdb::Util::command_count, duckdb::Util::GetTime(), duckdb::ConstantFilter::get_count());
+			auto end_time = duckdb::Util::GetTime();
+			fprintf(stderr, "%lx,%lu,%lu,SQL_COMMAND_RUN_END,\"{\"\"command\"\":\"\"%s\"\",\"\"start_time\"\":%lu}\"\n",
+			        duckdb::Util::session_id, duckdb::Util::command_count, end_time, zSql_fixed, start_time);
+			duckdb::Util::command_count++;
+			// fprintf(stderr, "Partitions scanned: %lu\n", duckdb::ConstantFilter::get_count());
 			nSql = 0;
 			if (outCount) {
 				ResetOutput();
@@ -4604,6 +4636,7 @@ int ShellState::ProcessInput(InputMode mode) {
 	}
 	free(zSql);
 	free(zLine);
+	free(zSql_fixed);
 	return errCnt > 0;
 }
 

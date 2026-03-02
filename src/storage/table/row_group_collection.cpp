@@ -406,6 +406,7 @@ bool RowGroupCollection::Append(DataChunk &chunk, TableAppendState &state) {
 		if (remaining > 0) {
 			// we expect max 1 iteration of this loop (i.e. a single chunk should never overflow more than one
 			// row_group)
+			current_row_group->InitStats(state.row_group_append_state);
 			D_ASSERT(chunk.size() == remaining + append_count);
 			// slice the input chunk
 			if (remaining < chunk.size()) {

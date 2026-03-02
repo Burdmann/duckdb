@@ -4,6 +4,8 @@
 #include "duckdb/planner/expression/bound_constant_expression.hpp"
 #include "duckdb/common/value_operations/value_operations.hpp"
 #include "duckdb/common/enum_util.hpp"
+#include "duckdb/util/util.hpp"
+#include "duckdb/storage/table/column_data.hpp"
 
 #include <iostream>
 
@@ -73,6 +75,9 @@ FilterPropagateResult ConstantFilter::CheckStatistics(BaseStatistics &stats) con
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		}
 	}
+	if (result == FilterPropagateResult::NO_PRUNING_POSSIBLE)
+		result = ColumnData::QueryAdditionalStats(stats, comparison_type, constant.type().InternalType(), constant);
+
 	if (stats.is_rowgroup && result != FilterPropagateResult::FILTER_ALWAYS_FALSE) {
 		scanned_partitions.insert(stats.id);
 	}

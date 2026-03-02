@@ -451,6 +451,17 @@ void PhysicalBatchInsert::ExecuteTasks(ClientContext &context, GlobalSinkState &
 	}
 }
 
+void PhysicalBatchInsert::FinishInitialiseStats(ExecutionContext &context, DataChunk &insert_chunk,
+                                                OperatorSinkInput &input) const {
+	auto &lstate = input.local_state.Cast<BatchInsertLocalState>();
+	auto &gstate = input.global_state.Cast<BatchInsertGlobalState>();
+
+	auto &table = gstate.table;
+	auto &storage = table.GetStorage();
+	storage.FinishInitialiseStats(table, context.client, insert_chunk, bound_constraints,
+	                              *lstate.current_append_state.row_group_append_state.row_group);
+}
+
 //===--------------------------------------------------------------------===//
 // NextBatch
 //===--------------------------------------------------------------------===//

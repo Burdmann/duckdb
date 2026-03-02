@@ -842,6 +842,12 @@ void RowGroup::InitializeAppend(RowGroupAppendState &append_state) {
 	}
 }
 
+void RowGroup::InitStats(RowGroupAppendState &state) {
+	for (idx_t i = 0; i < GetColumnCount(); i++) {
+		GetColumn(i).InitStats(state.row_group->GetColumn(i).GetStats()->statistics);
+	}
+}
+
 void RowGroup::Append(RowGroupAppendState &state, DataChunk &chunk, idx_t append_count) {
 	// append to the current row_group
 	D_ASSERT(chunk.ColumnCount() == GetColumnCount());

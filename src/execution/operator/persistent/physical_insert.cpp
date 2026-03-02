@@ -620,6 +620,17 @@ idx_t PhysicalInsert::OnConflictHandling(TableCatalogEntry &table, ExecutionCont
 	return updated_tuples;
 }
 
+void PhysicalInsert::FinishInitialiseStats(ExecutionContext &context, DataChunk &insert_chunk,
+                                           OperatorSinkInput &input) const {
+	auto &gstate = input.global_state.Cast<InsertGlobalState>();
+
+	auto &table = gstate.table;
+	auto &storage = table.GetStorage();
+	auto &lstate = input.local_state.Cast<InsertLocalState>();
+	storage.FinishInitialiseStats(table, context.client, insert_chunk, bound_constraints,
+	                              *lstate.local_append_state.row_group_append_state.row_group);
+}
+
 SinkResultType PhysicalInsert::Sink(ExecutionContext &context, DataChunk &insert_chunk,
                                     OperatorSinkInput &input) const {
 	auto &gstate = input.global_state.Cast<InsertGlobalState>();

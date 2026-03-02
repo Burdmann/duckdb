@@ -19,6 +19,13 @@
 #include "duckdb/common/enums/scan_vector_type.hpp"
 #include "duckdb/common/serializer/serialization_traits.hpp"
 #include "duckdb/common/atomic_ptr.hpp"
+#include "duckdb/util/util.hpp"
+
+#include "duckdb/storage/statistics/additional/empty_additional_stats.hpp"
+#include "duckdb/storage/statistics/additional/cluster_additional_stats.hpp"
+#include "duckdb/storage/statistics/additional/bloom_additional_stats.hpp"
+#include "duckdb/storage/statistics/additional/always_prune_additional_stats.hpp"
+#include "duckdb/storage/statistics/additional/dictionary_additional_stats.hpp"
 
 namespace duckdb {
 class ColumnData;
@@ -194,6 +201,326 @@ public:
 	void MergeIntoStatistics(BaseStatistics &other);
 	unique_ptr<BaseStatistics> GetStatistics();
 
+	template <class T>
+	void AppendTemp(UnifiedVectorFormat &vdata, idx_t append_count, std::vector<T> &temp_storage) {
+		const T *data = vdata.GetData<T>();
+		for (int i = 0; i < append_count; i++) {
+			long unsigned int *validity = vdata.validity.GetData();
+			int idx = i / 64;
+			int bit = i % 64;
+			if (vdata.validity.AllValid() || validity[idx] & (1LU << bit)) {
+				// std::cout << data[i] << std::endl;
+				temp_storage.push_back(data[i]);
+			}
+		}
+	}
+
+	void AppendTemp(UnifiedVectorFormat &vdata, idx_t copied_elements, BaseStatistics &stats) {
+		map_mutex.lock();
+		switch (vdata.physical_type) {
+		case PhysicalType::BOOL:
+			AppendTemp(vdata, copied_elements, bool_temp_vectors[this]);
+			break;
+		case PhysicalType::INT8:
+			AppendTemp(vdata, copied_elements, int8_temp_vectors[this]);
+			break;
+		case PhysicalType::INT16:
+			AppendTemp(vdata, copied_elements, int16_temp_vectors[this]);
+			break;
+		case PhysicalType::INT32:
+			AppendTemp(vdata, copied_elements, int32_temp_vectors[this]);
+			break;
+		case PhysicalType::INT64:
+			AppendTemp(vdata, copied_elements, int64_temp_vectors[this]);
+			break;
+		case PhysicalType::UINT8:
+			AppendTemp(vdata, copied_elements, uint8_temp_vectors[this]);
+			break;
+		case PhysicalType::UINT16:
+			AppendTemp(vdata, copied_elements, uint16_temp_vectors[this]);
+			break;
+		case PhysicalType::UINT32:
+			AppendTemp(vdata, copied_elements, uint32_temp_vectors[this]);
+			break;
+		case PhysicalType::UINT64:
+			AppendTemp(vdata, copied_elements, uint64_temp_vectors[this]);
+			break;
+		case PhysicalType::INT128:
+			AppendTemp(vdata, copied_elements, hugeint_temp_vectors[this]);
+			break;
+		case PhysicalType::UINT128:
+			AppendTemp(vdata, copied_elements, uhugeint_temp_vectors[this]);
+			break;
+		case PhysicalType::FLOAT:
+			AppendTemp(vdata, copied_elements, float_temp_vectors[this]);
+			break;
+		case PhysicalType::DOUBLE:
+			AppendTemp(vdata, copied_elements, double_temp_vectors[this]);
+			break;
+		case PhysicalType::VARCHAR:
+			AppendTemp(vdata, copied_elements, string_temp_vectors[this]);
+			break;
+		default:
+			throw InternalException("Unsupported type for appending to additional stats");
+		}
+		map_mutex.unlock();
+	}
+
+	template <class T>
+	void InitAdditionalStats(std::vector<T> &temp_storage, BaseStatistics &stats) {
+		uint64_t start_time = Util::GetTime();
+		// fprintf(
+		//     stderr,
+		//     "%lx,%lu,%lu,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\"}\"\n",
+		//     Util::session_id, Util::command_count, start_time, &stats, ADDITIONAL_STATS<T>::GetStaticName());
+		stats.additional_stats = new ADDITIONAL_STATS<T>(temp_storage);
+		AdditionalStats<T> &astats = *((ADDITIONAL_STATS<T> *)stats.additional_stats);
+		temp_storage.clear();
+		fprintf(stderr,
+		        "%lx,%lu,%lu,END_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
+		        "\"\"size\"\":%lu,\"\"start_time\"\":%lu}\"\n",
+		        Util::session_id, Util::command_count, Util::GetTime(), &stats, ADDITIONAL_STATS<T>::GetStaticName(),
+		        astats.Size(&astats), start_time);
+	}
+
+	void InitStats(BaseStatistics &stats) {
+		map_mutex.lock();
+		switch (type.InternalType()) {
+		case PhysicalType::BOOL:
+			InitAdditionalStats(bool_temp_vectors[this], stats);
+			bool_temp_vectors.erase(this);
+			break;
+		case PhysicalType::INT8:
+			InitAdditionalStats(int8_temp_vectors[this], stats);
+			int8_temp_vectors.erase(this);
+			break;
+		case PhysicalType::INT16:
+			InitAdditionalStats(int16_temp_vectors[this], stats);
+			int16_temp_vectors.erase(this);
+			break;
+		case PhysicalType::INT32:
+			InitAdditionalStats(int32_temp_vectors[this], stats);
+			int32_temp_vectors.erase(this);
+			break;
+		case PhysicalType::INT64:
+			InitAdditionalStats(int64_temp_vectors[this], stats);
+			int64_temp_vectors.erase(this);
+			break;
+		case PhysicalType::INT128:
+			InitAdditionalStats(hugeint_temp_vectors[this], stats);
+			hugeint_temp_vectors.erase(this);
+			break;
+		case PhysicalType::UINT8:
+			InitAdditionalStats(uint8_temp_vectors[this], stats);
+			uint8_temp_vectors.erase(this);
+			break;
+		case PhysicalType::UINT16:
+			InitAdditionalStats(uint16_temp_vectors[this], stats);
+			uint16_temp_vectors.erase(this);
+			break;
+		case PhysicalType::UINT32:
+			InitAdditionalStats(uint32_temp_vectors[this], stats);
+			uint32_temp_vectors.erase(this);
+			break;
+		case PhysicalType::UINT64:
+			InitAdditionalStats(uint64_temp_vectors[this], stats);
+			uint64_temp_vectors.erase(this);
+			break;
+		case PhysicalType::UINT128:
+			InitAdditionalStats(uhugeint_temp_vectors[this], stats);
+			uhugeint_temp_vectors.erase(this);
+			break;
+		case PhysicalType::FLOAT:
+			InitAdditionalStats(float_temp_vectors[this], stats);
+			float_temp_vectors.erase(this);
+			break;
+		case PhysicalType::DOUBLE:
+			InitAdditionalStats(double_temp_vectors[this], stats);
+			double_temp_vectors.erase(this);
+			break;
+		case PhysicalType::VARCHAR:
+			InitAdditionalStats(string_temp_vectors[this], stats);
+			string_temp_vectors.erase(this);
+			break;
+		default:
+			throw InternalException("Unsupported type for appending to numeric cluster stats");
+		}
+		map_mutex.unlock();
+	}
+
+	void InitStats() {
+		map_mutex.lock();
+		switch (type.InternalType()) {
+		case PhysicalType::BOOL:
+			InitAdditionalStats(bool_temp_vectors[this], stats->statistics);
+			bool_temp_vectors.erase(this);
+			break;
+		case PhysicalType::INT8:
+			InitAdditionalStats(int8_temp_vectors[this], stats->statistics);
+			int8_temp_vectors.erase(this);
+			break;
+		case PhysicalType::INT16:
+			InitAdditionalStats(int16_temp_vectors[this], stats->statistics);
+			int16_temp_vectors.erase(this);
+			break;
+		case PhysicalType::INT32:
+			InitAdditionalStats(int32_temp_vectors[this], stats->statistics);
+			int32_temp_vectors.erase(this);
+			break;
+		case PhysicalType::INT64:
+			InitAdditionalStats(int64_temp_vectors[this], stats->statistics);
+			int64_temp_vectors.erase(this);
+			break;
+		case PhysicalType::INT128:
+			InitAdditionalStats(hugeint_temp_vectors[this], stats->statistics);
+			hugeint_temp_vectors.erase(this);
+			break;
+		case PhysicalType::UINT8:
+			InitAdditionalStats(uint8_temp_vectors[this], stats->statistics);
+			uint8_temp_vectors.erase(this);
+			break;
+		case PhysicalType::UINT16:
+			InitAdditionalStats(uint16_temp_vectors[this], stats->statistics);
+			uint16_temp_vectors.erase(this);
+			break;
+		case PhysicalType::UINT32:
+			InitAdditionalStats(uint32_temp_vectors[this], stats->statistics);
+			uint32_temp_vectors.erase(this);
+			break;
+		case PhysicalType::UINT64:
+			InitAdditionalStats(uint64_temp_vectors[this], stats->statistics);
+			uint64_temp_vectors.erase(this);
+			break;
+		case PhysicalType::UINT128:
+			InitAdditionalStats(uhugeint_temp_vectors[this], stats->statistics);
+			uhugeint_temp_vectors.erase(this);
+			break;
+		case PhysicalType::FLOAT:
+			InitAdditionalStats(float_temp_vectors[this], stats->statistics);
+			float_temp_vectors.erase(this);
+			break;
+		case PhysicalType::DOUBLE:
+			InitAdditionalStats(double_temp_vectors[this], stats->statistics);
+			double_temp_vectors.erase(this);
+			break;
+		case PhysicalType::VARCHAR:
+			InitAdditionalStats(string_temp_vectors[this], stats->statistics);
+			string_temp_vectors.erase(this);
+			break;
+		default:
+			throw InternalException("Unsupported type for appending to numeric cluster stats");
+		}
+		map_mutex.unlock();
+	}
+
+	template <class T>
+	static inline FilterPropagateResult QueryAdditionalStats(BaseStatistics &stats, ExpressionType comparison_type,
+	                                                         const T constant) {
+		if (stats.additional_stats == NULL)
+			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+		ADDITIONAL_STATS<T> &astats = *((ADDITIONAL_STATS<T> *)stats.additional_stats);
+		uint64_t start_time = Util::GetTime();
+		FilterPropagateResult result = astats.Query(&astats, comparison_type, constant);
+		// fprintf(stderr,
+		//         "%lx,%lu,%lu,EVAL_ADDITIONAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
+		//         "\"\"start_time\"\":%lu,\"\"result\"\":%u}\"\n",
+		//         duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), &stats, astats->name,
+		//         start_time, (unsigned int)result);
+		return result;
+	}
+
+	static inline FilterPropagateResult QueryAdditionalStats(BaseStatistics &stats, ExpressionType comparison_type,
+	                                                         PhysicalType type, const Value constant) {
+		switch (type) {
+		case PhysicalType::BOOL:
+			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<bool>());
+		case PhysicalType::INT8:
+			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<int8_t>());
+		case PhysicalType::INT16:
+			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<int16_t>());
+		case PhysicalType::INT32:
+			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<int32_t>());
+		case PhysicalType::INT64:
+			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<int64_t>());
+		case PhysicalType::INT128:
+			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<hugeint_t>());
+		case PhysicalType::UINT8:
+			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<uint8_t>());
+		case PhysicalType::UINT16:
+			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<uint16_t>());
+		case PhysicalType::UINT32:
+			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<uint32_t>());
+		case PhysicalType::UINT64:
+			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<uint64_t>());
+		case PhysicalType::UINT128:
+			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<uhugeint_t>());
+		case PhysicalType::FLOAT:
+			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<float>());
+		case PhysicalType::DOUBLE:
+			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<double>());
+		case PhysicalType::VARCHAR:
+			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<string_t>());
+		default:
+			throw InternalException("Unsupported type querying additional stats");
+		}
+	}
+
+	template <class T>
+	static inline FilterPropagateResult RangeQueryAdditionalStats(BaseStatistics &stats, const T start, const T end) {
+		if (stats.additional_stats == NULL)
+			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+		ADDITIONAL_STATS<T> &astats = *((ADDITIONAL_STATS<T> *)stats.additional_stats);
+		uint64_t start_time = Util::GetTime();
+		FilterPropagateResult result = astats.QueryRange(&astats, start, end);
+		// fprintf(stderr,
+		//         "%lx,%lu,%lu,EVAL_ADDITIONAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
+		//         "\"\"start_time\"\":%lu,\"\"result\"\":%u}\"\n",
+		//         duckdb::Util::session_id, duckdb::Util::command_count, duckdb::Util::GetTime(), &stats, astats->name,
+		//         start_time, (unsigned int)result);
+		return result;
+	}
+
+	static inline FilterPropagateResult RangeQueryAdditionalStats(BaseStatistics &stats, PhysicalType type,
+	                                                              const Value start, const Value end) {
+		switch (type) {
+		case PhysicalType::BOOL:
+			return RangeQueryAdditionalStats(stats, start.GetValueUnsafe<bool>(), end.GetValueUnsafe<bool>());
+		case PhysicalType::INT8:
+			return RangeQueryAdditionalStats(stats, start.GetValueUnsafe<int8_t>(), end.GetValueUnsafe<int8_t>());
+		case PhysicalType::INT16:
+			return RangeQueryAdditionalStats(stats, start.GetValueUnsafe<int16_t>(), end.GetValueUnsafe<int16_t>());
+		case PhysicalType::INT32:
+			return RangeQueryAdditionalStats(stats, start.GetValueUnsafe<int32_t>(), end.GetValueUnsafe<int32_t>());
+		case PhysicalType::INT64:
+			return RangeQueryAdditionalStats(stats, start.GetValueUnsafe<int64_t>(), end.GetValueUnsafe<int64_t>());
+		case PhysicalType::INT128:
+			return RangeQueryAdditionalStats(stats, start.GetValueUnsafe<hugeint_t>(), end.GetValueUnsafe<hugeint_t>());
+		case PhysicalType::UINT8:
+			return RangeQueryAdditionalStats(stats, start.GetValueUnsafe<uint8_t>(), end.GetValueUnsafe<uint8_t>());
+		case PhysicalType::UINT16:
+			return RangeQueryAdditionalStats(stats, start.GetValueUnsafe<uint16_t>(), end.GetValueUnsafe<uint16_t>());
+		case PhysicalType::UINT32:
+			return RangeQueryAdditionalStats(stats, start.GetValueUnsafe<uint32_t>(), end.GetValueUnsafe<uint32_t>());
+		case PhysicalType::UINT64:
+			return RangeQueryAdditionalStats(stats, start.GetValueUnsafe<uint64_t>(), end.GetValueUnsafe<uint64_t>());
+		case PhysicalType::UINT128:
+			return RangeQueryAdditionalStats(stats, start.GetValueUnsafe<uhugeint_t>(),
+			                                 end.GetValueUnsafe<uhugeint_t>());
+		case PhysicalType::FLOAT:
+			return RangeQueryAdditionalStats(stats, start.GetValueUnsafe<float>(), end.GetValueUnsafe<float>());
+		case PhysicalType::DOUBLE:
+			return RangeQueryAdditionalStats(stats, start.GetValueUnsafe<double>(), end.GetValueUnsafe<double>());
+		case PhysicalType::VARCHAR:
+			return RangeQueryAdditionalStats(stats, start.GetValueUnsafe<string_t>(), end.GetValueUnsafe<string_t>());
+		default:
+			throw InternalException("Unsupported type querying additional stats");
+		}
+	}
+
+	inline SegmentStatistics *GetStats() {
+		return stats.get();
+	}
+
 protected:
 	//! Append a transient segment
 	void AppendTransientSegment(SegmentLock &l, idx_t start_row);
@@ -248,6 +575,23 @@ private:
 	//!	The compression function used by the ColumnData
 	//! This is empty if the segments have mixed compression or the ColumnData is empty
 	atomic_ptr<const CompressionFunction> compression;
+
+	//! altp: temporary storage for data between calls to append
+	static std::unordered_map<void *, std::vector<bool>> bool_temp_vectors;
+	static std::unordered_map<void *, std::vector<int8_t>> int8_temp_vectors;
+	static std::unordered_map<void *, std::vector<int16_t>> int16_temp_vectors;
+	static std::unordered_map<void *, std::vector<int32_t>> int32_temp_vectors;
+	static std::unordered_map<void *, std::vector<int64_t>> int64_temp_vectors;
+	static std::unordered_map<void *, std::vector<uint8_t>> uint8_temp_vectors;
+	static std::unordered_map<void *, std::vector<uint16_t>> uint16_temp_vectors;
+	static std::unordered_map<void *, std::vector<uint32_t>> uint32_temp_vectors;
+	static std::unordered_map<void *, std::vector<uint64_t>> uint64_temp_vectors;
+	static std::unordered_map<void *, std::vector<hugeint_t>> hugeint_temp_vectors;
+	static std::unordered_map<void *, std::vector<uhugeint_t>> uhugeint_temp_vectors;
+	static std::unordered_map<void *, std::vector<float>> float_temp_vectors;
+	static std::unordered_map<void *, std::vector<double>> double_temp_vectors;
+	static std::unordered_map<void *, std::vector<string_t>> string_temp_vectors;
+	static std::mutex map_mutex;
 };
 
 struct PersistentColumnData {
