@@ -16,7 +16,7 @@ namespace duckdb {
 class AlpConstants {
 public:
 	static constexpr uint32_t ALP_VECTOR_SIZE = 1024;
-	static constexpr uint32_t RG_SAMPLES = 8;
+	static constexpr uint32_t RG_SAMPLES = 4; // change necessary to avoid crash
 	static constexpr uint16_t SAMPLES_PER_VECTOR = 32;
 	// We calculate how many equidistant vector we must jump within a rowgroup
 	static constexpr uint32_t RG_SAMPLES_DUCKDB_JUMP = (DEFAULT_ROW_GROUP_SIZE / RG_SAMPLES) / STANDARD_VECTOR_SIZE;

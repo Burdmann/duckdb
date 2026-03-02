@@ -73,12 +73,12 @@ FilterPropagateResult ConstantFilter::CheckStatistics(BaseStatistics &stats) con
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		}
 	}
-	if (stats.is_segment && result != FilterPropagateResult::FILTER_ALWAYS_FALSE) {
+	if (stats.is_rowgroup && result != FilterPropagateResult::FILTER_ALWAYS_FALSE) {
 		scanned_partitions.insert(stats.id);
 	}
 	// std::cout << "CHECK " << stats.id << " min: " << stats.stats_union.numeric_data.min.value_.integer
 	//           << " max: " << stats.stats_union.numeric_data.max.value_.integer << " " << stats.type.ToString()
-	//           << " result: " << (int)result << " is_segment: " << stats.is_segment << std::endl;
+	//           << " result: " << (int)result << " is_rowgroup: " << stats.is_rowgroup << std::endl;
 
 	return result;
 }

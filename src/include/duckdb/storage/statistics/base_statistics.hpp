@@ -150,7 +150,7 @@ public:
 	//! Child stats (for LIST and STRUCT)
 	unsafe_unique_array<BaseStatistics> child_stats;
 	uint64_t id;
-	bool is_segment = false;
+	bool is_rowgroup = false;
 	static std::atomic<uint64_t> counter;
 };
 
