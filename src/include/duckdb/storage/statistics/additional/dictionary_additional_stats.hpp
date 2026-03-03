@@ -27,7 +27,7 @@ constexpr static uint32_t MAX_NUMBER_OF_ITEMS = 58;
 template <class T>
 class DictionaryAdditionalStats : public AdditionalStats<T> {
 private:
-	bool overfull = false;
+	bool valid = true;
 	std::unordered_set<T> dictionary;
 
 public:
@@ -53,7 +53,7 @@ public:
 				break;
 		}
 		if (nstats->dictionary.size() > MAX_NUMBER_OF_ITEMS) {
-			nstats->overfull = true;
+			nstats->valid = false;
 			nstats->dictionary.clear();
 			nstats->dictionary.rehash(1);
 		}
@@ -61,7 +61,7 @@ public:
 	inline static FilterPropagateResult Query_implementation(AdditionalStats<T> *stats, ExpressionType comparison_type,
 	                                                         T constant) {
 		DictionaryAdditionalStats<T> *nstats = (DictionaryAdditionalStats<T> *)stats;
-		if (nstats->overfull || nstats->dictionary.find(constant) != nstats->dictionary.end())
+		if (!nstats->valid || nstats->dictionary.find(constant) != nstats->dictionary.end())
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		return FilterPropagateResult::FILTER_ALWAYS_FALSE;
 	}
@@ -75,7 +75,7 @@ public:
 	}
 	inline static void Serialise_implementation(AdditionalStats<T> *stats, Serializer &serializer) {
 		DictionaryAdditionalStats<T> *nstats = (DictionaryAdditionalStats<T> *)stats;
-		serializer.WriteProperty(1001, "dictionary:overfull", nstats->overfull);
+		serializer.WriteProperty(1001, "dictionary:valid", nstats->valid);
 		serializer.WriteProperty(1002, "dictionary:size", nstats->dictionary.size());
 		for (T item : nstats->dictionary) {
 			serializer.WriteProperty(1003, "dictionary:item", item);
@@ -83,7 +83,7 @@ public:
 	}
 	inline static void Deserialise_implementation(AdditionalStats<T> *stats, Deserializer &deserializer) {
 		DictionaryAdditionalStats<T> *nstats = (DictionaryAdditionalStats<T> *)stats;
-		nstats->overfull = deserializer.template ReadProperty<bool>(1001, "dictionary:overfull");
+		nstats->valid = deserializer.template ReadProperty<bool>(1001, "dictionary:valid");
 		auto size = deserializer.template ReadProperty<unsigned int>(1002, "dictionary:size");
 		for (int i = 0; i < size; i++) {
 			auto item = deserializer.template ReadProperty<T>(1003, "dictionary:item");
@@ -95,7 +95,7 @@ public:
 template <>
 class DictionaryAdditionalStats<string_t> : public AdditionalStats<string_t> {
 private:
-	bool overfull = false;
+	bool valid = true;
 	std::unordered_set<string_t> dictionary;
 
 public:
@@ -121,7 +121,7 @@ public:
 				break;
 		}
 		if (nstats->dictionary.size() > MAX_NUMBER_OF_ITEMS) {
-			nstats->overfull = true;
+			nstats->valid = false;
 			nstats->dictionary.clear();
 			nstats->dictionary.rehash(1);
 		}
@@ -129,7 +129,7 @@ public:
 	inline static FilterPropagateResult Query_implementation(AdditionalStats<string_t> *stats,
 	                                                         ExpressionType comparison_type, string_t constant) {
 		DictionaryAdditionalStats<string_t> *nstats = (DictionaryAdditionalStats<string_t> *)stats;
-		if (nstats->overfull || nstats->dictionary.find(constant) != nstats->dictionary.end())
+		if (!nstats->valid || nstats->dictionary.find(constant) != nstats->dictionary.end())
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		return FilterPropagateResult::FILTER_ALWAYS_FALSE;
 	}
