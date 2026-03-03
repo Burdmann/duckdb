@@ -1,8 +1,8 @@
+SET threads TO 1;
 ATTACH 'test.db';
 USE test;
 CREATE TABLE tbl(time UBIGINT NOT NULL,data INT NOT NULL);;
 COPY tbl FROM 'sorted.csv' (FORMAT 'csv', force_not_null ('time','data'), delimiter ',', header 1);
-SET threads TO 1;
 SELECT * FROM tbl WHERE time = 1769545723552;
 SELECT * FROM tbl WHERE time = 1768445968558;
 SELECT * FROM tbl WHERE time = 1767447787513;

@@ -37,8 +37,8 @@ for idx,in_file in enumerate(in_files):
     duckdb.execute("CREATE TABLE times AS SELECT start_time,end_time,t1.CommandID AS CommandID FROM (SELECT Time as end_time,CommandID FROM tbl WHERE type = 'SQL_COMMAND_RUN_END') t1 JOIN (SELECT Time as start_time,CommandID FROM tbl WHERE type = 'SQL_COMMAND_RUN_START') t2 on t1.CommandID = t2.commandID;")
 
     for i in range(NUM_TABLES):
-        sizes[idx].append(duckdb.execute(f"SELECT COALESCE(SUM(CAST(Data->'size' AS HUGEINT)),0) FROM tbl WHERE type = 'END_INITIALISE_ADDITIONAL_STATS' AND CommandID = {NUM_TABLES+i+(2 if ATTACHED else 0)};").fetchone()[0])
-        max_sizes[idx].append(duckdb.execute(f"SELECT COALESCE(MAX(CAST(Data->'size' AS HUGEINT)),0) FROM tbl WHERE type = 'END_INITIALISE_ADDITIONAL_STATS' AND CommandID = {NUM_TABLES+i+(2 if ATTACHED else 0)};").fetchone()[0])
+        sizes[idx].append(duckdb.execute(f"SELECT COALESCE(SUM(CAST(Data->'size' AS HUGEINT)),0) FROM tbl WHERE type = 'END_INITIALISE_ADDITIONAL_STATS' AND CommandID = {NUM_TABLES+i+(3 if ATTACHED else 1)};").fetchone()[0])
+        max_sizes[idx].append(duckdb.execute(f"SELECT COALESCE(MAX(CAST(Data->'size' AS HUGEINT)),0) FROM tbl WHERE type = 'END_INITIALISE_ADDITIONAL_STATS' AND CommandID = {NUM_TABLES+i+(3 if ATTACHED else 1)};").fetchone()[0])
         ingestion_times[idx].append(duckdb.execute(f"SELECT ROUND((end_time-start_time)/1000000.0,5) FROM times WHERE CommandID = {NUM_TABLES+i+(2 if ATTACHED else 0)}").fetchone()[0])
         tables[idx].append(duckdb.execute(f"SELECT CAST(Data->'command' AS VARCHAR) FROM tbl WHERE type='SQL_COMMAND_RUN_START' AND CommandID = {NUM_TABLES+i+(2 if ATTACHED else 0)}").fetchone()[0].split()[1])
 

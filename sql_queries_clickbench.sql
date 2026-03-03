@@ -1,3 +1,4 @@
+SET threads TO 1;
 ATTACH 'test.db';
 USE test;
 CREATE TABLE hits
@@ -109,7 +110,6 @@ CREATE TABLE hits
     CLID INTEGER NOT NULL
 );
 COPY hits FROM 'hits.csv' (FORMAT 'csv',strict_mode false);
-SET threads TO 1;
 SELECT COUNT(*) FROM hits;
 SELECT COUNT(*) FROM hits WHERE AdvEngineID <> 0;
 SELECT SUM(AdvEngineID), COUNT(*), AVG(ResolutionWidth) FROM hits;

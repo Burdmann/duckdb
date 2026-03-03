@@ -1,3 +1,4 @@
+SET threads TO 1;
 ATTACH 'test.db';
 USE test;
 CREATE TABLE call_center(cc_call_center_sk INTEGER, cc_call_center_id VARCHAR, cc_rec_start_date DATE, cc_rec_end_date DATE, cc_closed_date_sk INTEGER, cc_open_date_sk INTEGER, cc_name VARCHAR, cc_class VARCHAR, cc_employees INTEGER, cc_sq_ft INTEGER, cc_hours VARCHAR, cc_manager VARCHAR, cc_mkt_id INTEGER, cc_mkt_class VARCHAR, cc_mkt_desc VARCHAR, cc_market_manager VARCHAR, cc_division INTEGER, cc_division_name VARCHAR, cc_company INTEGER, cc_company_name VARCHAR, cc_street_number VARCHAR, cc_street_name VARCHAR, cc_street_type VARCHAR, cc_suite_number VARCHAR, cc_city VARCHAR, cc_county VARCHAR, cc_state VARCHAR, cc_zip VARCHAR, cc_country VARCHAR, cc_gmt_offset DECIMAL(5,2), cc_tax_percentage DECIMAL(5,2));;
@@ -48,7 +49,6 @@ COPY web_page FROM 'tpcds/web_page.csv' (FORMAT 'csv', delimiter ',', header 1);
 COPY web_returns FROM 'tpcds/web_returns.csv' (FORMAT 'csv', delimiter ',', header 1);
 COPY web_sales FROM 'tpcds/web_sales.csv' (FORMAT 'csv', delimiter ',', header 1);
 COPY web_site FROM 'tpcds/web_site.csv' (FORMAT 'csv', delimiter ',', header 1);
-SET threads TO 1;
 WITH customer_total_return AS
   (SELECT sr_customer_sk AS ctr_customer_sk,
           sr_store_sk AS ctr_store_sk,

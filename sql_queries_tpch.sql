@@ -1,3 +1,4 @@
+SET threads TO 1;
 ATTACH 'test.db';
 USE test;
 CREATE TABLE customer(c_custkey BIGINT NOT NULL, c_name VARCHAR NOT NULL, c_address VARCHAR NOT NULL, c_nationkey INTEGER NOT NULL, c_phone VARCHAR NOT NULL, c_acctbal DECIMAL(15,2) NOT NULL, c_mktsegment VARCHAR NOT NULL, c_comment VARCHAR NOT NULL);;
@@ -16,7 +17,6 @@ COPY part FROM 'tpch/part.csv' (FORMAT 'csv', force_not_null ('p_partkey', 'p_na
 COPY partsupp FROM 'tpch/partsupp.csv' (FORMAT 'csv', force_not_null ('ps_partkey', 'ps_suppkey', 'ps_availqty', 'ps_supplycost', 'ps_comment'), delimiter ',', header 1);
 COPY region FROM 'tpch/region.csv' (FORMAT 'csv', force_not_null ('r_regionkey', 'r_name', 'r_comment'), delimiter ',', header 1);
 COPY supplier FROM 'tpch/supplier.csv' (FORMAT 'csv', force_not_null ('s_suppkey', 's_name', 's_address', 's_nationkey', 's_phone', 's_acctbal', 's_comment'), delimiter ',', header 1);
-SET threads TO 1;
 SELECT
     l_returnflag,
     l_linestatus,
