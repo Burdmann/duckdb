@@ -80,10 +80,10 @@ FilterPropagateResult ConstantFilter::CheckStatistics(BaseStatistics &stats) con
 
 	if (stats.is_rowgroup && result != FilterPropagateResult::FILTER_ALWAYS_FALSE) {
 		scanned_partitions.insert(stats.id);
+		// std::cout << "CHECK " << stats.id << " min: " << stats.stats_union.numeric_data.min.value_.ubigint
+		//           << " max: " << stats.stats_union.numeric_data.max.value_.ubigint << " " << stats.type.ToString()
+		//           << " result: " << (int)result << " is_rowgroup: " << stats.is_rowgroup << std::endl;
 	}
-	// std::cout << "CHECK " << stats.id << " min: " << stats.stats_union.numeric_data.min.value_.integer
-	//           << " max: " << stats.stats_union.numeric_data.max.value_.integer << " " << stats.type.ToString()
-	//           << " result: " << (int)result << " is_rowgroup: " << stats.is_rowgroup << std::endl;
 
 	return result;
 }

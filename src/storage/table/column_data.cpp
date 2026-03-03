@@ -508,6 +508,33 @@ void ColumnData::InitializeAppend(ColumnAppendState &state) {
 	D_ASSERT(state.current->GetCompressionFunction().append);
 }
 
+void ColumnData::AppendDataWriteTemp(BaseStatistics &append_stats, ColumnAppendState &state, UnifiedVectorFormat &vdata,
+                                     idx_t append_count) {
+	idx_t offset = 0;
+	this->count += append_count;
+	while (true) {
+		// append the data from the vector
+		uint64_t start_time = Util::GetTime();
+		idx_t copied_elements = state.current->Append(state, vdata, offset, append_count);
+		append_stats.Merge(state.current->stats.statistics);
+		AppendTemp(vdata, copied_elements, stats->statistics);
+		if (copied_elements == append_count) {
+			// finished copying everything
+			break;
+		}
+
+		// we couldn't fit everything we wanted in the current column segment, create a new one
+		{
+			auto l = data.Lock();
+			AppendTransientSegment(l, state.current->start + state.current->count);
+			state.current = data.GetLastSegment(l);
+			state.current->InitializeAppend(state);
+		}
+		offset += copied_elements;
+		append_count -= copied_elements;
+	}
+}
+
 void ColumnData::AppendData(BaseStatistics &append_stats, ColumnAppendState &state, UnifiedVectorFormat &vdata,
                             idx_t append_count) {
 	idx_t offset = 0;

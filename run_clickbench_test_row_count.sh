@@ -1,4 +1,4 @@
-dir="xperiments_results/clickbench"
+dir="xperiments_results/clickbench_test"
 # dir="."
 mkdir -p $dir/processed
 cat template.csv > $dir/raw_data_min_max.csv

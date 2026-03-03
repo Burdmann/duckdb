@@ -152,6 +152,8 @@ public:
 	//! Append a vector of type [type] to the end of the column
 	void Append(ColumnAppendState &state, Vector &vector, idx_t count);
 	virtual void AppendData(BaseStatistics &stats, ColumnAppendState &state, UnifiedVectorFormat &vdata, idx_t count);
+	virtual void AppendDataWriteTemp(BaseStatistics &stats, ColumnAppendState &state, UnifiedVectorFormat &vdata,
+	                                 idx_t count);
 	//! Revert a set of appends to the ColumnData
 	virtual void RevertAppend(row_t start_row);
 
@@ -348,79 +350,18 @@ public:
 		map_mutex.unlock();
 	}
 
-	void InitStats() {
-		map_mutex.lock();
-		switch (type.InternalType()) {
-		case PhysicalType::BOOL:
-			InitAdditionalStats(bool_temp_vectors[this], stats->statistics);
-			bool_temp_vectors.erase(this);
-			break;
-		case PhysicalType::INT8:
-			InitAdditionalStats(int8_temp_vectors[this], stats->statistics);
-			int8_temp_vectors.erase(this);
-			break;
-		case PhysicalType::INT16:
-			InitAdditionalStats(int16_temp_vectors[this], stats->statistics);
-			int16_temp_vectors.erase(this);
-			break;
-		case PhysicalType::INT32:
-			InitAdditionalStats(int32_temp_vectors[this], stats->statistics);
-			int32_temp_vectors.erase(this);
-			break;
-		case PhysicalType::INT64:
-			InitAdditionalStats(int64_temp_vectors[this], stats->statistics);
-			int64_temp_vectors.erase(this);
-			break;
-		case PhysicalType::INT128:
-			InitAdditionalStats(hugeint_temp_vectors[this], stats->statistics);
-			hugeint_temp_vectors.erase(this);
-			break;
-		case PhysicalType::UINT8:
-			InitAdditionalStats(uint8_temp_vectors[this], stats->statistics);
-			uint8_temp_vectors.erase(this);
-			break;
-		case PhysicalType::UINT16:
-			InitAdditionalStats(uint16_temp_vectors[this], stats->statistics);
-			uint16_temp_vectors.erase(this);
-			break;
-		case PhysicalType::UINT32:
-			InitAdditionalStats(uint32_temp_vectors[this], stats->statistics);
-			uint32_temp_vectors.erase(this);
-			break;
-		case PhysicalType::UINT64:
-			InitAdditionalStats(uint64_temp_vectors[this], stats->statistics);
-			uint64_temp_vectors.erase(this);
-			break;
-		case PhysicalType::UINT128:
-			InitAdditionalStats(uhugeint_temp_vectors[this], stats->statistics);
-			uhugeint_temp_vectors.erase(this);
-			break;
-		case PhysicalType::FLOAT:
-			InitAdditionalStats(float_temp_vectors[this], stats->statistics);
-			float_temp_vectors.erase(this);
-			break;
-		case PhysicalType::DOUBLE:
-			InitAdditionalStats(double_temp_vectors[this], stats->statistics);
-			double_temp_vectors.erase(this);
-			break;
-		case PhysicalType::VARCHAR:
-			InitAdditionalStats(string_temp_vectors[this], stats->statistics);
-			string_temp_vectors.erase(this);
-			break;
-		default:
-			throw InternalException("Unsupported type for appending to numeric cluster stats");
-		}
-		map_mutex.unlock();
-	}
-
 	template <class T>
 	static inline FilterPropagateResult QueryAdditionalStats(BaseStatistics &stats, ExpressionType comparison_type,
 	                                                         const T constant) {
-		if (stats.additional_stats == NULL)
+		if (stats.additional_stats == NULL) {
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+		}
 		ADDITIONAL_STATS<T> &astats = *((ADDITIONAL_STATS<T> *)stats.additional_stats);
 		uint64_t start_time = Util::GetTime();
 		FilterPropagateResult result = astats.Query(&astats, comparison_type, constant);
+		// if (result == FilterPropagateResult::NO_PRUNING_POSSIBLE) {
+		// 	ClusterAdditionalStats<T>::Print(&astats);
+		// }
 		// fprintf(stderr,
 		//         "%lx,%lu,%lu,EVAL_ADDITIONAL_STATISTICS_END,\"{\"\"statistic\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\","
 		//         "\"\"start_time\"\":%lu,\"\"result\"\":%u}\"\n",

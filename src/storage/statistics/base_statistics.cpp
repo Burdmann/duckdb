@@ -48,6 +48,7 @@ BaseStatistics::BaseStatistics(BaseStatistics &&other) noexcept {
 	distinct_count = other.distinct_count;
 	stats_union = other.stats_union;
 	id = other.id;
+	additional_stats = other.additional_stats;
 	std::swap(child_stats, other.child_stats);
 }
 
@@ -58,6 +59,7 @@ BaseStatistics &BaseStatistics::operator=(BaseStatistics &&other) noexcept {
 	distinct_count = other.distinct_count;
 	stats_union = other.stats_union;
 	id = other.id;
+	additional_stats = other.additional_stats;
 	std::swap(child_stats, other.child_stats);
 	return *this;
 }
@@ -141,6 +143,9 @@ bool BaseStatistics::IsConstant() const {
 void BaseStatistics::Merge(const BaseStatistics &other) {
 	has_null = has_null || other.has_null;
 	has_no_null = has_no_null || other.has_no_null;
+	if (additional_stats == NULL) {
+		additional_stats = other.additional_stats;
+	}
 	id = std::min(id, other.id);
 	switch (GetStatsType()) {
 	case StatisticsType::NUMERIC_STATS:
@@ -257,6 +262,7 @@ void BaseStatistics::CopyBase(const BaseStatistics &other) {
 	has_no_null = other.has_no_null;
 	distinct_count = other.distinct_count;
 	id = other.id;
+	additional_stats = other.additional_stats;
 }
 
 void BaseStatistics::Set(StatsInfo info) {
@@ -340,6 +346,7 @@ void BaseStatistics::Serialize(Serializer &serializer) const {
 		}
 	});
 	serializer.WriteProperty(104, "id", id);
+	serializer.WriteProperty(105, "additional_stats", (uint64_t)additional_stats);
 }
 
 BaseStatistics BaseStatistics::Deserialize(Deserializer &deserializer) {
@@ -379,6 +386,7 @@ BaseStatistics BaseStatistics::Deserialize(Deserializer &deserializer) {
 		}
 	});
 	stats.id = deserializer.ReadProperty<uint64_t>(104, "id");
+	stats.additional_stats = (void *)deserializer.ReadProperty<uint64_t>(105, "additional_stats");
 
 	return stats;
 }

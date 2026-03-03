@@ -2,9 +2,8 @@ import sys
 import random
 
 f = open(sys.argv[1],"w+")
-n = int(sys.argv[2])
-max_val = int(sys.argv[3])
+n = 10000000
 
-f.write("longs\n")
+f.write("time,data\n")
 for i in range(n):
-    f.write(f"{random.randint(0,max_val)}\n")
+    f.write(f"{random.randint(1767225600000,1769817600000)},{random.randint(1,1000000)}\n")

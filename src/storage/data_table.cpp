@@ -893,7 +893,7 @@ void DataTable::FinishInitialiseStats(TableCatalogEntry &table, ClientContext &c
                                       RowGroup &row_group) {
 	LocalAppendState append_state;
 	InitializeLocalAppend(append_state, table, context, bound_constraints);
-	auto data_table_info = GetDataTableInfo();
+	std::cout << append_state.append_state.row_group_append_state.row_group << std::endl;
 	row_group.InitStats(append_state.append_state.row_group_append_state);
 	FinalizeLocalAppend(append_state);
 }

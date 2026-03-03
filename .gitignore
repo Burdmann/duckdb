@@ -422,3 +422,12 @@ longs-sorted.csv
 longs-queries.csv
 longs.csv
 test.csv
+outliers-medium.csv
+outliers-small.csv
+outliers.csv
+sorted-medium.csv
+sorted-small.csv
+sorted.csv
+time_queries.csv
+unsorted-medium.csv
+unsorted.csv
