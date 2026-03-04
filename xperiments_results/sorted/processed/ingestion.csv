@@ -1,0 +1,2 @@
+Name,Unit,Table_name,Min/max,Min/max clusters,Bloom filter,Dictionary
+Ingestion,s,TABLE,0.00573,0.00693,0.00733,0.00565
