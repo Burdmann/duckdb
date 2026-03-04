@@ -1,9 +1,9 @@
 Name,Unit,Table_name,Min/max,Min/max clusters,Bloom filter,Dictionary
-Ingestion,s,customer,3.82249,4.76044,3.73634,3.83898
-Ingestion,s,lineitem,142.43912,136.55115,135.5123,135.2609
-Ingestion,s,nation,0.02303,0.02083,0.02682,0.01956
-Ingestion,s,orders,36.71334,36.76801,40.97419,37.07635
-Ingestion,s,part,12.53248,12.81895,13.79837,12.79527
-Ingestion,s,partsupp,24.00504,18.68659,21.84588,19.01441
-Ingestion,s,region,0.01794,0.01552,0.01703,0.00513
-Ingestion,s,supplier,9.21373,8.33627,7.7211,8.3371
+Ingestion,s,customer,29.73679,43.48378,31.16791,27.82369
+Ingestion,s,lineitem,892.4828,1660.2725,942.8413,887.016
+Ingestion,s,nation,0.02269,0.01254,0.0109,0.01148
+Ingestion,s,orders,245.66273,396.53378,251.4134,204.08948
+Ingestion,s,part,44.01339,67.90459,46.03637,37.48808
+Ingestion,s,partsupp,89.25473,150.4577,91.64464,83.77137
+Ingestion,s,region,0.01433,0.0034,0.01374,0.01244
+Ingestion,s,supplier,7.62443,9.51724,7.95078,7.59313

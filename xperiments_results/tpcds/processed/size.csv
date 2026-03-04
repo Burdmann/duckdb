@@ -1,28 +1,28 @@
 Name,Unit,Table_name,Min/max,Min/max clusters,Bloom filter,Dictionary
 Size,B,call_center,0,0,0,0
 Max Size,B,call_center,0,0,0,0
-Size,B,catalog_page,3744,4608,32544,4896
-Max Size,B,catalog_page,208,256,1808,272
-Size,B,catalog_returns,9535968,11736576,82889568,12470112
-Max Size,B,catalog_returns,208,256,1808,272
-Size,B,catalog_sales,109163392,134354944,948881792,142752128
-Max Size,B,catalog_sales,208,256,1808,272
-Size,B,customer,887328,1092096,7712928,1160352
-Max Size,B,customer,208,256,1808,272
-Size,B,customer_address,305552,376064,2655952,399568
-Max Size,B,customer_address,208,256,1808,272
-Size,B,customer_demographics,432432,532224,3758832,565488
-Max Size,B,customer_demographics,208,256,1808,272
-Size,B,date_dim,40768,50176,354368,53312
-Max Size,B,date_dim,208,256,1808,272
+Size,B,catalog_page,3744,29328,32544,9224
+Max Size,B,catalog_page,208,5056,1808,916
+Size,B,catalog_returns,9867312,45938472,85769712,15960648
+Max Size,B,catalog_returns,208,1056,1808,956
+Size,B,catalog_sales,124304544,580495544,1080493344,183863708
+Max Size,B,catalog_sales,208,1056,1808,576
+Size,B,customer,913536,8659072,7940736,1476688
+Max Size,B,customer,208,5056,1808,860
+Size,B,customer_address,329888,4901088,2867488,707472
+Max Size,B,customer_address,208,5056,1808,1552
+Size,B,customer_demographics,438048,963752,3807648,874996
+Max Size,B,customer_demographics,208,1056,1808,576
+Size,B,date_dim,46592,212960,404992,83856
+Max Size,B,date_dim,208,5056,1808,860
 Size,B,household_demographics,0,0,0,0
 Max Size,B,household_demographics,0,0,0,0
 Size,B,income_band,0,0,0,0
 Max Size,B,income_band,0,0,0,0
-Size,B,inventory,40210560,49489920,349522560,52583040
-Max Size,B,inventory,208,256,1808,272
-Size,B,item,100672,123904,875072,131648
-Max Size,B,item,208,256,1808,272
+Size,B,inventory,40556672,128727000,352531072,63583564
+Max Size,B,inventory,208,1056,1808,376
+Size,B,item,109824,1212864,954624,189024
+Max Size,B,item,208,5056,1808,832
 Size,B,promotion,0,0,0,0
 Max Size,B,promotion,0,0,0,0
 Size,B,reason,0,0,0,0
@@ -31,19 +31,19 @@ Size,B,ship_mode,0,0,0,0
 Max Size,B,ship_mode,0,0,0,0
 Size,B,store,0,0,0,0
 Max Size,B,store,0,0,0,0
-Size,B,store_returns,14368640,17684480,124896640,18789760
-Max Size,B,store_returns,208,256,1808,272
-Size,B,store_sales,146041168,179742976,1269434768,190976912
-Max Size,B,store_sales,208,256,1808,272
-Size,B,time_dim,20800,25600,180800,27200
-Max Size,B,time_dim,208,256,1808,272
+Size,B,store_returns,14618240,72927224,127066240,22053864
+Max Size,B,store_returns,208,1056,1808,956
+Size,B,store_sales,168181520,853844640,1461885520,226398200
+Max Size,B,store_sales,208,1056,1808,280
+Size,B,time_dim,20800,101520,180800,32928
+Max Size,B,time_dim,208,5056,1808,400
 Size,B,warehouse,0,0,0,0
 Max Size,B,warehouse,0,0,0,0
 Size,B,web_page,0,0,0,0
 Max Size,B,web_page,0,0,0,0
-Size,B,web_returns,3918720,4823040,34062720,5124480
-Max Size,B,web_returns,208,256,1808,272
-Size,B,web_sales,54426112,66985984,473088512,71172608
-Max Size,B,web_sales,208,256,1808,272
+Size,B,web_returns,4382976,21930080,38098176,6493688
+Max Size,B,web_returns,208,1056,1808,956
+Size,B,web_sales,62155808,298615064,540277408,91440756
+Max Size,B,web_sales,208,1056,1808,592
 Size,B,web_site,0,0,0,0
 Max Size,B,web_site,0,0,0,0
