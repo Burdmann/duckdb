@@ -1,3 +1,3 @@
-./run_tpch.sh
-./run_tpcds.sh
-./run_clickbench.sh
+./run_microbench_unsorted_hours.sh
+./run_microbench_sorted_minutes.sh
+./run_microbench_sorted_hours.sh

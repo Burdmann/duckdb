@@ -61,7 +61,7 @@ public:
 	inline static FilterPropagateResult Query_implementation(AdditionalStats<T> *stats, ExpressionType comparison_type,
 	                                                         T constant) {
 		DictionaryAdditionalStats<T> *nstats = (DictionaryAdditionalStats<T> *)stats;
-		if (!nstats->valid || nstats->dictionary.find(constant) != nstats->dictionary.end())
+		if (!nstats->valid || nstats->dictionary.count(constant) > 0)
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		return FilterPropagateResult::FILTER_ALWAYS_FALSE;
 	}
@@ -129,7 +129,7 @@ public:
 	inline static FilterPropagateResult Query_implementation(AdditionalStats<string_t> *stats,
 	                                                         ExpressionType comparison_type, string_t constant) {
 		DictionaryAdditionalStats<string_t> *nstats = (DictionaryAdditionalStats<string_t> *)stats;
-		if (!nstats->valid || nstats->dictionary.find(constant) != nstats->dictionary.end())
+		if (!nstats->valid || nstats->dictionary.count(constant) > 0)
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		return FilterPropagateResult::FILTER_ALWAYS_FALSE;
 	}

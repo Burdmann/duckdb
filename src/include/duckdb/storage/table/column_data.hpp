@@ -371,36 +371,36 @@ public:
 	}
 
 	static inline FilterPropagateResult QueryAdditionalStats(BaseStatistics &stats, ExpressionType comparison_type,
-	                                                         PhysicalType type, const Value constant) {
+	                                                         PhysicalType type, const Value *constant) {
 		switch (type) {
 		case PhysicalType::BOOL:
-			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<bool>());
+			return QueryAdditionalStats(stats, comparison_type, constant->GetValueUnsafe<bool>());
 		case PhysicalType::INT8:
-			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<int8_t>());
+			return QueryAdditionalStats(stats, comparison_type, constant->GetValueUnsafe<int8_t>());
 		case PhysicalType::INT16:
-			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<int16_t>());
+			return QueryAdditionalStats(stats, comparison_type, constant->GetValueUnsafe<int16_t>());
 		case PhysicalType::INT32:
-			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<int32_t>());
+			return QueryAdditionalStats(stats, comparison_type, constant->GetValueUnsafe<int32_t>());
 		case PhysicalType::INT64:
-			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<int64_t>());
+			return QueryAdditionalStats(stats, comparison_type, constant->GetValueUnsafe<int64_t>());
 		case PhysicalType::INT128:
-			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<hugeint_t>());
+			return QueryAdditionalStats(stats, comparison_type, constant->GetValueUnsafe<hugeint_t>());
 		case PhysicalType::UINT8:
-			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<uint8_t>());
+			return QueryAdditionalStats(stats, comparison_type, constant->GetValueUnsafe<uint8_t>());
 		case PhysicalType::UINT16:
-			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<uint16_t>());
+			return QueryAdditionalStats(stats, comparison_type, constant->GetValueUnsafe<uint16_t>());
 		case PhysicalType::UINT32:
-			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<uint32_t>());
+			return QueryAdditionalStats(stats, comparison_type, constant->GetValueUnsafe<uint32_t>());
 		case PhysicalType::UINT64:
-			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<uint64_t>());
+			return QueryAdditionalStats(stats, comparison_type, constant->GetValueUnsafe<uint64_t>());
 		case PhysicalType::UINT128:
-			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<uhugeint_t>());
+			return QueryAdditionalStats(stats, comparison_type, constant->GetValueUnsafe<uhugeint_t>());
 		case PhysicalType::FLOAT:
-			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<float>());
+			return QueryAdditionalStats(stats, comparison_type, constant->GetValueUnsafe<float>());
 		case PhysicalType::DOUBLE:
-			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<double>());
+			return QueryAdditionalStats(stats, comparison_type, constant->GetValueUnsafe<double>());
 		case PhysicalType::VARCHAR:
-			return QueryAdditionalStats(stats, comparison_type, constant.GetValueUnsafe<string_t>());
+			return QueryAdditionalStats(stats, comparison_type, constant->GetValueUnsafe<string_t>());
 		default:
 			throw InternalException("Unsupported type querying additional stats");
 		}

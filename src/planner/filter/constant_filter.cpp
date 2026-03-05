@@ -76,14 +76,25 @@ FilterPropagateResult ConstantFilter::CheckStatistics(BaseStatistics &stats) con
 		}
 	}
 	if (result == FilterPropagateResult::NO_PRUNING_POSSIBLE)
-		result = ColumnData::QueryAdditionalStats(stats, comparison_type, constant.type().InternalType(), constant);
+		result = ColumnData::QueryAdditionalStats(stats, comparison_type, constant.type().InternalType(), &constant);
 
 	if (stats.is_rowgroup && result != FilterPropagateResult::FILTER_ALWAYS_FALSE) {
 		scanned_partitions.insert(stats.id);
+		std::cout << "CHECK " << stats.id << " min: " << stats.stats_union.numeric_data.min.value_.integer
+		          << " max: " << stats.stats_union.numeric_data.max.value_.integer << " " << stats.type.ToString()
+		          << " result: " << (int)result << " is_rowgroup: " << stats.is_rowgroup
+		          << " constant: " << constant.GetValueUnsafe<int>() << std::endl;
 		// std::cout << "CHECK " << stats.id << " min: " << stats.stats_union.numeric_data.min.value_.ubigint
 		//           << " max: " << stats.stats_union.numeric_data.max.value_.ubigint << " " << stats.type.ToString()
-		//           << " result: " << (int)result << " is_rowgroup: " << stats.is_rowgroup << std::endl;
+		//           << " result: " << (int)result << " is_rowgroup: " << stats.is_rowgroup
+		//           << " constant: " << constant.GetValueUnsafe<int64_t>() << std::endl;
 	}
+	// if (constant.GetValueUnsafe<int>() == 49153) {
+	// std::cout << "CHECK " << stats.id << " min: " << stats.stats_union.numeric_data.min.value_.integer
+	//           << " max: " << stats.stats_union.numeric_data.max.value_.integer << " " << stats.type.ToString()
+	//           << " result: " << (int)result << " is_rowgroup: " << stats.is_rowgroup
+	//           << " constant: " << constant.GetValueUnsafe<int>() << std::endl;
+	// }
 
 	return result;
 }
