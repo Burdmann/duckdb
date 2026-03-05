@@ -431,3 +431,14 @@ sorted.csv
 time_queries.csv
 unsorted-medium.csv
 unsorted.csv
+dictionary_output_unused.txt
+dictionary_output_wrong.txt
+dictionary_output.txt
+min_max_output.txt
+clusters_output.txt
+sorted_hours.csv
+sorted_minutes.csv
+sorted_seconds.csv
+unsorted_hours.csv
+unsorted_minutes.csv
+unsorted_seconds.csv

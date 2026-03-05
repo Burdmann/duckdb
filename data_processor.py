@@ -44,7 +44,7 @@ for idx,in_file in enumerate(in_files):
 
     for i in range(NUM_QUERIES):
         times[idx] += [l[0] for l in duckdb.execute(f"SELECT ROUND((end_time-start_time)/1000000.0,5) FROM times WHERE CommandID >= {QUERIES_START+NUM_ITERATIONS*i} AND CommandID < {QUERIES_START+NUM_ITERATIONS*(1+i)};").fetchall()]
-        rows_scanned[idx].append(duckdb.execute(f"SELECT SUM(CAST(Data->'count' AS HUGEINT)) AS val FROM tbl WHERE type = 'SCANNED_PARTITIONS' and CommandID = {2*NUM_TABLES+1+i+(2 if ATTACHED else 0)};").fetchone()[0])
+        rows_scanned[idx].append(duckdb.execute(f"SELECT SUM(CAST(Data->'count' AS HUGEINT)) AS val FROM tbl WHERE type = 'SCANNED_PARTITIONS' and CommandID = {2*NUM_TABLES+i+(3 if ATTACHED else 1)};").fetchone()[0])
     duckdb.execute(f"DROP TABLE tbl;")
     duckdb.execute(f"DROP TABLE times;")
 for i in range(NUM_QUERIES):
