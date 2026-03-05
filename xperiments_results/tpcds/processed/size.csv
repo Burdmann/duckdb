@@ -1,15 +1,15 @@
 Name,Unit,Table_name,Min/max,Min/max clusters,Bloom filter,Dictionary
 Size,B,call_center,0,0,0,0
 Max Size,B,call_center,0,0,0,0
-Size,B,catalog_page,3744,29328,32544,9224
-Max Size,B,catalog_page,208,5056,1808,916
-Size,B,catalog_returns,9867312,45938472,85769712,15960648
-Max Size,B,catalog_returns,208,1056,1808,956
-Size,B,catalog_sales,124304544,580495544,1080493344,183863708
-Max Size,B,catalog_sales,208,1056,1808,576
-Size,B,customer,913536,8659072,7940736,1476688
+Size,B,catalog_page,1872,15344,16272,2760
+Max Size,B,catalog_page,208,5056,1808,416
+Size,B,catalog_returns,95472,438792,829872,147232
+Max Size,B,catalog_returns,208,1056,1808,876
+Size,B,catalog_sales,1237600,5776072,10757600,1785620
+Max Size,B,catalog_sales,208,1056,1808,580
+Size,B,customer,44928,425856,390528,72624
 Max Size,B,customer,208,5056,1808,860
-Size,B,customer_address,329888,4901088,2867488,707472
+Size,B,customer_address,16224,241056,141024,34800
 Max Size,B,customer_address,208,5056,1808,1552
 Size,B,customer_demographics,438048,963752,3807648,874996
 Max Size,B,customer_demographics,208,1056,1808,576
@@ -19,9 +19,9 @@ Size,B,household_demographics,0,0,0,0
 Max Size,B,household_demographics,0,0,0,0
 Size,B,income_band,0,0,0,0
 Max Size,B,income_band,0,0,0,0
-Size,B,inventory,40556672,128727000,352531072,63583564
-Max Size,B,inventory,208,1056,1808,376
-Size,B,item,109824,1212864,954624,189024
+Size,B,inventory,1192256,3797336,10363456,1875740
+Max Size,B,inventory,208,1056,1808,380
+Size,B,item,9152,101072,79552,15752
 Max Size,B,item,208,5056,1808,832
 Size,B,promotion,0,0,0,0
 Max Size,B,promotion,0,0,0,0
@@ -31,19 +31,19 @@ Size,B,ship_mode,0,0,0,0
 Max Size,B,ship_mode,0,0,0,0
 Size,B,store,0,0,0,0
 Max Size,B,store,0,0,0,0
-Size,B,store_returns,14618240,72927224,127066240,22053864
-Max Size,B,store_returns,208,1056,1808,956
-Size,B,store_sales,168181520,853844640,1461885520,226398200
-Max Size,B,store_sales,208,1056,1808,280
+Size,B,store_returns,145600,694448,1265600,220780
+Max Size,B,store_returns,208,1056,1808,876
+Size,B,store_sales,1679184,8261136,14595984,2299752
+Max Size,B,store_sales,208,1056,1808,392
 Size,B,time_dim,20800,101520,180800,32928
 Max Size,B,time_dim,208,5056,1808,400
 Size,B,warehouse,0,0,0,0
 Max Size,B,warehouse,0,0,0,0
 Size,B,web_page,0,0,0,0
 Max Size,B,web_page,0,0,0,0
-Size,B,web_returns,4382976,21930080,38098176,6493688
-Max Size,B,web_returns,208,1056,1808,956
-Size,B,web_sales,62155808,298615064,540277408,91440756
-Max Size,B,web_sales,208,1056,1808,592
+Size,B,web_returns,39936,196008,347136,58528
+Max Size,B,web_returns,208,1056,1808,876
+Size,B,web_sales,615264,2925288,5348064,913500
+Max Size,B,web_sales,208,1056,1808,856
 Size,B,web_site,0,0,0,0
 Max Size,B,web_site,0,0,0,0
