@@ -22,7 +22,7 @@
 namespace duckdb {
 
 // to allow use of dictionaries only where there are few enough items in a partition
-constexpr static uint32_t MAX_NUMBER_OF_ITEMS = 58;
+constexpr static uint32_t MAX_NUMBER_OF_ITEMS = LARGE_ADDITIONAL_STATS ? 540 : 58;
 
 template <class T>
 class DictionaryAdditionalStats : public AdditionalStats<T> {
