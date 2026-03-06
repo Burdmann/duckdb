@@ -444,3 +444,8 @@ unsorted_minutes.csv
 unsorted_seconds.csv
 wrong.txt
 correct.txt
+cardinality_100.csv
+cardinality_1000.csv
+cardinality_10000.csv
+cardinality_100000.csv
+cardinality_1000000.csv

@@ -57,6 +57,8 @@ public:
 			nstats->dictionary.clear();
 			nstats->dictionary.rehash(1);
 			// printf("DISCARDED DICTIONARY\n");
+			fprintf(stderr, "%lx,%lu,%lu,DISCARDED_DICTIONARY,\"{\"\"stats\"\":\"\"%p\"\"}\"\n", Util::session_id,
+			        Util::command_count, Util::GetTime(), stats);
 		} else {
 			// printf("DID NOT DISCARD DICTIONARY\n");
 		}

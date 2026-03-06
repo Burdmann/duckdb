@@ -1,5 +1,5 @@
-dir="xperiments_results/outliers"
-file="sql_queries_outliers.sql"
+dir="xperiments_results/cardinality_1000"
+file="sql_queries_cardinality_1000.sql"
 # dir="."
 mkdir -p $dir/processed
 cat template.csv > $dir/raw_data_min_max.csv
