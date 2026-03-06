@@ -275,6 +275,10 @@ public:
 		//     stderr,
 		//     "%lx,%lu,%lu,START_INITIALISE_ADDITIONAL_STATS,\"{\"\"stats\"\":\"\"%p\"\",\"\"type\"\":\"\"%s\"\"}\"\n",
 		//     Util::session_id, Util::command_count, start_time, &stats, ADDITIONAL_STATS<T>::GetStaticName());
+		// std::cout << "INITIALISE STATS FOR PARTITION -- min: " << stats.stats_union.numeric_data.min.value_.integer
+		//           << " max: " << stats.stats_union.numeric_data.max.value_.integer << " type: " <<
+		//           stats.type.ToString()
+		//           << std::endl;
 		stats.additional_stats = new ADDITIONAL_STATS<T>(temp_storage);
 		AdditionalStats<T> &astats = *((ADDITIONAL_STATS<T> *)stats.additional_stats);
 		temp_storage.clear();
