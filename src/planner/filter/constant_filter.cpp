@@ -97,7 +97,7 @@ FilterPropagateResult ConstantFilter::CheckStatistics(BaseStatistics &stats) con
 	//           << " is_rowgroup: " << stats.is_rowgroup << " constant: " << constant.GetValueUnsafe<int>() <<
 	//           std::endl;
 
-	return result;
+	return new_result;
 }
 
 string ConstantFilter::ToString(const string &column_name) const {
