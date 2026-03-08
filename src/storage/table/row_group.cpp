@@ -430,10 +430,10 @@ FilterPropagateResult RowGroup::CheckRowIdFilter(const TableFilter &filter, idx_
 }
 
 bool RowGroup::CheckZonemap(ScanFilterInfo &filters) {
-	std::vector<bool> contains_lessthan(GetColumnCount());
-	std::vector<bool> contains_greaterthan(GetColumnCount());
-	std::vector<Value> lower_value(GetColumnCount());
-	std::vector<Value> upper_value(GetColumnCount());
+	// std::vector<bool> contains_lessthan(GetColumnCount());
+	// std::vector<bool> contains_greaterthan(GetColumnCount());
+	// std::vector<Value> lower_value(GetColumnCount());
+	// std::vector<Value> upper_value(GetColumnCount());
 	auto &filter_list = filters.GetFilterList();
 	// new row group - label all filters as up for grabs again
 	filters.CheckAllFilters();
@@ -456,41 +456,41 @@ bool RowGroup::CheckZonemap(ScanFilterInfo &filters) {
 			// label the filter as always true so we don't need to check it anymore
 			filters.SetFilterAlwaysTrue(i);
 		}
-		bool between_case_skip = false;
-		// printf("type: %d\n", (int)filter.filter_type);
-		if (filter.filter_type == TableFilterType::CONJUNCTION_AND) {
-			auto &and_filter = filter.Cast<ConjunctionAndFilter>();
-			for (auto &child_filter : and_filter.child_filters) {
-				if (child_filter->filter_type == TableFilterType::CONSTANT_COMPARISON) {
-					if (ConstantFilter *comp = dynamic_cast<ConstantFilter *>(child_filter.get())) {
-						if (comp->comparison_type == ExpressionType::COMPARE_GREATERTHAN ||
-						    comp->comparison_type == ExpressionType::COMPARE_GREATERTHANOREQUALTO) {
-							contains_greaterthan[base_column_index] = true;
-							lower_value[base_column_index] = comp->constant;
-						}
-						if (comp->comparison_type == ExpressionType::COMPARE_LESSTHAN |
-						    comp->comparison_type == ExpressionType::COMPARE_LESSTHANOREQUALTO) {
-							contains_lessthan[base_column_index] = true;
-							upper_value[base_column_index] = comp->constant;
-						}
-						if (contains_greaterthan[base_column_index] && contains_lessthan[base_column_index]) {
-							// check if the filter is between 2 clusters(if we are using cluster stats)
-							between_case_skip =
-							    ColumnData::RangeQueryAdditionalStats(
-							        GetColumn(base_column_index).stats->statistics,
-							        // state.column_scans[column_idx].current->stats.statistics,
-							        comp->constant.type().InternalType(), lower_value[base_column_index],
-							        upper_value[base_column_index]) == FilterPropagateResult::FILTER_ALWAYS_FALSE;
-							// printf("YES %d\n", (int)between_case_skip);
-						}
-					}
-				}
-			}
-		}
-		if (between_case_skip) {
-			// printf("skipped between\n");
-			return false;
-		}
+		// bool between_case_skip = false;
+		// // printf("type: %d\n", (int)filter.filter_type);
+		// if (filter.filter_type == TableFilterType::CONJUNCTION_AND) {
+		// 	auto &and_filter = filter.Cast<ConjunctionAndFilter>();
+		// 	for (auto &child_filter : and_filter.child_filters) {
+		// 		if (child_filter->filter_type == TableFilterType::CONSTANT_COMPARISON) {
+		// 			if (ConstantFilter *comp = dynamic_cast<ConstantFilter *>(child_filter.get())) {
+		// 				if (comp->comparison_type == ExpressionType::COMPARE_GREATERTHAN ||
+		// 				    comp->comparison_type == ExpressionType::COMPARE_GREATERTHANOREQUALTO) {
+		// 					contains_greaterthan[base_column_index] = true;
+		// 					lower_value[base_column_index] = comp->constant;
+		// 				}
+		// 				if (comp->comparison_type == ExpressionType::COMPARE_LESSTHAN |
+		// 				    comp->comparison_type == ExpressionType::COMPARE_LESSTHANOREQUALTO) {
+		// 					contains_lessthan[base_column_index] = true;
+		// 					upper_value[base_column_index] = comp->constant;
+		// 				}
+		// 				if (contains_greaterthan[base_column_index] && contains_lessthan[base_column_index]) {
+		// 					// check if the filter is between 2 clusters(if we are using cluster stats)
+		// 					between_case_skip =
+		// 					    ColumnData::RangeQueryAdditionalStats(
+		// 					        GetColumn(base_column_index).stats->statistics,
+		// 					        // state.column_scans[column_idx].current->stats.statistics,
+		// 					        comp->constant.type().InternalType(), lower_value[base_column_index],
+		// 					        upper_value[base_column_index]) == FilterPropagateResult::FILTER_ALWAYS_FALSE;
+		// 					// printf("YES %d\n", (int)between_case_skip);
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }
+		// if (between_case_skip) {
+		// 	// printf("skipped between\n");
+		// 	return false;
+		// }
 	}
 	ConstantFilter::scanned_partitions.insert(GetColumn(0).stats->statistics.id);
 	return true;
