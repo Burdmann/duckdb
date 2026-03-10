@@ -204,9 +204,9 @@ public:
 	unique_ptr<BaseStatistics> GetStatistics();
 
 	template <class T>
-	void AppendTemp(UnifiedVectorFormat &vdata, idx_t append_count, std::vector<T> &temp_storage) {
+	void AppendTemp(UnifiedVectorFormat &vdata, idx_t offset, idx_t append_count, std::vector<T> &temp_storage) {
 		const T *data = vdata.GetData<T>();
-		for (int i = 0; i < append_count; i++) {
+		for (int i = offset; i < offset + append_count; i++) {
 			long unsigned int *validity = vdata.validity.GetData();
 			int idx = i / 64;
 			int bit = i % 64;
@@ -217,50 +217,50 @@ public:
 		}
 	}
 
-	void AppendTemp(UnifiedVectorFormat &vdata, idx_t copied_elements, BaseStatistics &stats) {
+	void AppendTemp(UnifiedVectorFormat &vdata, idx_t offset, idx_t copied_elements, BaseStatistics &stats) {
 		map_mutex.lock();
 		switch (vdata.physical_type) {
 		case PhysicalType::BOOL:
-			AppendTemp(vdata, copied_elements, bool_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, bool_temp_vectors[this]);
 			break;
 		case PhysicalType::INT8:
-			AppendTemp(vdata, copied_elements, int8_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, int8_temp_vectors[this]);
 			break;
 		case PhysicalType::INT16:
-			AppendTemp(vdata, copied_elements, int16_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, int16_temp_vectors[this]);
 			break;
 		case PhysicalType::INT32:
-			AppendTemp(vdata, copied_elements, int32_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, int32_temp_vectors[this]);
 			break;
 		case PhysicalType::INT64:
-			AppendTemp(vdata, copied_elements, int64_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, int64_temp_vectors[this]);
 			break;
 		case PhysicalType::UINT8:
-			AppendTemp(vdata, copied_elements, uint8_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, uint8_temp_vectors[this]);
 			break;
 		case PhysicalType::UINT16:
-			AppendTemp(vdata, copied_elements, uint16_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, uint16_temp_vectors[this]);
 			break;
 		case PhysicalType::UINT32:
-			AppendTemp(vdata, copied_elements, uint32_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, uint32_temp_vectors[this]);
 			break;
 		case PhysicalType::UINT64:
-			AppendTemp(vdata, copied_elements, uint64_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, uint64_temp_vectors[this]);
 			break;
 		case PhysicalType::INT128:
-			AppendTemp(vdata, copied_elements, hugeint_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, hugeint_temp_vectors[this]);
 			break;
 		case PhysicalType::UINT128:
-			AppendTemp(vdata, copied_elements, uhugeint_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, uhugeint_temp_vectors[this]);
 			break;
 		case PhysicalType::FLOAT:
-			AppendTemp(vdata, copied_elements, float_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, float_temp_vectors[this]);
 			break;
 		case PhysicalType::DOUBLE:
-			AppendTemp(vdata, copied_elements, double_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, double_temp_vectors[this]);
 			break;
 		case PhysicalType::VARCHAR:
-			AppendTemp(vdata, copied_elements, string_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, string_temp_vectors[this]);
 			break;
 		default:
 			throw InternalException("Unsupported type for appending to additional stats");

@@ -1,5 +1,5 @@
 SET threads TO 1;
-ATTACH 'test.db';
+ATTACH 'test.db' (ROW_GROUP_SIZE 32768);
 USE test;
 CREATE TABLE sensor_records(timestamp_ms UBIGINT NOT NULL, user_id UBIGINT NOT NULL);;
 COPY sensor_records FROM 'cardinality_10000.csv' (FORMAT 'csv', force_not_null ('timestamp_ms','user_id'), delimiter ',', header 1);

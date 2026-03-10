@@ -463,13 +463,11 @@ bool RowGroup::CheckZonemap(ScanFilterInfo &filters) {
 			for (auto &child_filter : and_filter.child_filters) {
 				if (child_filter->filter_type == TableFilterType::CONSTANT_COMPARISON) {
 					if (ConstantFilter *comp = dynamic_cast<ConstantFilter *>(child_filter.get())) {
-						if (comp->comparison_type == ExpressionType::COMPARE_GREATERTHAN ||
-						    comp->comparison_type == ExpressionType::COMPARE_GREATERTHANOREQUALTO) {
+						if (comp->comparison_type == ExpressionType::COMPARE_GREATERTHANOREQUALTO) {
 							contains_greaterthan[base_column_index] = true;
 							lower_value[base_column_index] = comp->constant;
 						}
-						if (comp->comparison_type == ExpressionType::COMPARE_LESSTHAN |
-						    comp->comparison_type == ExpressionType::COMPARE_LESSTHANOREQUALTO) {
+						if (comp->comparison_type == ExpressionType::COMPARE_LESSTHANOREQUALTO) {
 							contains_lessthan[base_column_index] = true;
 							upper_value[base_column_index] = comp->constant;
 						}
