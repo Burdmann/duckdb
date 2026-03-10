@@ -216,6 +216,8 @@ struct StandardFixedSizeAppend {
 				bool is_null = !adata.validity.RowIsValid(source_idx);
 				if (!is_null) {
 					stats.statistics.UpdateNumericStats<T>(sdata[source_idx]);
+					// if (1768979491171 == *(uint64_t *)&sdata[source_idx])
+					// 	printf("YES\n");
 					tdata[target_idx] = sdata[source_idx];
 				} else {
 					// we insert a NullValue<T> in the null gap for debuggability
@@ -228,6 +230,8 @@ struct StandardFixedSizeAppend {
 				auto source_idx = adata.sel->get_index(offset + i);
 				auto target_idx = target_offset + i;
 				stats.statistics.UpdateNumericStats<T>(sdata[source_idx]);
+				// if (1768979491171 == *(uint64_t *)&sdata[source_idx])
+				// 	printf("YES\n");
 				tdata[target_idx] = sdata[source_idx];
 			}
 		}

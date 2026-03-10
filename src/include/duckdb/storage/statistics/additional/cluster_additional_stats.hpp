@@ -9,6 +9,7 @@
 #pragma once
 
 #include <functional>
+#include <iostream>
 #include "duckdb/storage/statistics/additional/additional_stats.hpp"
 #include "duckdb/common/enums/filter_propagate_result.hpp"
 #include "duckdb/common/operator/comparison_operators.hpp"
@@ -140,8 +141,16 @@ public:
 	inline static FilterPropagateResult Query_implementation(AdditionalStats<T> *stats, ExpressionType &comparison_type,
 	                                                         const T &constant) {
 		ClusterAdditionalStats<T> *nstats = (ClusterAdditionalStats<T> *)stats;
+		// printf("nstats->cluster_count: %d\n", nstats->cluster_count);
 		if (nstats->cluster_count == 0)
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+		// printf("comparison_type: %s\n", ExpressionTypeToString(comparison_type).c_str());
+		// std::cout << "constant: " << (int64_t)constant << "\n";
+		// for (int i = 0; i < nstats->cluster_count; i++) {
+		// 	std::cout << "cluster: " << (int64_t)nstats->min_values[i] << " -> " << (int64_t)nstats->max_values[i]
+		// 	          << "\n";
+		// }
+
 		switch (comparison_type) {
 		case ExpressionType::COMPARE_EQUAL:
 		case ExpressionType::COMPARE_NOT_DISTINCT_FROM:
@@ -328,8 +337,22 @@ public:
 	                                                         ExpressionType &comparison_type,
 	                                                         const std::string &constant) {
 		ClusterAdditionalStats<std::string> *nstats = (ClusterAdditionalStats<std::string> *)stats;
+		// printf("nstats->cluster_count: %d\n", nstats->cluster_count);
 		if (nstats->cluster_count == 0)
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+		// printf("comparison_type: %s\n", ExpressionTypeToString(comparison_type).c_str());
+		// std::cout << "constant: " << constant << "\n";
+		// for (int i = 0; i < nstats->cluster_count; i++) {
+		// 	std::cout << "cluster: ";
+		// 	for (int j = 0; j < CLUSTER_MAX_STRING_MINMAX_SIZE && nstats->min_values[i].data[j]; j++) {
+		// 		std::cout << (char)nstats->min_values[i].data[j];
+		// 	}
+		// 	std::cout << " -> ";
+		// 	for (int j = 0; j < CLUSTER_MAX_STRING_MINMAX_SIZE && nstats->max_values[i].data[j]; j++) {
+		// 		std::cout << (char)nstats->max_values[i].data[j];
+		// 	}
+		// 	std::cout << "\n";
+		// }
 		for (int i = 0; i < nstats->min_values.size(); i++) {
 			FilterPropagateResult result =
 			    Query_inner(nstats->min_values[i].data, nstats->max_values[i].data, comparison_type, constant);

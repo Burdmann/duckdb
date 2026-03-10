@@ -204,30 +204,43 @@ public:
 	unique_ptr<BaseStatistics> GetStatistics();
 
 	template <class T>
-	void AppendTemp(UnifiedVectorFormat &vdata, idx_t offset, idx_t append_count, std::vector<T> &temp_storage) {
-		const T *data = vdata.GetData<T>();
-		for (int i = offset; i < offset + append_count; i++) {
-			long unsigned int *validity = vdata.validity.GetData();
-			int idx = i / 64;
-			int bit = i % 64;
-			if (vdata.validity.AllValid() || validity[idx] & (1LU << bit)) {
-				// std::cout << (uint64_t)data[i] << std::endl;
-				// std::cout << "INSERTED " << *(uint64_t *)((void *)(&data[i])) << std::endl;
-				temp_storage.push_back(data[i]);
+	void AppendTemp(UnifiedVectorFormat &adata, idx_t offset, idx_t append_count, std::vector<T> &temp_storage) {
+		auto sdata = UnifiedVectorFormat::GetData<T>(adata);
+		if (!adata.validity.AllValid()) {
+			for (idx_t i = 0; i < append_count; i++) {
+				auto source_idx = adata.sel->get_index(offset + i);
+				bool is_null = !adata.validity.RowIsValid(source_idx);
+				if (!is_null) {
+					// if (1768979491171 == *(uint64_t *)&sdata[source_idx])
+					// 	printf("ALSO ALSO YES %p (%p)\n", this, &stats->statistics);
+					temp_storage.push_back(sdata[source_idx]);
+				}
+			}
+		} else {
+			for (idx_t i = 0; i < append_count; i++) {
+				auto source_idx = adata.sel->get_index(offset + i);
+				// if (1768979491171 == *(uint64_t *)&sdata[source_idx])
+				// printf("ALSO ALSO YES %p (%p)\n", this, &stats->statistics);
+				temp_storage.push_back(sdata[source_idx]);
 			}
 		}
 	}
 
-	void AppendTempString(UnifiedVectorFormat &vdata, idx_t offset, idx_t append_count,
+	void AppendTempString(UnifiedVectorFormat &adata, idx_t offset, idx_t append_count,
 	                      std::vector<std::string> &temp_storage) {
-		const string_t *data = vdata.GetData<string_t>();
-		for (int i = offset; i < offset + append_count; i++) {
-			long unsigned int *validity = vdata.validity.GetData();
-			int idx = i / 64;
-			int bit = i % 64;
-			if (vdata.validity.AllValid() || validity[idx] & (1LU << bit)) {
-				// std::cout << data[i].GetString() << std::endl;
-				temp_storage.push_back(data[i].GetString());
+		auto sdata = UnifiedVectorFormat::GetData<string_t>(adata);
+		if (!adata.validity.AllValid()) {
+			for (idx_t i = 0; i < append_count; i++) {
+				auto source_idx = adata.sel->get_index(offset + i);
+				bool is_null = !adata.validity.RowIsValid(source_idx);
+				if (!is_null) {
+					temp_storage.push_back(sdata[source_idx].GetString());
+				}
+			}
+		} else {
+			for (idx_t i = 0; i < append_count; i++) {
+				auto source_idx = adata.sel->get_index(offset + i);
+				temp_storage.push_back(sdata[source_idx].GetString());
 			}
 		}
 	}
@@ -295,6 +308,7 @@ public:
 		//           stats.type.ToString()
 		//           << std::endl;
 		stats.additional_stats = new ADDITIONAL_STATS<T>(temp_storage);
+		// printf("Column_data %p (%p,%p) GETS %p\n", this, &stats, &this->stats->statistics, stats.additional_stats);
 		AdditionalStats<T> &astats = *((ADDITIONAL_STATS<T> *)stats.additional_stats);
 		temp_storage.clear();
 		fprintf(stderr,

@@ -219,6 +219,9 @@ public:
 		BloomAdditionalStats<T> *nstats = (BloomAdditionalStats<T> *)stats;
 		std::fill(nstats->bit_array, nstats->bit_array + (BLOCK_COUNT * BLOCK_SIZE), 0);
 		for (T element : data) {
+			// if (*(uint64_t *)&element == 1768979491171) {
+			// 	printf("INSERTED 1768979491171 INTO %p\n", stats);
+			// }
 			// std::cout << "INSERTED " << *(uint64_t *)((void *)(&element)) << std::endl;
 			BloomUtil::Insert(element, nstats->bit_array);
 		}
@@ -230,8 +233,12 @@ public:
 		case ExpressionType::COMPARE_EQUAL:
 		case ExpressionType::COMPARE_NOT_DISTINCT_FROM: {
 			BloomAdditionalStats<T> *nstats = (BloomAdditionalStats<T> *)stats;
-			if (BloomUtil::QueryUtil(constant, nstats->bit_array))
+			if (BloomUtil::QueryUtil(constant, nstats->bit_array)) {
+				// if (*(uint64_t *)&constant == 1768979491171) {
+				// 	printf("POSITIVE FOR 1768979491171 FROM %p\n", stats);
+				// }
 				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+			}
 
 			return FilterPropagateResult::FILTER_ALWAYS_FALSE;
 		}
