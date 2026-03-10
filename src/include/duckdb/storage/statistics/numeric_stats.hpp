@@ -81,6 +81,7 @@ struct NumericStats {
 
 	template <class T>
 	static inline void UpdateValue(T new_value, T &min, T &max) {
+		// std::cout << "INSERTED " << *(uint64_t *)((void *)(&new_value)) << std::endl;
 		min = LessThan::Operation(new_value, min) ? new_value : min;
 		max = GreaterThan::Operation(new_value, max) ? new_value : max;
 	}

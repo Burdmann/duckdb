@@ -204,63 +204,78 @@ public:
 	unique_ptr<BaseStatistics> GetStatistics();
 
 	template <class T>
-	void AppendTemp(UnifiedVectorFormat &vdata, idx_t append_count, std::vector<T> &temp_storage) {
+	void AppendTemp(UnifiedVectorFormat &vdata, idx_t offset, idx_t append_count, std::vector<T> &temp_storage) {
 		const T *data = vdata.GetData<T>();
-		for (int i = 0; i < append_count; i++) {
+		for (int i = offset; i < offset + append_count; i++) {
 			long unsigned int *validity = vdata.validity.GetData();
 			int idx = i / 64;
 			int bit = i % 64;
 			if (vdata.validity.AllValid() || validity[idx] & (1LU << bit)) {
-				// std::cout << data[i] << std::endl;
+				// std::cout << (uint64_t)data[i] << std::endl;
+				// std::cout << "INSERTED " << *(uint64_t *)((void *)(&data[i])) << std::endl;
 				temp_storage.push_back(data[i]);
 			}
 		}
 	}
 
-	void AppendTemp(UnifiedVectorFormat &vdata, idx_t copied_elements, BaseStatistics &stats) {
+	void AppendTempString(UnifiedVectorFormat &vdata, idx_t offset, idx_t append_count,
+	                      std::vector<std::string> &temp_storage) {
+		const string_t *data = vdata.GetData<string_t>();
+		for (int i = offset; i < offset + append_count; i++) {
+			long unsigned int *validity = vdata.validity.GetData();
+			int idx = i / 64;
+			int bit = i % 64;
+			if (vdata.validity.AllValid() || validity[idx] & (1LU << bit)) {
+				// std::cout << data[i].GetString() << std::endl;
+				temp_storage.push_back(data[i].GetString());
+			}
+		}
+	}
+
+	void AppendTemp(UnifiedVectorFormat &vdata, idx_t offset, idx_t copied_elements, BaseStatistics &stats) {
 		map_mutex.lock();
 		switch (vdata.physical_type) {
 		case PhysicalType::BOOL:
-			AppendTemp(vdata, copied_elements, bool_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, bool_temp_vectors[this]);
 			break;
 		case PhysicalType::INT8:
-			AppendTemp(vdata, copied_elements, int8_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, int8_temp_vectors[this]);
 			break;
 		case PhysicalType::INT16:
-			AppendTemp(vdata, copied_elements, int16_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, int16_temp_vectors[this]);
 			break;
 		case PhysicalType::INT32:
-			AppendTemp(vdata, copied_elements, int32_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, int32_temp_vectors[this]);
 			break;
 		case PhysicalType::INT64:
-			AppendTemp(vdata, copied_elements, int64_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, int64_temp_vectors[this]);
 			break;
 		case PhysicalType::UINT8:
-			AppendTemp(vdata, copied_elements, uint8_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, uint8_temp_vectors[this]);
 			break;
 		case PhysicalType::UINT16:
-			AppendTemp(vdata, copied_elements, uint16_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, uint16_temp_vectors[this]);
 			break;
 		case PhysicalType::UINT32:
-			AppendTemp(vdata, copied_elements, uint32_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, uint32_temp_vectors[this]);
 			break;
 		case PhysicalType::UINT64:
-			AppendTemp(vdata, copied_elements, uint64_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, uint64_temp_vectors[this]);
 			break;
 		case PhysicalType::INT128:
-			AppendTemp(vdata, copied_elements, hugeint_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, hugeint_temp_vectors[this]);
 			break;
 		case PhysicalType::UINT128:
-			AppendTemp(vdata, copied_elements, uhugeint_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, uhugeint_temp_vectors[this]);
 			break;
 		case PhysicalType::FLOAT:
-			AppendTemp(vdata, copied_elements, float_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, float_temp_vectors[this]);
 			break;
 		case PhysicalType::DOUBLE:
-			AppendTemp(vdata, copied_elements, double_temp_vectors[this]);
+			AppendTemp(vdata, offset, copied_elements, double_temp_vectors[this]);
 			break;
 		case PhysicalType::VARCHAR:
-			AppendTemp(vdata, copied_elements, string_temp_vectors[this]);
+			AppendTempString(vdata, offset, copied_elements, string_temp_vectors[this]);
 			break;
 		default:
 			throw InternalException("Unsupported type for appending to additional stats");
@@ -356,7 +371,7 @@ public:
 
 	template <class T>
 	static inline FilterPropagateResult QueryAdditionalStats(BaseStatistics &stats, ExpressionType comparison_type,
-	                                                         const T constant) {
+	                                                         const T &constant) {
 		if (stats.additional_stats == NULL) {
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		}
@@ -404,7 +419,7 @@ public:
 		case PhysicalType::DOUBLE:
 			return QueryAdditionalStats(stats, comparison_type, constant->GetValueUnsafe<double>());
 		case PhysicalType::VARCHAR:
-			return QueryAdditionalStats(stats, comparison_type, constant->GetValueUnsafe<string_t>());
+			return QueryAdditionalStats(stats, comparison_type, constant->GetValueUnsafe<string_t>().GetString());
 		default:
 			throw InternalException("Unsupported type querying additional stats");
 		}
@@ -456,7 +471,8 @@ public:
 		case PhysicalType::DOUBLE:
 			return RangeQueryAdditionalStats(stats, start.GetValueUnsafe<double>(), end.GetValueUnsafe<double>());
 		case PhysicalType::VARCHAR:
-			return RangeQueryAdditionalStats(stats, start.GetValueUnsafe<string_t>(), end.GetValueUnsafe<string_t>());
+			return RangeQueryAdditionalStats(stats, start.GetValueUnsafe<string_t>().GetString(),
+			                                 end.GetValueUnsafe<string_t>().GetString());
 		default:
 			throw InternalException("Unsupported type querying additional stats");
 		}
@@ -535,7 +551,7 @@ private:
 	static std::unordered_map<void *, std::vector<uhugeint_t>> uhugeint_temp_vectors;
 	static std::unordered_map<void *, std::vector<float>> float_temp_vectors;
 	static std::unordered_map<void *, std::vector<double>> double_temp_vectors;
-	static std::unordered_map<void *, std::vector<string_t>> string_temp_vectors;
+	static std::unordered_map<void *, std::vector<std::string>> string_temp_vectors;
 	static std::mutex map_mutex;
 };
 
