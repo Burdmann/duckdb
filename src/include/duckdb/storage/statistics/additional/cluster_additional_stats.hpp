@@ -179,7 +179,7 @@ public:
 				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 			}
 		} else if (nstats->max_values[idx] >= start ||
-		           (idx != nstats->cluster_count - 1 && nstats->min_values[idx] <= end)) {
+		           (idx < nstats->cluster_count - 1 && nstats->min_values[idx + 1] <= end)) {
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 		} else {
 			return FilterPropagateResult::FILTER_ALWAYS_FALSE;
