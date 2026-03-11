@@ -8,20 +8,26 @@ granularity = int(sys.argv[3])
 
 random.seed(42)
 
-ids = []
-for i in range(granularity):
-    ids.append(random.randint(0,18446744073709551615))
+ids = list(range(granularity))
 
 # for i in range(1000):
-#     print(ids[random.randint(0,granularity-1)])
+#     print(random.randint(0,granularity-1))
+
+old_partition = -1
+selection = []
 
 idx = 0
 for row in in_file:
+    partition = (idx-1) // 8192
+    if partition != old_partition:
+        old_partition = partition
+        selection = random.sample(ids,int(0.5*granularity))
     if idx == 0:
         out_file.write(row)
     else:
         time,_ = map(int,row.split(","))
-        out_file.write(f"{time},{ids[random.randint(0,granularity-1)]}\n")
+        out_file.write(f"{time},{random.choice(selection)}\n")
+    
     if (idx % 10000 == 0):
         print(idx)
     idx += 1
