@@ -1308,7 +1308,7 @@
 │ excess discount amount │
 │     decimal(38,2)      │
 ├────────────────────────┤
-│             2242957.79 │
+│             2343479.06 │
 └────────────────────────┘
 ┌───────────────┬───────────────┐
 │ i_manufact_id │  total_sales  │
@@ -1742,23 +1742,23 @@
 ├──────────────┴──────────────────┴───────────────┴───────────────┴───────────────┴───────────────┴───────────────┴───────────────┴───────────────┤
 │ 100 rows (40 shown)                                                                                                                   9 columns │
 └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-┌───────┬───────────────────────────────┬───────────────────────────┐
-│  rnk  │        best_performing        │     worst_performing      │
-│ int64 │            varchar            │          varchar          │
-├───────┼───────────────────────────────┼───────────────────────────┤
-│     1 │ n stpriablebareingought       │ esebarcallyeseeing        │
-│     2 │ oughteingn stoughtbarought    │ barablecallyationcally    │
-│     3 │ eseationantioughtoughtought   │ eseantin stcallycally     │
-│     4 │ oughtoughtcallyableoughtought │ priationn stesen st       │
-│     5 │ priationbarn stpriought       │ ableantibarbarationought  │
-│     6 │ n stn stcallyprieingought     │ callyprieingbarpriought   │
-│     6 │ callyableablecallyationought  │ callyprieingbarpriought   │
-│     8 │ antin stcallyantin st         │ eingantiantieseeing       │
-│     9 │ esecallyationprically         │ priantieseationeing       │
-│    10 │ ableeingeseeseable            │ eseesen stcallyoughtought │
-├───────┴───────────────────────────────┴───────────────────────────┤
-│ 10 rows                                                 3 columns │
-└───────────────────────────────────────────────────────────────────┘
+┌───────┬──────────────────────────────┬───────────────────────────┐
+│  rnk  │       best_performing        │     worst_performing      │
+│ int64 │           varchar            │          varchar          │
+├───────┼──────────────────────────────┼───────────────────────────┤
+│     1 │ ationcallycallycallybarought │ esebarcallyeseeing        │
+│     2 │ n stprin stprieing           │ barablecallyationcally    │
+│     3 │ antin stn stbarableought     │ eseantin stcallycally     │
+│     4 │ antiantin steingableought    │ priationn stesen st       │
+│     5 │ ationbaroughtantiation       │ ableantibarbarationought  │
+│     6 │ baresecallybareingought      │ callyprieingbarpriought   │
+│     7 │ oughtcallycallyationpri      │ pricallycallybarcally     │
+│     8 │ oughtbarcallyoughtought      │ eingantiantieseeing       │
+│     9 │ oughtantiationpriought       │ priantieseationeing       │
+│    10 │ n stableoughtbarableought    │ eseesen stcallyoughtought │
+├───────┴──────────────────────────────┴───────────────────────────┤
+│ 10 rows                                                3 columns │
+└──────────────────────────────────────────────────────────────────┘
 ┌─────────┬─────────────────┬─────────────────────┐
 │ ca_zip  │     ca_city     │ sum(ws_sales_price) │
 │ varchar │     varchar     │    decimal(38,2)    │

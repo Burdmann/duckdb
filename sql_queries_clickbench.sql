@@ -1,5 +1,5 @@
 SET threads TO 1;
-ATTACH 'test.db';
+ATTACH 'test.db' (ROW_GROUP_SIZE 8192);
 USE test;
 CREATE TABLE hits
 (

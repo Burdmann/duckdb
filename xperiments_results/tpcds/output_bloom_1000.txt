@@ -1308,7 +1308,7 @@
 │ excess discount amount │
 │     decimal(38,2)      │
 ├────────────────────────┤
-│             2242957.79 │
+│             2343479.06 │
 └────────────────────────┘
 ┌───────────────┬───────────────┐
 │ i_manufact_id │  total_sales  │
@@ -1742,23 +1742,23 @@
 ├──────────────┴──────────────────┴───────────────┴───────────────┴───────────────┴───────────────┴───────────────┴───────────────┴───────────────┤
 │ 100 rows (40 shown)                                                                                                                   9 columns │
 └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-┌───────┬───────────────────────────────┬───────────────────────────┐
-│  rnk  │        best_performing        │     worst_performing      │
-│ int64 │            varchar            │          varchar          │
-├───────┼───────────────────────────────┼───────────────────────────┤
-│     1 │ n stpriablebareingought       │ esebarcallyeseeing        │
-│     2 │ oughteingn stoughtbarought    │ barablecallyationcally    │
-│     3 │ eseationantioughtoughtought   │ eseantin stcallycally     │
-│     4 │ oughtoughtcallyableoughtought │ priationn stesen st       │
-│     5 │ priationbarn stpriought       │ ableantibarbarationought  │
-│     6 │ n stn stcallyprieingought     │ callyprieingbarpriought   │
-│     6 │ callyableablecallyationought  │ callyprieingbarpriought   │
-│     8 │ antin stcallyantin st         │ eingantiantieseeing       │
-│     9 │ esecallyationprically         │ priantieseationeing       │
-│    10 │ ableeingeseeseable            │ eseesen stcallyoughtought │
-├───────┴───────────────────────────────┴───────────────────────────┤
-│ 10 rows                                                 3 columns │
-└───────────────────────────────────────────────────────────────────┘
+┌───────┬──────────────────────────────┬───────────────────────────┐
+│  rnk  │       best_performing        │     worst_performing      │
+│ int64 │           varchar            │          varchar          │
+├───────┼──────────────────────────────┼───────────────────────────┤
+│     1 │ ationcallycallycallybarought │ esebarcallyeseeing        │
+│     2 │ n stprin stprieing           │ barablecallyationcally    │
+│     3 │ antin stn stbarableought     │ eseantin stcallycally     │
+│     4 │ antiantin steingableought    │ priationn stesen st       │
+│     5 │ ationbaroughtantiation       │ ableantibarbarationought  │
+│     6 │ baresecallybareingought      │ callyprieingbarpriought   │
+│     7 │ oughtcallycallyationpri      │ pricallycallybarcally     │
+│     8 │ oughtbarcallyoughtought      │ eingantiantieseeing       │
+│     9 │ oughtantiationpriought       │ priantieseationeing       │
+│    10 │ n stableoughtbarableought    │ eseesen stcallyoughtought │
+├───────┴──────────────────────────────┴───────────────────────────┤
+│ 10 rows                                                3 columns │
+└──────────────────────────────────────────────────────────────────┘
 ┌─────────┬─────────────────┬─────────────────────┐
 │ ca_zip  │     ca_city     │ sum(ws_sales_price) │
 │ varchar │     varchar     │    decimal(38,2)    │
@@ -2743,3 +2743,1236 @@
 ├──────────────────────┴───────────────────┴───────────────┴──────────────────┴─────────┴───────────────┴───────────────┴───────┴───────────────┴───────────────┴───────────────┴───────────────┴───────────────┴───────────────┴───────────────┴───────────────┴───────────────┴───────────────┴───────────────┴───────────────┴───────────────────────┴───────────────────────┴───────────────────────┴───────────────────────┴───────────────────────┴───────────────────────┴───────────────────────┴───────────────────────┴───────────────────────┴───────────────────────┴───────────────────────┴───────────────────────┴───────────────┴───────────────┴───────────────┴───────────────┴───────────────┴───────────────┴───────────────┴───────────────┴───────────────┴───────────────┴───────────────┴───────────────┤
 │ 15 rows                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            44 columns │
 └───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌────────────┬────────────────┬───────────────────┬────────────────┬────────┬───────┬───────┬────────────┬─────────────────┬───────┐
+│ i_category │    i_class     │      i_brand      │ i_product_name │ d_year │ d_qoy │ d_moy │ s_store_id │    sumsales     │  rk   │
+│  varchar   │    varchar     │      varchar      │    varchar     │ int32  │ int32 │ int32 │  varchar   │  decimal(38,2)  │ int64 │
+├────────────┼────────────────┼───────────────────┼────────────────┼────────┼───────┼───────┼────────────┼─────────────────┼───────┤
+│ NULL       │ NULL           │ NULL              │ NULL           │   NULL │  NULL │  NULL │ NULL       │     32029263.56 │     5 │
+│ NULL       │ NULL           │ NULL              │ NULL           │   NULL │  NULL │  NULL │ NULL       │     64897398.47 │     4 │
+│ NULL       │ NULL           │ NULL              │ NULL           │   NULL │  NULL │  NULL │ NULL       │    130412669.10 │     3 │
+│ NULL       │ NULL           │ NULL              │ NULL           │   NULL │  NULL │  NULL │ NULL       │    255726974.02 │     2 │
+│ NULL       │ NULL           │ NULL              │ NULL           │   NULL │  NULL │  NULL │ NULL       │ 101405424479.10 │     1 │
+│ NULL       │ NULL           │ NULL              │ NULL           │   2000 │  NULL │  NULL │ NULL       │     32029263.56 │     5 │
+│ NULL       │ NULL           │ NULL              │ NULL           │   2000 │     1 │  NULL │ NULL       │      4638714.74 │    17 │
+│ NULL       │ NULL           │ NULL              │ NULL           │   2000 │     1 │     1 │ NULL       │      1783708.73 │    96 │
+│ NULL       │ NULL           │ NULL              │ NULL           │   2000 │     2 │  NULL │ NULL       │      4645572.81 │    16 │
+│ NULL       │ NULL           │ NULL              │ NULL           │   2000 │     2 │     4 │ NULL       │      1561458.02 │    98 │
+│ NULL       │ NULL           │ NULL              │ NULL           │   2000 │     2 │     5 │ NULL       │      1590047.34 │    97 │
+│ NULL       │ NULL           │ NULL              │ NULL           │   2000 │     2 │     6 │ NULL       │      1494067.45 │   100 │
+│ NULL       │ NULL           │ NULL              │ NULL           │   2000 │     3 │  NULL │ NULL       │      8690732.06 │     8 │
+│ NULL       │ NULL           │ NULL              │ NULL           │   2000 │     3 │     7 │ NULL       │      1528725.34 │    99 │
+│ NULL       │ NULL           │ NULL              │ NULL           │   2000 │     3 │     8 │ NULL       │      3598412.10 │    23 │
+│ NULL       │ NULL           │ NULL              │ NULL           │   2000 │     3 │     9 │ NULL       │      3563594.62 │    24 │
+│ NULL       │ NULL           │ NULL              │ NULL           │   2000 │     4 │  NULL │ NULL       │     14054243.95 │     7 │
+│ NULL       │ NULL           │ NULL              │ NULL           │   2000 │     4 │    10 │ NULL       │      3651929.46 │    22 │
+│ NULL       │ NULL           │ NULL              │ NULL           │   2000 │     4 │    11 │ NULL       │      4950352.60 │    14 │
+│ NULL       │ NULL           │ NULL              │ NULL           │   2000 │     4 │    12 │ NULL       │      5451961.89 │    11 │
+│  ·         │  ·             │  ·                │  ·             │     ·  │     · │     · │  ·         │           ·     │     · │
+│  ·         │  ·             │  ·                │  ·             │     ·  │     · │     · │  ·         │           ·     │     · │
+│  ·         │  ·             │  ·                │  ·             │     ·  │     · │     · │  ·         │           ·     │     · │
+│ NULL       │ reference      │ NULL              │ NULL           │   NULL │  NULL │  NULL │ NULL       │      1927519.76 │    85 │
+│ NULL       │ rock           │ NULL              │ NULL           │   NULL │  NULL │  NULL │ NULL       │      2221752.90 │    41 │
+│ NULL       │ rock           │ NULL              │ NULL           │   NULL │  NULL │  NULL │ NULL       │      2234031.88 │    40 │
+│ NULL       │ shirts         │ NULL              │ NULL           │   NULL │  NULL │  NULL │ NULL       │      2005748.24 │    66 │
+│ NULL       │ shirts         │ NULL              │ NULL           │   NULL │  NULL │  NULL │ NULL       │      2015374.72 │    62 │
+│ NULL       │ shirts         │ NULL              │ NULL           │   NULL │  NULL │  NULL │ NULL       │      3989095.69 │    20 │
+│ NULL       │ shirts         │ NULL              │ NULL           │   2000 │  NULL │  NULL │ NULL       │      2005748.24 │    66 │
+│ NULL       │ sports-apparel │ NULL              │ NULL           │   NULL │  NULL │  NULL │ NULL       │      2107528.93 │    47 │
+│ NULL       │ sports-apparel │ NULL              │ NULL           │   NULL │  NULL │  NULL │ NULL       │      3055899.02 │    29 │
+│ NULL       │ swimwear       │ NULL              │ NULL           │   NULL │  NULL │  NULL │ NULL       │      2912705.57 │    34 │
+│ NULL       │ swimwear       │ NULL              │ NULL           │   NULL │  NULL │  NULL │ NULL       │      5986028.72 │    10 │
+│ NULL       │ swimwear       │ edu packamalg #1  │ NULL           │   NULL │  NULL │  NULL │ NULL       │      2027301.93 │    54 │
+│ NULL       │ toddlers       │ NULL              │ NULL           │   NULL │  NULL │  NULL │ NULL       │      2038611.36 │    53 │
+│ NULL       │ toddlers       │ NULL              │ NULL           │   NULL │  NULL │  NULL │ NULL       │      4013880.91 │    18 │
+│ NULL       │ toddlers       │ exportiexporti #2 │ NULL           │   NULL │  NULL │  NULL │ NULL       │      1975269.55 │    82 │
+│ NULL       │ womens         │ NULL              │ NULL           │   NULL │  NULL │  NULL │ NULL       │      1994814.32 │    69 │
+│ NULL       │ womens         │ NULL              │ NULL           │   NULL │  NULL │  NULL │ NULL       │      5074897.40 │    13 │
+│ NULL       │ womens         │ amalgedu pack #2  │ NULL           │   NULL │  NULL │  NULL │ NULL       │      2024659.79 │    55 │
+│ NULL       │ womens         │ amalgedu pack #2  │ NULL           │   NULL │  NULL │  NULL │ NULL       │      3080083.08 │    27 │
+│ NULL       │ womens         │ amalgedu pack #2  │ NULL           │   2000 │  NULL │  NULL │ NULL       │      2024659.79 │    55 │
+├────────────┴────────────────┴───────────────────┴────────────────┴────────┴───────┴───────┴────────────┴─────────────────┴───────┤
+│ 100 rows (40 shown)                                                                                                   10 columns │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌─────────────┬──────────────┬─────────────────┬─────────────────┬──────────────────┬────────────────┬───────────────┬───────────────┐
+│ c_last_name │ c_first_name │     ca_city     │   bought_city   │ ss_ticket_number │ extended_price │ extended_tax  │  list_price   │
+│   varchar   │   varchar    │     varchar     │     varchar     │      int32       │ decimal(38,2)  │ decimal(38,2) │ decimal(38,2) │
+├─────────────┼──────────────┼─────────────────┼─────────────────┼──────────────────┼────────────────┼───────────────┼───────────────┤
+│ NULL        │ Mark         │ Somerville      │ Green Acres     │            15164 │       15234.39 │        723.77 │      23344.65 │
+│ NULL        │ Deborah      │ Stringtown      │ Florence        │            41088 │       24125.82 │        525.50 │      46529.89 │
+│ NULL        │ NULL         │ Spring Hill     │ Brownsville     │            65502 │       12161.62 │        355.01 │      33932.06 │
+│ NULL        │ John         │ Spring Hill     │ Friendship      │           123374 │       17746.84 │        986.67 │      31438.00 │
+│ NULL        │ NULL         │ Shiloh          │ Greenwood       │           133492 │       34520.24 │       1180.74 │      43291.22 │
+│ NULL        │ Mozella      │ Hillcrest       │ Fairview        │           153538 │       35164.89 │        917.87 │      47220.10 │
+│ NULL        │ NULL         │ Enterprise      │ Forest Hills    │           173271 │       17995.27 │        814.79 │      31898.58 │
+│ NULL        │ NULL         │ New Hope        │ Post Oak        │           179223 │       23974.34 │       1065.29 │      38935.05 │
+│ NULL        │ NULL         │ Pleasant Valley │ Crossroads      │           198737 │       28903.10 │       1932.23 │      37724.27 │
+│ NULL        │ Jesus        │ Pleasant Valley │ Woodland        │           202392 │       20643.76 │        971.89 │      58388.77 │
+│ NULL        │ Willie       │ Clifton         │ Jamestown       │           202845 │       54206.45 │       1373.86 │      71885.52 │
+│ NULL        │ NULL         │ Gilmore         │ Georgetown      │           241711 │       20503.21 │        911.45 │      30286.68 │
+│ NULL        │ Rita         │ Woodlawn        │ Mount Zion      │           272217 │       13836.55 │        624.45 │      25070.63 │
+│ NULL        │ Carl         │ Greenwood       │ Louisville      │           274236 │       12034.90 │        806.38 │      21446.81 │
+│ NULL        │ NULL         │ Shady Grove     │ Tipton          │           300257 │       12251.29 │        589.39 │      23513.68 │
+│ NULL        │ Rosella      │ Marion          │ Edgewood        │           306191 │        5066.19 │        243.99 │      11777.39 │
+│ NULL        │ NULL         │ Five Points     │ Newport         │           314279 │       12560.35 │        671.19 │      30968.47 │
+│ NULL        │ Jack         │ Oakdale         │ Deerfield       │           316242 │       40187.45 │       1817.98 │      70168.05 │
+│ NULL        │ Julie        │ Wilson          │ Woodville       │           358945 │        8303.83 │        321.69 │      17278.08 │
+│ NULL        │ NULL         │ Georgetown      │ Greenville      │           387206 │       22828.22 │        471.87 │      53632.99 │
+│  ·          │  ·           │     ·           │     ·           │              ·   │           ·    │           ·   │          ·    │
+│  ·          │  ·           │     ·           │     ·           │              ·   │           ·    │           ·   │          ·    │
+│  ·          │  ·           │     ·           │     ·           │              ·   │           ·    │           ·   │          ·    │
+│ NULL        │ Tera         │ Forest Hills    │ Pleasant Valley │          1801123 │       31538.59 │       1597.12 │      68358.87 │
+│ NULL        │ NULL         │ Green Acres     │ Liberty         │          1812665 │       23696.78 │       1316.82 │      34756.83 │
+│ NULL        │ NULL         │ Lakewood        │ Payne           │          1823916 │       47467.23 │       1797.50 │      80972.52 │
+│ NULL        │ Stephanie    │ Oak Hill        │ Five Forks      │          1838084 │       19108.03 │        747.32 │      35655.89 │
+│ NULL        │ Phillip      │ Springdale      │ Oneida          │          1890574 │       23107.82 │       1027.36 │      55403.77 │
+│ NULL        │ NULL         │ Newtown         │ Lakeside        │          1892643 │       22551.60 │       1016.76 │      38810.10 │
+│ NULL        │ NULL         │ Bunker Hill     │ Kingston        │          1901056 │       27701.34 │       1460.27 │      48034.61 │
+│ NULL        │ Stephanie    │ Millbrook       │ Hillcrest       │          1903052 │       43084.23 │       2186.88 │      57015.50 │
+│ NULL        │ NULL         │ Bath            │ Kingston        │          1962329 │       17142.12 │        782.70 │      30895.36 │
+│ NULL        │ NULL         │ Brownsville     │ Shady Grove     │          1979039 │       13005.79 │        772.71 │      31649.67 │
+│ NULL        │ James        │ Florence        │ Oak Hill        │          1988789 │       14369.67 │        606.22 │      32560.42 │
+│ NULL        │ Francis      │ Hopewell        │ Five Forks      │          1991276 │       13630.48 │        617.17 │      43734.44 │
+│ NULL        │ Andre        │ Georgetown      │ Newport         │          2010779 │        8731.79 │        426.20 │      13349.97 │
+│ NULL        │ NULL         │ Mount Pleasant  │ Norton          │          2026730 │       10555.12 │        662.04 │      28077.25 │
+│ NULL        │ NULL         │ Oak Ridge       │ Centerville     │          2030421 │       15022.05 │        405.99 │      29346.88 │
+│ NULL        │ John         │ Guilford        │ Lake Forest     │          2037011 │       23129.33 │        771.54 │      39923.17 │
+│ NULL        │ NULL         │ Glendale        │ Lebanon         │          2056798 │       40846.44 │       2022.45 │      72909.58 │
+│ NULL        │ Julius       │ Fairfield       │ Hopewell        │          2059426 │       14226.96 │        525.01 │      24096.01 │
+│ NULL        │ NULL         │ Wayland         │ Marion          │          2065553 │       17537.85 │        837.82 │      35075.71 │
+│ NULL        │ Melissa      │ Buena Vista     │ Mount Pleasant  │          2085841 │       21696.60 │        945.55 │      42178.91 │
+├─────────────┴──────────────┴─────────────────┴─────────────────┴──────────────────┴────────────────┴───────────────┴───────────────┤
+│ 100 rows (40 shown)                                                                                                      8 columns │
+└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌───────────┬───────────────────┬─────────────────────┬───────┬──────────────────────┬───────┬──────────────────┬───────┐
+│ cd_gender │ cd_marital_status │ cd_education_status │ cnt1  │ cd_purchase_estimate │ cnt2  │ cd_credit_rating │ cnt3  │
+│  varchar  │      varchar      │       varchar       │ int64 │        int32         │ int64 │     varchar      │ int64 │
+├───────────┼───────────────────┼─────────────────────┼───────┼──────────────────────┼───────┼──────────────────┼───────┤
+│ F         │ D                 │ 2 yr Degree         │     6 │                  500 │     6 │ Good             │     6 │
+│ F         │ D                 │ 2 yr Degree         │     8 │                  500 │     8 │ High Risk        │     8 │
+│ F         │ D                 │ 2 yr Degree         │    10 │                  500 │    10 │ Low Risk         │    10 │
+│ F         │ D                 │ 2 yr Degree         │     6 │                  500 │     6 │ Unknown          │     6 │
+│ F         │ D                 │ 2 yr Degree         │     9 │                 1000 │     9 │ Good             │     9 │
+│ F         │ D                 │ 2 yr Degree         │     9 │                 1000 │     9 │ High Risk        │     9 │
+│ F         │ D                 │ 2 yr Degree         │     8 │                 1000 │     8 │ Low Risk         │     8 │
+│ F         │ D                 │ 2 yr Degree         │    10 │                 1000 │    10 │ Unknown          │    10 │
+│ F         │ D                 │ 2 yr Degree         │     5 │                 1500 │     5 │ Good             │     5 │
+│ F         │ D                 │ 2 yr Degree         │     8 │                 1500 │     8 │ High Risk        │     8 │
+│ F         │ D                 │ 2 yr Degree         │     6 │                 1500 │     6 │ Low Risk         │     6 │
+│ F         │ D                 │ 2 yr Degree         │     9 │                 1500 │     9 │ Unknown          │     9 │
+│ F         │ D                 │ 2 yr Degree         │     8 │                 2000 │     8 │ Good             │     8 │
+│ F         │ D                 │ 2 yr Degree         │     6 │                 2000 │     6 │ High Risk        │     6 │
+│ F         │ D                 │ 2 yr Degree         │     7 │                 2000 │     7 │ Low Risk         │     7 │
+│ F         │ D                 │ 2 yr Degree         │     8 │                 2000 │     8 │ Unknown          │     8 │
+│ F         │ D                 │ 2 yr Degree         │     7 │                 2500 │     7 │ Good             │     7 │
+│ F         │ D                 │ 2 yr Degree         │     5 │                 2500 │     5 │ High Risk        │     5 │
+│ F         │ D                 │ 2 yr Degree         │     5 │                 2500 │     5 │ Low Risk         │     5 │
+│ F         │ D                 │ 2 yr Degree         │     8 │                 2500 │     8 │ Unknown          │     8 │
+│ ·         │ ·                 │      ·              │     · │                   ·  │     · │  ·               │     · │
+│ ·         │ ·                 │      ·              │     · │                   ·  │     · │  ·               │     · │
+│ ·         │ ·                 │      ·              │     · │                   ·  │     · │  ·               │     · │
+│ F         │ D                 │ 4 yr Degree         │     9 │                  500 │     9 │ Good             │     9 │
+│ F         │ D                 │ 4 yr Degree         │     9 │                  500 │     9 │ High Risk        │     9 │
+│ F         │ D                 │ 4 yr Degree         │     3 │                  500 │     3 │ Low Risk         │     3 │
+│ F         │ D                 │ 4 yr Degree         │     5 │                  500 │     5 │ Unknown          │     5 │
+│ F         │ D                 │ 4 yr Degree         │     9 │                 1000 │     9 │ Good             │     9 │
+│ F         │ D                 │ 4 yr Degree         │     7 │                 1000 │     7 │ High Risk        │     7 │
+│ F         │ D                 │ 4 yr Degree         │     7 │                 1000 │     7 │ Low Risk         │     7 │
+│ F         │ D                 │ 4 yr Degree         │    12 │                 1000 │    12 │ Unknown          │    12 │
+│ F         │ D                 │ 4 yr Degree         │     6 │                 1500 │     6 │ Good             │     6 │
+│ F         │ D                 │ 4 yr Degree         │     4 │                 1500 │     4 │ High Risk        │     4 │
+│ F         │ D                 │ 4 yr Degree         │     5 │                 1500 │     5 │ Low Risk         │     5 │
+│ F         │ D                 │ 4 yr Degree         │     7 │                 1500 │     7 │ Unknown          │     7 │
+│ F         │ D                 │ 4 yr Degree         │    10 │                 2000 │    10 │ Good             │    10 │
+│ F         │ D                 │ 4 yr Degree         │     6 │                 2000 │     6 │ High Risk        │     6 │
+│ F         │ D                 │ 4 yr Degree         │    12 │                 2000 │    12 │ Low Risk         │    12 │
+│ F         │ D                 │ 4 yr Degree         │     5 │                 2000 │     5 │ Unknown          │     5 │
+│ F         │ D                 │ 4 yr Degree         │     8 │                 2500 │     8 │ Good             │     8 │
+│ F         │ D                 │ 4 yr Degree         │     5 │                 2500 │     5 │ High Risk        │     5 │
+│ F         │ D                 │ 4 yr Degree         │     7 │                 2500 │     7 │ Low Risk         │     7 │
+│ F         │ D                 │ 4 yr Degree         │    11 │                 2500 │    11 │ Unknown          │    11 │
+├───────────┴───────────────────┴─────────────────────┴───────┴──────────────────────┴───────┴──────────────────┴───────┤
+│ 100 rows (40 shown)                                                                                         8 columns │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌─────────────────┬─────────┬───────────────────┬──────────────┬────────────────────┐
+│    total_sum    │ s_state │     s_county      │ lochierarchy │ rank_within_parent │
+│  decimal(38,2)  │ varchar │      varchar      │    int64     │       int64        │
+├─────────────────┼─────────┼───────────────────┼──────────────┼────────────────────┤
+│ -43783225004.48 │ NULL    │ NULL              │            2 │                  1 │
+│  -3068891881.83 │ MO      │ NULL              │            1 │                  1 │
+│  -3521628915.23 │ GA      │ NULL              │            1 │                  2 │
+│  -4389585410.25 │ AL      │ NULL              │            1 │                  3 │
+│  -4833405701.16 │ OH      │ NULL              │            1 │                  4 │
+│  -4840259544.13 │ MI      │ NULL              │            1 │                  5 │
+│  -5501715225.67 │ TN      │ NULL              │            1 │                  6 │
+│  -5525017160.03 │ LA      │ NULL              │            1 │                  7 │
+│  -5724354557.81 │ SC      │ NULL              │            1 │                  8 │
+│  -6378366608.37 │ SD      │ NULL              │            1 │                  9 │
+│  -4389585410.25 │ AL      │ Walker County     │            0 │                  1 │
+│  -3521628915.23 │ GA      │ Barrow County     │            0 │                  1 │
+│  -5525017160.03 │ LA      │ Franklin Parish   │            0 │                  1 │
+│  -4840259544.13 │ MI      │ Luce County       │            0 │                  1 │
+│  -3068891881.83 │ MO      │ Daviess County    │            0 │                  1 │
+│  -4833405701.16 │ OH      │ Richland County   │            0 │                  1 │
+│  -5724354557.81 │ SC      │ Fairfield County  │            0 │                  1 │
+│  -6378366608.37 │ SD      │ Ziebach County    │            0 │                  1 │
+│   -217882364.86 │ TN      │ NULL              │            0 │                  1 │
+│  -5283832860.81 │ TN      │ Williamson County │            0 │                  2 │
+├─────────────────┴─────────┴───────────────────┴──────────────┴────────────────────┤
+│ 20 rows                                                                 5 columns │
+└───────────────────────────────────────────────────────────────────────────────────┘
+┌──────────┬────────────────────────┬────────┬──────────┬───────────────┐
+│ brand_id │         brand          │ t_hour │ t_minute │   ext_price   │
+│  int32   │        varchar         │ int32  │  int32   │ decimal(38,2) │
+├──────────┼────────────────────────┼────────┼──────────┼───────────────┤
+│     NULL │ importobrand #2        │      8 │       21 │          NULL │
+│  1003002 │ exportiamalg #2        │     18 │       20 │          NULL │
+│  2002002 │ importoimporto #2      │      9 │       17 │          NULL │
+│  2002002 │ importoimporto #2      │      9 │       39 │          NULL │
+│  2003001 │ exportiimporto #1      │      6 │        5 │          NULL │
+│  3004002 │ edu packexporti #2     │      8 │       35 │          NULL │
+│  4002002 │ importoedu pack #2     │     19 │       48 │          NULL │
+│  4003002 │ exportiedu pack #2     │      8 │       40 │          NULL │
+│  6001002 │ amalgcorp #2           │     17 │       14 │          NULL │
+│  6003005 │ exporticorp #5         │      8 │       53 │          NULL │
+│  6003007 │ exporticorp #7         │      8 │       12 │          NULL │
+│  6003007 │ exporticorp #7         │      9 │       34 │          NULL │
+│  6003008 │ exporticorp #8         │      8 │       51 │          NULL │
+│  6003008 │ exporticorp #8         │      9 │       40 │          NULL │
+│  6004004 │ edu packcorp #4        │     17 │       46 │          NULL │
+│  6004005 │ edu packcorp #5        │     18 │       23 │          NULL │
+│  6005001 │ scholarcorp #1         │      9 │       53 │          NULL │
+│  6005004 │ scholarcorp #4         │      8 │       43 │          NULL │
+│  6005004 │ scholarcorp #4         │     19 │       27 │          NULL │
+│  6006002 │ corpcorp #2            │     19 │       25 │          NULL │
+│     ·    │      ·                 │      · │        · │            ·  │
+│     ·    │      ·                 │      · │        · │            ·  │
+│     ·    │      ·                 │      · │        · │            ·  │
+│ 10013005 │ exportiamalgamalg #5   │     17 │       21 │          0.00 │
+│ 10013005 │ exportiamalgamalg #5   │     17 │       36 │          0.00 │
+│ 10013005 │ exportiamalgamalg #5   │     18 │       52 │          0.00 │
+│ 10013011 │ exportiamalgamalg #11  │     18 │        4 │          0.00 │
+│ 10013017 │ exportiamalgamalg #17  │     17 │       38 │          0.00 │
+│ 10014001 │ edu packamalgamalg #1  │      9 │       55 │          0.00 │
+│ 10014001 │ edu packamalgamalg #1  │     19 │       36 │          0.00 │
+│ 10014012 │ edu packamalgamalg #12 │     18 │       29 │          0.00 │
+│ 10014016 │ edu packamalgamalg #16 │     17 │       33 │          0.00 │
+│ 10014016 │ edu packamalgamalg #16 │     19 │       49 │          0.00 │
+│ 10015001 │ scholaramalgamalg #1   │     18 │        1 │          0.00 │
+│ 10015004 │ scholaramalgamalg #4   │      8 │       24 │          0.00 │
+│ 10015010 │ scholaramalgamalg #10  │      6 │       49 │          0.00 │
+│ 10015013 │ scholaramalgamalg #13  │      9 │        2 │          0.00 │
+│ 10015013 │ scholaramalgamalg #13  │     18 │        3 │          0.00 │
+│ 10016004 │ corpamalgamalg #4      │     17 │       48 │          0.00 │
+│ 10016006 │ corpamalgamalg #6      │     19 │        0 │          0.00 │
+│ 10016007 │ corpamalgamalg #7      │     17 │       33 │          0.00 │
+│ 10016013 │ corpamalgamalg #13     │      9 │        7 │          0.00 │
+│ 10016017 │ corpamalgamalg #17     │      9 │       16 │          0.00 │
+├──────────┴────────────────────────┴────────┴──────────┴───────────────┤
+│ 59586 rows (40 shown)                                       5 columns │
+└───────────────────────────────────────────────────────────────────────┘
+┌─────────────┬──────────────────────┬────────────┬──────────┬────────┬───────────┐
+│ i_item_desc │   w_warehouse_name   │ d_week_seq │ no_promo │ promo  │ total_cnt │
+│   varchar   │       varchar        │   int32    │  int128  │ int128 │   int64   │
+├─────────────┼──────────────────────┼────────────┼──────────┼────────┼───────────┤
+│ NULL        │ Historic, us         │       5216 │        0 │     12 │        12 │
+│ NULL        │ Of course ot         │       5213 │        0 │     11 │        11 │
+│ NULL        │ Inappropriate, p     │       5216 │        0 │     10 │        10 │
+│ NULL        │ Issues live th       │       5217 │        0 │     10 │        10 │
+│ NULL        │ Certainly fede       │       5215 │        0 │      9 │         9 │
+│ NULL        │ Well local pr        │       5206 │        0 │      9 │         9 │
+│ NULL        │ Well local pr        │       5212 │        0 │      9 │         9 │
+│ NULL        │ NULL                 │       5216 │        0 │      8 │         8 │
+│ NULL        │ Historic, us         │       5197 │        0 │      8 │         8 │
+│ NULL        │ New, possib          │       5209 │        0 │      8 │         8 │
+│ NULL        │ Of course ot         │       5217 │        0 │      8 │         8 │
+│ NULL        │ Police sha           │       5213 │        0 │      8 │         8 │
+│ NULL        │ Terms overcome instr │       5213 │        0 │      8 │         8 │
+│ NULL        │ Voluntary, loca      │       5217 │        0 │      8 │         8 │
+│ NULL        │ Well local pr        │       5213 │        0 │      8 │         8 │
+│ NULL        │ NULL                 │       5201 │        0 │      7 │         7 │
+│ NULL        │ NULL                 │       5211 │        0 │      7 │         7 │
+│ NULL        │ Certainly fede       │       5205 │        0 │      7 │         7 │
+│ NULL        │ Inappropriate, p     │       5215 │        0 │      7 │         7 │
+│ NULL        │ Issues live th       │       5204 │        0 │      7 │         7 │
+│  ·          │       ·              │         ·  │        · │      · │         · │
+│  ·          │       ·              │         ·  │        · │      · │         · │
+│  ·          │       ·              │         ·  │        · │      · │         · │
+│ NULL        │ Certainly fede       │       5203 │        0 │      4 │         4 │
+│ NULL        │ Certainly fede       │       5204 │        0 │      4 │         4 │
+│ NULL        │ Certainly fede       │       5211 │        0 │      4 │         4 │
+│ NULL        │ Conventional childr  │       5206 │        0 │      4 │         4 │
+│ NULL        │ Historic, us         │       5201 │        0 │      4 │         4 │
+│ NULL        │ Historic, us         │       5202 │        0 │      4 │         4 │
+│ NULL        │ Historic, us         │       5208 │        0 │      4 │         4 │
+│ NULL        │ Historic, us         │       5209 │        0 │      4 │         4 │
+│ NULL        │ Historic, us         │       5211 │        0 │      4 │         4 │
+│ NULL        │ Historic, us         │       5213 │        0 │      4 │         4 │
+│ NULL        │ Inappropriate, p     │       5185 │        0 │      4 │         4 │
+│ NULL        │ Inappropriate, p     │       5205 │        0 │      4 │         4 │
+│ NULL        │ Inappropriate, p     │       5212 │        0 │      4 │         4 │
+│ NULL        │ Issues live th       │       5191 │        0 │      4 │         4 │
+│ NULL        │ Issues live th       │       5196 │        0 │      4 │         4 │
+│ NULL        │ Issues live th       │       5197 │        0 │      4 │         4 │
+│ NULL        │ New, possib          │       5207 │        0 │      4 │         4 │
+│ NULL        │ New, possib          │       5214 │        0 │      4 │         4 │
+│ NULL        │ New, possib          │       5218 │        0 │      4 │         4 │
+│ NULL        │ New, sudden          │       5197 │        0 │      4 │         4 │
+├─────────────┴──────────────────────┴────────────┴──────────┴────────┴───────────┤
+│ 100 rows (40 shown)                                                   6 columns │
+└─────────────────────────────────────────────────────────────────────────────────┘
+┌─────────────┬──────────────┬──────────────┬───────────────────────┬──────────────────┬───────┐
+│ c_last_name │ c_first_name │ c_salutation │ c_preferred_cust_flag │ ss_ticket_number │  cnt  │
+│   varchar   │   varchar    │   varchar    │        varchar        │      int32       │ int64 │
+├─────────────┼──────────────┼──────────────┼───────────────────────┼──────────────────┼───────┤
+│ Adams       │ Jesse        │ Dr.          │ N                     │         19231426 │     5 │
+│ Alderman    │ Kathleen     │ Miss         │ N                     │         20405697 │     5 │
+│ Allison     │ Al           │ Mr.          │ N                     │           496886 │     5 │
+│ Arnold      │ James        │ Dr.          │ Y                     │          1921116 │     5 │
+│ Atwood      │ Carl         │ Sir          │ N                     │           523812 │     5 │
+│ Baker       │ Julie        │ Mrs.         │ Y                     │         14972491 │     5 │
+│ Barton      │ William      │ Mr.          │ N                     │         17923145 │     5 │
+│ Berry       │ Anissa       │ Dr.          │ Y                     │         14902499 │     5 │
+│ Bridges     │ Glenn        │ Mr.          │ N                     │         22515307 │     5 │
+│ Bullock     │ Carl         │ Mr.          │ N                     │         14966899 │     5 │
+│ Bullock     │ Thomas       │ Dr.          │ Y                     │          8511089 │     5 │
+│ Burleson    │ Charlotte    │ Mrs.         │ Y                     │         23018382 │     5 │
+│ Byrd        │ Michael      │ Sir          │ Y                     │          1331979 │     5 │
+│ Carson      │ Lecia        │ Dr.          │ Y                     │          7162305 │     5 │
+│ Castellanos │ Stefanie     │ Ms.          │ N                     │         15748141 │     5 │
+│ Cathey      │ James        │ Dr.          │ Y                     │          5758911 │     5 │
+│ Cook        │ Susan        │ Ms.          │ N                     │         18857362 │     5 │
+│ Cooper      │ Devin        │ Dr.          │ Y                     │         23373333 │     5 │
+│ Cruz        │ Susan        │ Ms.          │ Y                     │          5233683 │     5 │
+│ Cullen      │ Jennifer     │ Ms.          │ N                     │          4390913 │     5 │
+│   ·         │  ·           │  ·           │ ·                     │             ·    │     · │
+│   ·         │  ·           │  ·           │ ·                     │             ·    │     · │
+│   ·         │  ·           │  ·           │ ·                     │             ·    │     · │
+│ Young       │ Irma         │ Ms.          │ N                     │          4232678 │     5 │
+│ NULL        │ Lisa         │ NULL         │ Y                     │         22367076 │     5 │
+│ NULL        │ Jose         │ NULL         │ NULL                  │          5163632 │     5 │
+│ NULL        │ NULL         │ NULL         │ N                     │          7247518 │     5 │
+│ NULL        │ Andre        │ Dr.          │ NULL                  │          2010779 │     5 │
+│ NULL        │ Alfred       │ Dr.          │ Y                     │          5766890 │     5 │
+│ Blum        │ Richard      │ Sir          │ N                     │          1948949 │     4 │
+│ Clinton     │ Faye         │ Ms.          │ N                     │         12610650 │     4 │
+│ Collins     │ Martha       │ Mrs.         │ Y                     │          7478466 │     4 │
+│ Flaherty    │ Catherine    │ Dr.          │ Y                     │          1468263 │     4 │
+│ Flint       │ Angela       │ Ms.          │ N                     │         10783684 │     4 │
+│ Goodman     │ Dorothy      │ Miss         │ N                     │         11392175 │     4 │
+│ Jackson     │ Dolores      │ Dr.          │ N                     │          7402463 │     4 │
+│ Jennings    │ Rodney       │ Dr.          │ Y                     │         23398632 │     4 │
+│ Meyer       │ Simon        │ Sir          │ N                     │           612471 │     4 │
+│ Parker      │ Cristopher   │ Dr.          │ Y                     │         12545227 │     4 │
+│ Reynolds    │ Gabriel      │ Sir          │ Y                     │          8394722 │     4 │
+│ Washington  │ Jesse        │ Dr.          │ Y                     │         10494533 │     4 │
+│ NULL        │ NULL         │ NULL         │ NULL                  │         14581417 │     4 │
+│ Adams       │ Steven       │ Sir          │ Y                     │          2583138 │     3 │
+├─────────────┴──────────────┴──────────────┴───────────────────────┴──────────────────┴───────┤
+│ 117 rows (40 shown)                                                                6 columns │
+└──────────────────────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────┬─────────────────────┬────────────────────┐
+│   customer_id    │ customer_first_name │ customer_last_name │
+│     varchar      │       varchar       │      varchar       │
+├──────────────────┼─────────────────────┼────────────────────┤
+│ AAAAAAAAAAAAEAAA │ Robert              │ Patterson          │
+│ AAAAAAAAAAAALAAA │ Cathy               │ Salinas            │
+│ AAAAAAAAAAABJBAA │ Albert              │ Ramey              │
+│ AAAAAAAAAAACBBAA │ George              │ Beck               │
+│ AAAAAAAAAAACGBAA │ Margaret            │ Bender             │
+│ AAAAAAAAAAACHBAA │ Francis             │ Thompson           │
+│ AAAAAAAAAAACIAAA │ Evelyn              │ Ferris             │
+│ AAAAAAAAAAACJAAA │ Deborah             │ Doyle              │
+│ AAAAAAAAAAACJBAA │ Kenneth             │ Bragg              │
+│ AAAAAAAAAAACOBAA │ Sandra              │ Cowan              │
+│ AAAAAAAAAAAEDAAA │ Paula               │ Ferguson           │
+│ AAAAAAAAAAAEEAAA │ Richard             │ Jolley             │
+│ AAAAAAAAAAAFAAAA │ Raymond             │ Jarrett            │
+│ AAAAAAAAAAAFEAAA │ Javier              │ Jernigan           │
+│ AAAAAAAAAAAFEBAA │ Elizabeth           │ Gordon             │
+│ AAAAAAAAAAAFNBAA │ Jeanette            │ Burnett            │
+│ AAAAAAAAAAAGCBAA │ Gregory             │ Goodwin            │
+│ AAAAAAAAAAAGJBAA │ Allison             │ Peebles            │
+│ AAAAAAAAAAAGLAAA │ Stephanie           │ Allen              │
+│ AAAAAAAAAAAGPAAA │ Gwendolyn           │ Prosser            │
+│        ·         │   ·                 │    ·               │
+│        ·         │   ·                 │    ·               │
+│        ·         │   ·                 │    ·               │
+│ AAAAAAAAAABKMBAA │ Velma               │ Thompson           │
+│ AAAAAAAAAABLKBAA │ Jessica             │ Beaver             │
+│ AAAAAAAAAABLNAAA │ Jack                │ Ruth               │
+│ AAAAAAAAAABMCBAA │ Douglas             │ Butler             │
+│ AAAAAAAAAABNAAAA │ Gary                │ Johnson            │
+│ AAAAAAAAAABNNBAA │ Herbert             │ Watts              │
+│ AAAAAAAAAABOABAA │ Robert              │ Rankin             │
+│ AAAAAAAAAABOEAAA │ Joshua              │ Velazquez          │
+│ AAAAAAAAAABPHBAA │ Rebecca             │ Coleman            │
+│ AAAAAAAAAACABBAA │ Timothy             │ Gonzalez           │
+│ AAAAAAAAAACAOAAA │ Tim                 │ Roberson           │
+│ AAAAAAAAAACBJBAA │ Carrie              │ Owens              │
+│ AAAAAAAAAACBMBAA │ Stephen             │ Brown              │
+│ AAAAAAAAAACBNAAA │ Nestor              │ Willoughby         │
+│ AAAAAAAAAACCEBAA │ Nick                │ Swartz             │
+│ AAAAAAAAAACCGAAA │ Brian               │ Mason              │
+│ AAAAAAAAAACCIAAA │ Gretchen            │ Dellinger          │
+│ AAAAAAAAAACCLBAA │ Arnoldo             │ Doucette           │
+│ AAAAAAAAAACDAAAA │ John                │ Morin              │
+│ AAAAAAAAAACDOAAA │ Paul                │ Tolbert            │
+├──────────────────┴─────────────────────┴────────────────────┤
+│ 100 rows (40 shown)                               3 columns │
+└─────────────────────────────────────────────────────────────┘
+┌───────────┬───────┬────────────┬────────────┬───────────────┬───────────────┬─────────────┬─────────────┬────────────────┬────────────────┐
+│ prev_year │ year_ │ i_brand_id │ i_class_id │ i_category_id │ i_manufact_id │ prev_yr_cnt │ curr_yr_cnt │ sales_cnt_diff │ sales_amt_diff │
+│   int32   │ int32 │   int32    │   int32    │     int32     │     int32     │   int128    │   int128    │     int128     │ decimal(38,2)  │
+├───────────┼───────┼────────────┼────────────┼───────────────┼───────────────┼─────────────┼─────────────┼────────────────┼────────────────┤
+│      2001 │  2002 │    3001001 │          1 │             9 │           173 │      140189 │       43507 │         -96682 │    -4042948.51 │
+│      2001 │  2002 │    4003001 │          3 │             9 │            21 │       90638 │       42879 │         -47759 │    -2066114.29 │
+│      2001 │  2002 │    3002001 │          2 │             9 │           174 │       93432 │       47786 │         -45646 │    -2072658.99 │
+│      2001 │  2002 │    4003001 │          3 │             9 │           120 │       92072 │       46600 │         -45472 │    -1886058.05 │
+│      2001 │  2002 │    2002001 │          2 │             9 │           608 │       89195 │       43765 │         -45430 │    -1795545.79 │
+│      2001 │  2002 │    4001001 │          1 │             9 │           259 │       88388 │       43029 │         -45359 │    -2002603.14 │
+│      2001 │  2002 │    1004001 │          4 │             9 │           228 │       90176 │       45285 │         -44891 │    -1842381.96 │
+│      2001 │  2002 │    5003001 │          3 │             9 │           452 │       90725 │       46263 │         -44462 │    -1722782.17 │
+│      2001 │  2002 │    4002001 │          2 │             9 │           263 │       89256 │       46786 │         -42470 │    -1742651.81 │
+│      2001 │  2002 │    3003001 │          3 │             9 │           590 │       86111 │       45449 │         -40662 │    -1764815.46 │
+│      2001 │  2002 │    9013008 │         13 │             9 │           651 │       49575 │       40294 │          -9281 │     -261837.80 │
+│      2001 │  2002 │    9004010 │          1 │             9 │             8 │       48781 │       41080 │          -7701 │     -372820.11 │
+│      2001 │  2002 │    9002008 │          2 │             9 │           260 │       48861 │       41323 │          -7538 │     -292292.40 │
+│      2001 │  2002 │    8013005 │         13 │             9 │           490 │       48451 │       40918 │          -7533 │     -301649.94 │
+│      2001 │  2002 │    9008010 │          8 │             9 │           121 │       49033 │       41652 │          -7381 │     -390919.59 │
+│      2001 │  2002 │    9007004 │          7 │             9 │            15 │       48995 │       41681 │          -7314 │     -256260.04 │
+│      2001 │  2002 │    9016008 │         16 │             9 │           321 │       46641 │       39384 │          -7257 │     -413291.46 │
+│      2001 │  2002 │    7016003 │         15 │             9 │           182 │       48920 │       41829 │          -7091 │     -114450.38 │
+│      2001 │  2002 │    9012008 │         12 │             9 │           230 │       48874 │       41792 │          -7082 │     -403833.27 │
+│      2001 │  2002 │    9010010 │          4 │             9 │           171 │       48935 │       42068 │          -6867 │     -187877.40 │
+│        ·  │    ·  │       ·    │          · │             · │            ·  │         ·   │         ·   │            ·   │          ·     │
+│        ·  │    ·  │       ·    │          · │             · │            ·  │         ·   │         ·   │            ·   │          ·     │
+│        ·  │    ·  │       ·    │          · │             · │            ·  │         ·   │         ·   │            ·   │          ·     │
+│      2001 │  2002 │    9007002 │          7 │             9 │           272 │       48440 │       43059 │          -5381 │     -196498.87 │
+│      2001 │  2002 │    9006002 │          6 │             9 │           661 │       47537 │       42159 │          -5378 │     -132181.98 │
+│      2001 │  2002 │    9012004 │          1 │             9 │           466 │       47073 │       41696 │          -5377 │     -506241.36 │
+│      2001 │  2002 │    3004001 │          4 │             9 │           344 │       48303 │       42926 │          -5377 │     -303494.12 │
+│      2001 │  2002 │    9011002 │         11 │             9 │           308 │       46052 │       40678 │          -5374 │     -434961.53 │
+│      2001 │  2002 │   10016014 │         16 │             9 │            53 │       50560 │       45197 │          -5363 │     -204928.81 │
+│      2001 │  2002 │    6007003 │          7 │             9 │           518 │       49283 │       43923 │          -5360 │     -327506.69 │
+│      2001 │  2002 │    9016004 │          1 │             9 │            81 │       48745 │       43395 │          -5350 │     -124442.53 │
+│      2001 │  2002 │    2004001 │         14 │             9 │           452 │       50101 │       44778 │          -5323 │     -165109.10 │
+│      2001 │  2002 │    9007008 │          7 │             9 │           594 │       46260 │       40950 │          -5310 │     -249424.17 │
+│      2001 │  2002 │    9007004 │          7 │             9 │           110 │       48779 │       43485 │          -5294 │     -134266.48 │
+│      2001 │  2002 │    9003002 │          3 │             9 │           292 │       47801 │       42514 │          -5287 │      -56892.82 │
+│      2001 │  2002 │    9008004 │          8 │             9 │           211 │       50865 │       45590 │          -5275 │     -136977.50 │
+│      2001 │  2002 │    9014002 │         14 │             9 │           283 │       49064 │       43797 │          -5267 │     -151506.31 │
+│      2001 │  2002 │    9008002 │          8 │             9 │           799 │       48340 │       43075 │          -5265 │     -186624.55 │
+│      2001 │  2002 │    9010002 │         10 │             9 │           662 │       49287 │       44033 │          -5254 │     -342460.23 │
+│      2001 │  2002 │    9002008 │          2 │             9 │           134 │       46396 │       41158 │          -5238 │     -218176.44 │
+│      2001 │  2002 │   10015013 │          3 │             9 │           141 │       47812 │       42574 │          -5238 │     -151070.31 │
+│      2001 │  2002 │    9007010 │          7 │             9 │           211 │       49230 │       43998 │          -5232 │      -98394.01 │
+│      2001 │  2002 │    9012010 │         12 │             9 │           213 │       45589 │       40382 │          -5207 │     -310521.74 │
+├───────────┴───────┴────────────┴────────────┴───────────────┴───────────────┴─────────────┴─────────────┴────────────────┴────────────────┤
+│ 100 rows (40 shown)                                                                                                            10 columns │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌─────────┬─────────────────┬────────┬───────┬─────────────┬───────────┬───────────────┐
+│ channel │    col_name     │ d_year │ d_qoy │ i_category  │ sales_cnt │   sales_amt   │
+│ varchar │     varchar     │ int32  │ int32 │   varchar   │   int64   │ decimal(38,2) │
+├─────────┼─────────────────┼────────┼───────┼─────────────┼───────────┼───────────────┤
+│ catalog │ cs_ship_addr_sk │   1998 │     1 │ NULL        │        22 │      40243.45 │
+│ catalog │ cs_ship_addr_sk │   1998 │     1 │ Books       │      1000 │    1344992.06 │
+│ catalog │ cs_ship_addr_sk │   1998 │     1 │ Children    │      1044 │    1327741.80 │
+│ catalog │ cs_ship_addr_sk │   1998 │     1 │ Electronics │      1013 │    1247074.99 │
+│ catalog │ cs_ship_addr_sk │   1998 │     1 │ Home        │      1025 │    1293014.56 │
+│ catalog │ cs_ship_addr_sk │   1998 │     1 │ Jewelry     │       991 │    1417542.14 │
+│ catalog │ cs_ship_addr_sk │   1998 │     1 │ Men         │      1014 │    1227617.96 │
+│ catalog │ cs_ship_addr_sk │   1998 │     1 │ Music       │      1012 │    1410387.33 │
+│ catalog │ cs_ship_addr_sk │   1998 │     1 │ Shoes       │      1003 │    1340609.21 │
+│ catalog │ cs_ship_addr_sk │   1998 │     1 │ Sports      │      1053 │    1369375.57 │
+│ catalog │ cs_ship_addr_sk │   1998 │     1 │ Women       │      1024 │    1421586.32 │
+│ catalog │ cs_ship_addr_sk │   1998 │     2 │ NULL        │        31 │      48614.69 │
+│ catalog │ cs_ship_addr_sk │   1998 │     2 │ Books       │      1016 │    1341643.82 │
+│ catalog │ cs_ship_addr_sk │   1998 │     2 │ Children    │      1030 │    1328520.85 │
+│ catalog │ cs_ship_addr_sk │   1998 │     2 │ Electronics │      1042 │    1454278.12 │
+│ catalog │ cs_ship_addr_sk │   1998 │     2 │ Home        │      1016 │    1316395.19 │
+│ catalog │ cs_ship_addr_sk │   1998 │     2 │ Jewelry     │      1005 │    1258382.87 │
+│ catalog │ cs_ship_addr_sk │   1998 │     2 │ Men         │       993 │    1189473.71 │
+│ catalog │ cs_ship_addr_sk │   1998 │     2 │ Music       │      1098 │    1286507.81 │
+│ catalog │ cs_ship_addr_sk │   1998 │     2 │ Shoes       │      1034 │    1388615.64 │
+│    ·    │        ·        │     ·  │     · │   ·         │        ·  │         ·     │
+│    ·    │        ·        │     ·  │     · │   ·         │        ·  │         ·     │
+│    ·    │        ·        │     ·  │     · │   ·         │        ·  │         ·     │
+│ catalog │ cs_ship_addr_sk │   1999 │     4 │ Electronics │      3151 │    4108156.22 │
+│ catalog │ cs_ship_addr_sk │   1999 │     4 │ Home        │      3160 │    4125048.64 │
+│ catalog │ cs_ship_addr_sk │   1999 │     4 │ Jewelry     │      3093 │    3991646.29 │
+│ catalog │ cs_ship_addr_sk │   1999 │     4 │ Men         │      2960 │    3779891.43 │
+│ catalog │ cs_ship_addr_sk │   1999 │     4 │ Music       │      3219 │    4442006.23 │
+│ catalog │ cs_ship_addr_sk │   1999 │     4 │ Shoes       │      3102 │    3922493.42 │
+│ catalog │ cs_ship_addr_sk │   1999 │     4 │ Sports      │      3263 │    4229918.03 │
+│ catalog │ cs_ship_addr_sk │   1999 │     4 │ Women       │      3119 │    4130643.56 │
+│ catalog │ cs_ship_addr_sk │   2000 │     1 │ NULL        │        30 │      24316.42 │
+│ catalog │ cs_ship_addr_sk │   2000 │     1 │ Books       │       994 │    1133888.91 │
+│ catalog │ cs_ship_addr_sk │   2000 │     1 │ Children    │      1071 │    1327100.23 │
+│ catalog │ cs_ship_addr_sk │   2000 │     1 │ Electronics │      1003 │    1395560.49 │
+│ catalog │ cs_ship_addr_sk │   2000 │     1 │ Home        │      1017 │    1170524.93 │
+│ catalog │ cs_ship_addr_sk │   2000 │     1 │ Jewelry     │      1004 │    1355564.55 │
+│ catalog │ cs_ship_addr_sk │   2000 │     1 │ Men         │      1068 │    1487424.08 │
+│ catalog │ cs_ship_addr_sk │   2000 │     1 │ Music       │       998 │    1220069.86 │
+│ catalog │ cs_ship_addr_sk │   2000 │     1 │ Shoes       │      1074 │    1491911.01 │
+│ catalog │ cs_ship_addr_sk │   2000 │     1 │ Sports      │      1110 │    1384693.23 │
+│ catalog │ cs_ship_addr_sk │   2000 │     1 │ Women       │      1059 │    1381154.33 │
+│ catalog │ cs_ship_addr_sk │   2000 │     2 │ NULL        │        22 │      20365.58 │
+├─────────┴─────────────────┴────────┴───────┴─────────────┴───────────┴───────────────┤
+│ 100 rows (40 shown)                                                        7 columns │
+└──────────────────────────────────────────────────────────────────────────────────────┘
+┌─────────────────┬───────┬─────────────────┬───────────────┬─────────────────┐
+│     channel     │  id   │      sales      │   returns_    │     profit      │
+│     varchar     │ int32 │  decimal(38,2)  │ decimal(38,2) │  decimal(38,2)  │
+├─────────────────┼───────┼─────────────────┼───────────────┼─────────────────┤
+│ NULL            │  NULL │ 185953045337.81 │ 3541494152.62 │ -24653323759.90 │
+│ catalog channel │  NULL │ 170554833411.90 │ 3115190795.68 │ -19087464350.67 │
+│ catalog channel │  NULL │    208522831.65 │  194699424.73 │   -155027353.44 │
+│ catalog channel │     1 │  11219445230.49 │  194699424.73 │  -1268485950.18 │
+│ catalog channel │     2 │  11551680896.07 │  194699424.73 │  -1288983780.33 │
+│ catalog channel │     5 │  11364045926.73 │  194699424.73 │  -1267079242.71 │
+│ catalog channel │     7 │  11292737702.82 │  194699424.73 │  -1277910800.16 │
+│ catalog channel │     8 │  11445019404.42 │  194699424.73 │  -1252969426.71 │
+│ catalog channel │    11 │  11356113653.64 │  194699424.73 │  -1232689410.03 │
+│ catalog channel │    13 │  11286886118.13 │  194699424.73 │  -1258442269.89 │
+│ catalog channel │    14 │  11323768612.59 │  194699424.73 │  -1248728151.00 │
+│ catalog channel │    17 │  11435478548.55 │  194699424.73 │  -1269411610.02 │
+│ catalog channel │    19 │  11367427378.02 │  194699424.73 │  -1245961761.99 │
+│ catalog channel │    20 │  11334955175.25 │  194699424.73 │  -1262717055.51 │
+│ catalog channel │    23 │  11399751546.33 │  194699424.73 │  -1278631574.34 │
+│ catalog channel │    25 │  11318345937.99 │  194699424.73 │  -1248289608.84 │
+│ catalog channel │    26 │  11357440544.94 │  194699424.73 │  -1281920194.29 │
+│ catalog channel │    29 │  11293213904.28 │  194699424.73 │  -1250216161.23 │
+│ store channel   │  NULL │  11291724326.73 │  318826761.50 │  -5090882953.71 │
+│ store channel   │     1 │     55647080.55 │    1560888.23 │    -25036631.11 │
+│       ·         │     · │          ·      │         ·     │          ·      │
+│       ·         │     · │          ·      │         ·     │          ·      │
+│       ·         │     · │          ·      │         ·     │          ·      │
+│ store channel   │   122 │     55435927.56 │    1556040.51 │    -24487796.89 │
+│ store channel   │   124 │     55698881.37 │    1637926.49 │    -25688988.72 │
+│ store channel   │   127 │     56373561.04 │    1553006.59 │    -25549602.99 │
+│ store channel   │   128 │     56060189.16 │    1540720.69 │    -25826943.43 │
+│ store channel   │   130 │     55690189.83 │    1576747.83 │    -25086748.49 │
+│ store channel   │   133 │     56283074.45 │    1469855.31 │    -25375537.61 │
+│ store channel   │   134 │     56808059.09 │    1535017.11 │    -25358982.35 │
+│ store channel   │   136 │     56707021.39 │    1458823.33 │    -25334929.02 │
+│ store channel   │   139 │     55737648.52 │    1507823.57 │    -25643461.79 │
+│ store channel   │   140 │     54820955.89 │    1712990.88 │    -24489159.95 │
+│ store channel   │   142 │     58038016.31 │    1566118.87 │    -25943788.05 │
+│ store channel   │   145 │     55060393.79 │    1591182.01 │    -24828639.05 │
+│ store channel   │   146 │     56336733.64 │    1672683.23 │    -25514070.34 │
+│ store channel   │   148 │     56678548.27 │    1519739.91 │    -25363128.08 │
+│ store channel   │   151 │     55329088.44 │    1635308.21 │    -24841709.94 │
+│ store channel   │   152 │     59053588.29 │    1622523.02 │    -26329052.86 │
+│ store channel   │   154 │     57736551.53 │    1602440.10 │    -26487835.86 │
+│ store channel   │   157 │     57165753.48 │    1612955.07 │    -25775530.06 │
+│ store channel   │   158 │     55070400.80 │    1512047.11 │    -24898488.37 │
+│ store channel   │   160 │     57621696.48 │    1640035.88 │    -26516544.25 │
+├─────────────────┴───────┴─────────────────┴───────────────┴─────────────────┤
+│ 100 rows (40 shown)                                               5 columns │
+└─────────────────────────────────────────────────────────────────────────────┘
+┌──────────────┬────────────┬────────────────┬────────┬───────────┬──────────────────────┬───────────────────┬────────────────┬───────────────────────────┬────────────────────────┐
+│ ss_sold_year │ ss_item_sk │ ss_customer_sk │ ratio  │ store_qty │ store_wholesale_cost │ store_sales_price │ other_chan_qty │ other_chan_wholesale_cost │ other_chan_sales_price │
+│    int32     │   int32    │     int32      │ double │  int128   │    decimal(38,2)     │   decimal(38,2)   │     int128     │       decimal(38,2)       │     decimal(38,2)      │
+├──────────────┼────────────┼────────────────┼────────┼───────────┼──────────────────────┼───────────────────┼────────────────┼───────────────────────────┼────────────────────────┤
+│         2000 │         38 │         204135 │    2.0 │        18 │                37.44 │             32.23 │              9 │                     51.80 │                   0.61 │
+│         2000 │         53 │         995402 │   0.28 │        16 │                34.62 │             39.31 │             57 │                     31.09 │                  23.93 │
+│         2000 │         55 │         809400 │   0.95 │        83 │                 3.48 │              3.29 │             87 │                     36.91 │                  16.47 │
+│         2000 │         55 │         841878 │   0.96 │        55 │                85.30 │             99.11 │             57 │                     20.08 │                  51.28 │
+│         2000 │        104 │        1105339 │   0.87 │        40 │                 9.36 │              9.15 │             46 │                     54.70 │                  92.59 │
+│         2000 │        119 │         354692 │   1.19 │        62 │                59.75 │             40.10 │             52 │                     39.71 │                  65.75 │
+│         2000 │        131 │        1737781 │   0.04 │         3 │                91.78 │             15.03 │             81 │                      4.67 │                   1.57 │
+│         2000 │        143 │         748062 │   1.28 │        37 │                97.87 │             19.47 │             29 │                     55.55 │                  63.45 │
+│         2000 │        149 │        1910603 │   5.89 │        53 │                90.34 │             53.21 │              9 │                     39.07 │                   6.53 │
+│         2000 │        355 │        1650779 │   3.42 │        41 │                 3.49 │              3.39 │             12 │                     91.89 │                  41.10 │
+│         2000 │        362 │         776801 │   0.84 │        26 │                18.13 │              8.46 │             31 │                     15.79 │                  18.47 │
+│         2000 │        371 │         941274 │   0.29 │        15 │                64.98 │              3.14 │             51 │                     21.39 │                  10.93 │
+│         2000 │        374 │        1506427 │   6.93 │        97 │                78.99 │             72.03 │             14 │                      1.08 │                   2.38 │
+│         2000 │        386 │         855465 │   0.71 │        17 │                96.12 │             23.93 │             24 │                     48.35 │                  56.35 │
+│         2000 │        433 │        1720688 │   1.19 │        75 │                51.82 │             18.49 │             63 │                     60.60 │                  64.24 │
+│         2000 │        434 │        1064383 │   0.02 │         2 │                53.86 │             94.90 │             87 │                     54.57 │                  25.59 │
+│         2000 │        440 │         260713 │   0.15 │         8 │                 1.06 │              0.32 │             53 │                     17.78 │                   8.74 │
+│         2000 │        467 │         910049 │   1.11 │        21 │                37.97 │             39.77 │             19 │                     28.92 │                  23.40 │
+│         2000 │        479 │        1087204 │   5.78 │        52 │                13.98 │             18.67 │              9 │                     16.34 │                   7.10 │
+│         2000 │        479 │        1504595 │   0.36 │        30 │                92.84 │             90.21 │             84 │                     27.37 │                  24.91 │
+│           ·  │         ·  │           ·    │     ·  │         · │                  ·   │               ·   │              · │                       ·   │                    ·   │
+│           ·  │         ·  │           ·    │     ·  │         · │                  ·   │               ·   │              · │                       ·   │                    ·   │
+│           ·  │         ·  │           ·    │     ·  │         · │                  ·   │               ·   │              · │                       ·   │                    ·   │
+│         2000 │       1645 │        1166553 │   2.93 │        82 │                52.50 │             15.59 │             28 │                     10.05 │                  12.40 │
+│         2000 │       1687 │         257353 │   0.02 │         2 │                65.22 │             20.84 │             94 │                     45.61 │                   4.15 │
+│         2000 │       1736 │         112399 │   1.03 │        95 │                 7.03 │              0.24 │             92 │                     83.18 │                 181.35 │
+│         2000 │       1736 │        1479877 │    1.5 │        66 │                35.25 │             27.49 │             44 │                     86.18 │                 137.92 │
+│         2000 │       1739 │        1989762 │   0.03 │         3 │                63.41 │             43.21 │             86 │                     31.61 │                  45.80 │
+│         2000 │       1760 │         165373 │   2.15 │        84 │                56.30 │             66.33 │             39 │                     84.94 │                 128.79 │
+│         2000 │       1775 │        1151633 │   1.46 │        76 │                83.81 │             93.52 │             52 │                     80.19 │                 134.96 │
+│         2000 │       1801 │        1198591 │   0.27 │        16 │                 1.61 │              2.40 │             60 │                     11.83 │                   0.50 │
+│         2000 │       1813 │        1312040 │   0.27 │        25 │                10.98 │              1.31 │             92 │                     50.30 │                  27.41 │
+│         2000 │       1814 │        1896469 │   3.84 │        96 │                81.52 │             40.66 │             25 │                     49.50 │                 102.19 │
+│         2000 │       1838 │         987922 │    3.5 │        91 │                52.78 │             73.38 │             26 │                     48.27 │                  42.36 │
+│         2000 │       1867 │         442431 │    0.6 │        58 │                 1.88 │              1.92 │             97 │                     76.77 │                  82.10 │
+│         2000 │       1909 │         425500 │   1.32 │        66 │                26.75 │              2.52 │             50 │                     16.07 │                  10.47 │
+│         2000 │       1937 │         554789 │   1.35 │        93 │                63.12 │             70.28 │             69 │                     71.55 │                  10.04 │
+│         2000 │       1964 │         808442 │   0.24 │        19 │                 5.25 │              4.03 │             80 │                     30.87 │                  36.99 │
+│         2000 │       1988 │         495299 │   1.31 │        89 │                 2.46 │              2.16 │             68 │                     71.70 │                  71.01 │
+│         2000 │       1988 │         635468 │   33.0 │        66 │                 9.78 │              0.00 │              2 │                     86.02 │                  24.82 │
+│         2000 │       2027 │        1297171 │   1.51 │        92 │                32.53 │             12.43 │             61 │                     33.01 │                  75.88 │
+│         2000 │       2065 │         797897 │   2.31 │        30 │                10.17 │             19.22 │             13 │                     88.09 │                  68.97 │
+│         2000 │       2150 │         188936 │    0.8 │        72 │                30.73 │              2.21 │             90 │                     57.36 │                 109.58 │
+├──────────────┴────────────┴────────────────┴────────┴───────────┴──────────────────────┴───────────────────┴────────────────┴───────────────────────────┴────────────────────────┤
+│ 100 rows (40 shown)                                                                                                                                                   10 columns │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌─────────────┬──────────────┬─────────────────────────────────┬──────────────────┬───────────────┬───────────────┐
+│ c_last_name │ c_first_name │ main."substring"(s_city, 1, 30) │ ss_ticket_number │      amt      │    profit     │
+│   varchar   │   varchar    │             varchar             │      int32       │ decimal(38,2) │ decimal(38,2) │
+├─────────────┼──────────────┼─────────────────────────────────┼──────────────────┼───────────────┼───────────────┤
+│ NULL        │ NULL         │ Bethel                          │           189979 │          NULL │          NULL │
+│ NULL        │ NULL         │ Bethel                          │          3133471 │          NULL │          NULL │
+│ NULL        │ NULL         │ Bethel                          │          3330114 │          NULL │          NULL │
+│ NULL        │ NULL         │ Bethel                          │          8856259 │          NULL │          NULL │
+│ NULL        │ NULL         │ Bethel                          │         10266785 │          NULL │          NULL │
+│ NULL        │ NULL         │ Bethel                          │         11991214 │          0.00 │          NULL │
+│ NULL        │ NULL         │ Bethel                          │         13358024 │          0.00 │          NULL │
+│ NULL        │ NULL         │ Bethel                          │         15268426 │          NULL │          NULL │
+│ NULL        │ NULL         │ Bethel                          │         16154255 │          0.00 │          NULL │
+│ NULL        │ NULL         │ Bethel                          │         17552901 │          NULL │          NULL │
+│ NULL        │ NULL         │ Bethel                          │         19119752 │          NULL │          NULL │
+│ NULL        │ NULL         │ Bethel                          │         22467820 │          NULL │          NULL │
+│ NULL        │ NULL         │ Bethel                          │         23177253 │          NULL │          NULL │
+│ NULL        │ NULL         │ Bethel                          │         23192277 │          0.00 │          NULL │
+│ NULL        │ NULL         │ Bethel                          │         23465690 │        260.88 │     -31490.36 │
+│ NULL        │ NULL         │ Bethel                          │          4264673 │       1198.97 │     -30141.90 │
+│ NULL        │ NULL         │ Bethel                          │          2192710 │       7382.34 │     -28386.30 │
+│ NULL        │ NULL         │ Bethel                          │          1829192 │        495.79 │     -27733.26 │
+│ NULL        │ NULL         │ Bethel                          │         11604937 │       8671.62 │     -25251.40 │
+│ NULL        │ NULL         │ Bethel                          │          4675547 │       3534.03 │     -24938.92 │
+│  ·          │  ·           │   ·                             │             ·    │          ·    │         ·     │
+│  ·          │  ·           │   ·                             │             ·    │          ·    │         ·     │
+│  ·          │  ·           │   ·                             │             ·    │          ·    │         ·     │
+│ NULL        │ NULL         │ Bethel                          │         18916751 │       1759.13 │     -18431.44 │
+│ NULL        │ NULL         │ Bethel                          │         23912162 │       1714.09 │     -18319.93 │
+│ NULL        │ NULL         │ Bethel                          │         19823680 │       5130.27 │     -18297.27 │
+│ NULL        │ NULL         │ Bethel                          │          1724313 │       7247.20 │     -18220.80 │
+│ NULL        │ NULL         │ Bethel                          │         17662679 │       2019.86 │     -18143.24 │
+│ NULL        │ NULL         │ Bethel                          │         17192147 │        740.87 │     -18142.26 │
+│ NULL        │ NULL         │ Bethel                          │         11301752 │       7461.97 │     -18079.45 │
+│ NULL        │ NULL         │ Bethel                          │         19042654 │        526.17 │     -17878.99 │
+│ NULL        │ NULL         │ Bethel                          │         17948503 │        960.75 │     -17826.24 │
+│ NULL        │ NULL         │ Bethel                          │          9385641 │          0.00 │     -17734.07 │
+│ NULL        │ NULL         │ Bethel                          │         22274774 │         19.27 │     -17704.48 │
+│ NULL        │ NULL         │ Bethel                          │         11615594 │       1676.70 │     -17633.48 │
+│ NULL        │ NULL         │ Bethel                          │         23019605 │       1303.20 │     -17484.34 │
+│ NULL        │ NULL         │ Bethel                          │         14115890 │       3604.83 │     -17418.85 │
+│ NULL        │ NULL         │ Bethel                          │          5012941 │        492.52 │     -17392.73 │
+│ NULL        │ NULL         │ Bethel                          │         18390845 │      10485.07 │     -17341.49 │
+│ NULL        │ NULL         │ Bethel                          │         14573441 │       6626.94 │     -17284.51 │
+│ NULL        │ NULL         │ Bethel                          │          1968595 │       6606.70 │     -17244.35 │
+│ NULL        │ NULL         │ Bethel                          │         16115969 │       4356.66 │     -17167.92 │
+│ NULL        │ NULL         │ Bethel                          │          6341352 │          0.00 │     -17141.21 │
+├─────────────┴──────────────┴─────────────────────────────────┴──────────────────┴───────────────┴───────────────┤
+│ 100 rows (40 shown)                                                                                   6 columns │
+└─────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌─────────────────┬──────────────────────────────┬───────────────┬───────────────┬───────────────┐
+│     channel     │              id              │     sales     │   returns_    │    profit     │
+│     varchar     │           varchar            │ decimal(38,2) │ decimal(38,2) │ decimal(38,2) │
+├─────────────────┼──────────────────────────────┼───────────────┼───────────────┼───────────────┤
+│ NULL            │ NULL                         │ 1278418657.04 │   63958205.47 │ -371619375.35 │
+│ catalog channel │ NULL                         │  441909023.31 │   22000323.13 │  -57732159.86 │
+│ catalog channel │ catalog_pageAAAAAAAAAAACAAAA │     245017.57 │      18916.23 │     -16205.92 │
+│ catalog channel │ catalog_pageAAAAAAAAAABCAAAA │     303079.60 │      14430.64 │     -31745.56 │
+│ catalog channel │ catalog_pageAAAAAAAAAAMBAAAA │     584565.39 │      44194.70 │     -71209.57 │
+│ catalog channel │ catalog_pageAAAAAAAAABACAAAA │     262113.97 │       6049.95 │     -32983.02 │
+│ catalog channel │ catalog_pageAAAAAAAAABMBAAAA │     553876.88 │      12510.83 │     -96368.00 │
+│ catalog channel │ catalog_pageAAAAAAAAACACAAAA │     397512.66 │      42046.11 │      43512.55 │
+│ catalog channel │ catalog_pageAAAAAAAAACMBAAAA │     575005.63 │      19312.72 │    -151876.91 │
+│ catalog channel │ catalog_pageAAAAAAAAADACAAAA │     255036.49 │       2907.26 │     -41688.18 │
+│ catalog channel │ catalog_pageAAAAAAAAADLBAAAA │    1168583.90 │      67859.58 │    -152879.83 │
+│ catalog channel │ catalog_pageAAAAAAAAADMBAAAA │     598441.88 │      29084.79 │     -71170.03 │
+│ catalog channel │ catalog_pageAAAAAAAAAEACAAAA │     247499.23 │      20111.33 │     -21107.13 │
+│ catalog channel │ catalog_pageAAAAAAAAAELBAAAA │    1184984.81 │      54412.41 │    -145888.27 │
+│ catalog channel │ catalog_pageAAAAAAAAAEMBAAAA │     583538.29 │      12909.95 │     -74552.34 │
+│ catalog channel │ catalog_pageAAAAAAAAAFACAAAA │     343207.69 │       4960.73 │      15269.93 │
+│ catalog channel │ catalog_pageAAAAAAAAAFLBAAAA │    1088175.13 │      52086.49 │    -152803.42 │
+│ catalog channel │ catalog_pageAAAAAAAAAFMBAAAA │     488636.92 │      19238.62 │     -64284.67 │
+│ catalog channel │ catalog_pageAAAAAAAAAGACAAAA │     360155.43 │      31517.97 │     -65087.32 │
+│ catalog channel │ catalog_pageAAAAAAAAAGLBAAAA │    1088737.02 │      55833.45 │    -230887.42 │
+│        ·        │              ·               │         ·     │          ·    │         ·     │
+│        ·        │              ·               │         ·     │          ·    │         ·     │
+│        ·        │              ·               │         ·     │          ·    │         ·     │
+│ catalog channel │ catalog_pageAAAAAAAABKPBAAAA │     260626.48 │      11344.77 │     -47402.18 │
+│ catalog channel │ catalog_pageAAAAAAAABLACAAAA │     316636.20 │      20560.85 │     -32621.65 │
+│ catalog channel │ catalog_pageAAAAAAAABLLBAAAA │    1010470.39 │      57890.41 │    -156744.93 │
+│ catalog channel │ catalog_pageAAAAAAAABLPBAAAA │     248247.52 │      17607.80 │     -38681.57 │
+│ catalog channel │ catalog_pageAAAAAAAABMACAAAA │     325261.56 │       7732.42 │     -51602.70 │
+│ catalog channel │ catalog_pageAAAAAAAABMLBAAAA │    1133342.62 │      42023.00 │    -178450.27 │
+│ catalog channel │ catalog_pageAAAAAAAABMPBAAAA │     199347.53 │       9118.59 │     -51566.17 │
+│ catalog channel │ catalog_pageAAAAAAAABNACAAAA │     374158.23 │      18881.62 │     -50929.31 │
+│ catalog channel │ catalog_pageAAAAAAAABNLBAAAA │    1194475.11 │      63652.21 │    -143624.06 │
+│ catalog channel │ catalog_pageAAAAAAAABNPBAAAA │     212152.17 │       9934.19 │     -31350.67 │
+│ catalog channel │ catalog_pageAAAAAAAABOACAAAA │     289388.10 │      52499.96 │     -40102.96 │
+│ catalog channel │ catalog_pageAAAAAAAABOLBAAAA │    1151416.28 │      49115.80 │    -158979.39 │
+│ catalog channel │ catalog_pageAAAAAAAABOPBAAAA │     287381.67 │       4138.68 │     -49182.12 │
+│ catalog channel │ catalog_pageAAAAAAAABPACAAAA │     422370.47 │      25433.57 │     -39281.38 │
+│ catalog channel │ catalog_pageAAAAAAAABPLBAAAA │     636741.39 │      40791.94 │     -73629.13 │
+│ catalog channel │ catalog_pageAAAAAAAABPPBAAAA │     286175.08 │       6335.06 │     -29825.87 │
+│ catalog channel │ catalog_pageAAAAAAAACAACAAAA │     264670.05 │       8225.19 │      -9300.82 │
+│ catalog channel │ catalog_pageAAAAAAAACABCAAAA │     363968.86 │      25554.58 │       5293.20 │
+│ catalog channel │ catalog_pageAAAAAAAACAMBAAAA │     481259.30 │      24479.07 │     -97363.20 │
+│ catalog channel │ catalog_pageAAAAAAAACBACAAAA │     285144.11 │       7351.00 │       -324.18 │
+├─────────────────┴──────────────────────────────┴───────────────┴───────────────┴───────────────┤
+│ 100 rows (40 shown)                                                                  5 columns │
+└────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────┬──────────────┬──────────────┬─────────────┬──────────────────┬─────────────────┬────────────────┬─────────────────┬────────────────┬──────────────────────┬──────────┬─────────┬───────────────┬───────────────┬──────────────────┬──────────────────┐
+│  c_customer_id   │ c_salutation │ c_first_name │ c_last_name │ ca_street_number │ ca_street_name  │ ca_street_type │ ca_suite_number │    ca_city     │      ca_county       │ ca_state │ ca_zip  │  ca_country   │ ca_gmt_offset │ ca_location_type │ ctr_total_return │
+│     varchar      │   varchar    │   varchar    │   varchar   │     varchar      │     varchar     │    varchar     │     varchar     │    varchar     │       varchar        │ varchar  │ varchar │    varchar    │ decimal(5,2)  │     varchar      │  decimal(38,2)   │
+├──────────────────┼──────────────┼──────────────┼─────────────┼──────────────────┼─────────────────┼────────────────┼─────────────────┼────────────────┼──────────────────────┼──────────┼─────────┼───────────────┼───────────────┼──────────────────┼──────────────────┤
+│ AAAAAAAAAAACFAAA │ Miss         │ Catherine    │ Grace       │ 356              │ 10th Hillcrest  │ Parkway        │ Suite 440       │ Pleasant Grove │ Lowndes County       │ GA       │ 34136   │ United States │         -5.00 │ condo            │          7465.45 │
+│ AAAAAAAAAAAFEAAA │ Sir          │ Javier       │ Jernigan    │ 530              │ 8th             │ ST             │ Suite 440       │ Plainville     │ Terrell County       │ GA       │ 36115   │ United States │         -5.00 │ condo            │          2698.78 │
+│ AAAAAAAAAAAFEAAA │ Sir          │ Javier       │ Jernigan    │ 530              │ 8th             │ ST             │ Suite 440       │ Plainville     │ Terrell County       │ GA       │ 36115   │ United States │         -5.00 │ condo            │          3488.03 │
+│ AAAAAAAAAAAFIAAA │ Miss         │ Gloria       │ Gonzalez    │ 78               │ Valley          │ Parkway        │ Suite P         │ Glendale       │ Irwin County         │ GA       │ 33951   │ United States │         -5.00 │ condo            │          3616.42 │
+│ AAAAAAAAAAAHGBAA │ Dr.          │ William      │ Hernandez   │ 80               │ Park            │ Cir.           │ Suite Q         │ Woodland       │ Walton County        │ GA       │ 34854   │ United States │         -5.00 │ condo            │          5142.92 │
+│ AAAAAAAAAAAJIAAA │ Mr.          │ Jason        │ Butts       │ 530              │ Church Sycamore │ Wy             │ Suite N         │ Forest Hills   │ Whitfield County     │ GA       │ 39237   │ United States │         -5.00 │ apartment        │          2958.83 │
+│ AAAAAAAAAAANHAAA │ Dr.          │ Phyllis      │ Lee         │ 961              │ Maple           │ RD             │ Suite E         │ Springdale     │ Banks County         │ GA       │ 38883   │ United States │         -5.00 │ condo            │          3477.75 │
+│ AAAAAAAAAAAPLBAA │ Dr.          │ Kyle         │ Staples     │ 70               │ College         │ RD             │ Suite I         │ Spring Hill    │ Madison County       │ GA       │ 36787   │ United States │         -5.00 │ single family    │          8648.89 │
+│ AAAAAAAAAAAPPAAA │ Dr.          │ Arleen       │ Wright      │ 724              │ Oak Main        │ Ave            │ Suite 390       │ Webb           │ Cook County          │ GA       │ 30899   │ United States │         -5.00 │ apartment        │          5098.51 │
+│ AAAAAAAAAABCEBAA │ Mr.          │ George       │ English     │ 40               │ Main Walnut     │ Avenue         │ Suite 250       │ Unionville     │ Newton County        │ GA       │ 31711   │ United States │         -5.00 │ condo            │          2191.03 │
+│ AAAAAAAAAABEJAAA │ Miss         │ Yvonne       │ Carlson     │ 692              │ Central         │ Way            │ Suite F         │ Deerfield      │ Lamar County         │ GA       │ 39840   │ United States │         -5.00 │ condo            │          3167.71 │
+│ AAAAAAAAAABFGBAA │ Mr.          │ Stanley      │ Hearn       │ 667              │ Park East       │ Wy             │ Suite 290       │ Maple Grove    │ Cook County          │ GA       │ 38252   │ United States │         -5.00 │ apartment        │          2855.04 │
+│ AAAAAAAAAABGNBAA │ Mr.          │ Lino         │ Bivens      │ 725              │ Hickory 11th    │ Ct.            │ Suite W         │ Oak Ridge      │ Gordon County        │ GA       │ 38371   │ United States │         -5.00 │ condo            │          4544.31 │
+│ AAAAAAAAAABGNBAA │ Mr.          │ Lino         │ Bivens      │ 725              │ Hickory 11th    │ Ct.            │ Suite W         │ Oak Ridge      │ Gordon County        │ GA       │ 38371   │ United States │         -5.00 │ condo            │         13584.46 │
+│ AAAAAAAAAABIDAAA │ Mrs.         │ Danielle     │ Tobin       │ 702              │ Oak Elm         │ Ave            │ Suite U         │ Deerfield      │ Crisp County         │ GA       │ 39840   │ United States │         -5.00 │ apartment        │          3426.82 │
+│ AAAAAAAAAABMLAAA │ Mr.          │ Abdul        │ Baron       │ 698              │ Pine Lincoln    │ Ave            │ Suite H         │ Bethel         │ Chatham County       │ GA       │ 35281   │ United States │         -5.00 │ apartment        │         12814.60 │
+│ AAAAAAAAAACJNAAA │ Dr.          │ Fern         │ Farr        │ 475              │ Pine            │ Way            │ Suite T         │ Oak Hill       │ Catoosa County       │ GA       │ 37838   │ United States │         -5.00 │ apartment        │          2154.33 │
+│ AAAAAAAAAACNGAAA │ NULL         │ NULL         │ NULL        │ 446              │ Seventh Lake    │ Ct.            │ Suite 230       │ Stringtown     │ Chattooga County     │ GA       │ 30162   │ United States │         -5.00 │ condo            │          6246.64 │
+│ AAAAAAAAAACPHAAA │ Dr.          │ Tina         │ Thomas      │ 803              │ Park Pine       │ Circle         │ Suite 440       │ Greenville     │ Richmond County      │ GA       │ 31387   │ United States │         -5.00 │ condo            │          4836.33 │
+│ AAAAAAAAAADCEAAA │ Ms.          │ Jennifer     │ Hunt        │ 719              │ 2nd             │ Pkwy           │ Suite 140       │ Jamestown      │ Towns County         │ GA       │ 36867   │ United States │         -5.00 │ apartment        │          4269.56 │
+│        ·         │  ·           │   ·          │  ·          │ ·                │  ·              │ ·              │    ·            │    ·           │      ·               │ ·        │   ·     │       ·       │           ·   │     ·            │             ·    │
+│        ·         │  ·           │   ·          │  ·          │ ·                │  ·              │ ·              │    ·            │    ·           │      ·               │ ·        │   ·     │       ·       │           ·   │     ·            │             ·    │
+│        ·         │  ·           │   ·          │  ·          │ ·                │  ·              │ ·              │    ·            │    ·           │      ·               │ ·        │   ·     │       ·       │           ·   │     ·            │             ·    │
+│ AAAAAAAAAAKMOAAA │ Miss         │ Helen        │ Willis      │ 31               │ Cherry Maple    │ Wy             │ Suite P         │ Antioch        │ Pike County          │ GA       │ 38605   │ United States │         -5.00 │ apartment        │          3576.58 │
+│ AAAAAAAAAAKMOAAA │ Miss         │ Helen        │ Willis      │ 31               │ Cherry Maple    │ Wy             │ Suite P         │ Antioch        │ Pike County          │ GA       │ 38605   │ United States │         -5.00 │ apartment        │          3879.17 │
+│ AAAAAAAAAAKNGAAA │ Mr.          │ John         │ Montoya     │ 330              │ View            │ ST             │ Suite E         │ Murphy         │ Twiggs County        │ GA       │ 32105   │ United States │         -5.00 │ single family    │          3996.64 │
+│ AAAAAAAAAALAAAAA │ Mrs.         │ Marcia       │ Pepper      │ 28               │ 8th Ninth       │ Street         │ Suite 190       │ Salem          │ Candler County       │ GA       │ 38048   │ United States │         -5.00 │ condo            │          5040.92 │
+│ AAAAAAAAAALHCAAA │ Sir          │ Howard       │ Wilcox      │ 735              │ Oak             │ Pkwy           │ Suite 210       │ Forest Hills   │ Lumpkin County       │ GA       │ 39237   │ United States │         -5.00 │ single family    │          5353.85 │
+│ AAAAAAAAAALJPAAA │ Miss         │ Marilyn      │ Mcneil      │ 505              │ 7th Lake        │ Dr.            │ Suite N         │ Riverview      │ Chattahoochee County │ GA       │ 39003   │ United States │         -5.00 │ condo            │          2041.80 │
+│ AAAAAAAAAALLCAAA │ Mrs.         │ Carrie       │ Simon       │ 562              │ College         │ Lane           │ Suite W         │ Woodruff       │ Houston County       │ GA       │ 34174   │ United States │         -5.00 │ single family    │          3179.53 │
+│ AAAAAAAAAALMBAAA │ Dr.          │ Mckinley     │ Combs       │ 832              │ Franklin        │ Boulevard      │ Suite M         │ Forest Hills   │ Rabun County         │ GA       │ 39237   │ United States │         -5.00 │ single family    │          1868.67 │
+│ AAAAAAAAAALMIAAA │ Mr.          │ James        │ Dagostino   │ 55               │ 10th            │ Circle         │ Suite 90        │ Salem          │ Butts County         │ GA       │ 38048   │ United States │         -5.00 │ apartment        │          2327.15 │
+│ AAAAAAAAAALNBBAA │ Mrs.         │ Albert       │ Smith       │ 83               │ Cedar           │ Blvd           │ Suite 340       │ Wilson         │ Ware County          │ GA       │ 36971   │ United States │         -5.00 │ apartment        │          4561.01 │
+│ AAAAAAAAAALOLBAA │ Miss         │ Glenda       │ Mckinley    │ 59               │ Maple Central   │ Cir.           │ Suite N         │ Woodland       │ DeKalb County        │ GA       │ 34854   │ United States │         -5.00 │ single family    │          4702.47 │
+│ AAAAAAAAAALOMBAA │ Dr.          │ Elizabeth    │ Monroe      │ 159              │ Woodland        │ Blvd           │ Suite 170       │ Union          │ McIntosh County      │ GA       │ 38721   │ United States │         -5.00 │ apartment        │          4565.82 │
+│ AAAAAAAAAAMAEBAA │ Mrs.         │ Nancy        │ Jackson     │ 441              │ Poplar          │ Parkway        │ Suite O         │ Florence       │ Hart County          │ GA       │ 33394   │ United States │         -5.00 │ apartment        │          2835.90 │
+│ AAAAAAAAAAMHIBAA │ Mrs.         │ Barbara      │ Cooper      │ 854              │ Woodland Third  │ Parkway        │ Suite 0         │ Oakland        │ Warren County        │ GA       │ 39843   │ United States │         -5.00 │ condo            │          2671.15 │
+│ AAAAAAAAAAMKMAAA │ Mr.          │ Preston      │ Rodriguez   │ 326              │ Oak Meadow      │ RD             │ Suite V         │ Shiloh         │ Muscogee County      │ GA       │ 39275   │ United States │         -5.00 │ single family    │          2213.53 │
+│ AAAAAAAAAAMKMAAA │ Mr.          │ Preston      │ Rodriguez   │ 326              │ Oak Meadow      │ RD             │ Suite V         │ Shiloh         │ Muscogee County      │ GA       │ 39275   │ United States │         -5.00 │ single family    │          3018.15 │
+│ AAAAAAAAAAMMFAAA │ Dr.          │ Judith       │ Flores      │ 521              │ Broadway 7th    │ Blvd           │ Suite 190       │ Enterprise     │ Clay County          │ GA       │ 31757   │ United States │         -5.00 │ condo            │          4131.65 │
+│ AAAAAAAAAAMMFBAA │ Mr.          │ Anderson     │ Robinson    │ 632              │ Main            │ Road           │ Suite 460       │ Providence     │ Butts County         │ GA       │ 36614   │ United States │         -5.00 │ apartment        │          2525.88 │
+│ AAAAAAAAAAMNIBAA │ Ms.          │ Vanessa      │ Smith       │ 215              │ Washington Park │ Ave            │ Suite E         │ Highland       │ Towns County         │ GA       │ 39454   │ United States │         -5.00 │ apartment        │          2725.87 │
+│ AAAAAAAAAAMOIBAA │ Dr.          │ Christian    │ Mendoza     │ 975              │ Williams        │ Drive          │ Suite Q         │ Plainview      │ Jenkins County       │ GA       │ 33683   │ United States │         -5.00 │ apartment        │          3101.50 │
+├──────────────────┴──────────────┴──────────────┴─────────────┴──────────────────┴─────────────────┴────────────────┴─────────────────┴────────────────┴──────────────────────┴──────────┴─────────┴───────────────┴───────────────┴──────────────────┴──────────────────┤
+│ 100 rows (40 shown)                                                                                                                                                                                                                                          16 columns │
+└─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬─────────────────┐
+│    i_item_id     │                                                           i_item_desc                                                           │ i_current_price │
+│     varchar      │                                                             varchar                                                             │  decimal(7,2)   │
+├──────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼─────────────────┤
+│ AAAAAAAABMHKBAAA │ International,                                                                                                                  │           76.34 │
+│ AAAAAAAACKEHCAAA │ Men see                                                                                                                         │           82.08 │
+│ AAAAAAAADDLHBAAA │ There top designers could tackle then just                                                                                      │           66.09 │
+│ AAAAAAAADGEFBAAA │ Increased steps ought to see never commercial banks. Items find also ideas. Often narrow developers say for the centres.        │           86.30 │
+│ AAAAAAAADNJHCAAA │ Other parts sleep as positive, shor                                                                                             │           63.76 │
+│ AAAAAAAAECMCAAAA │ Arab, financial pol                                                                                                             │           67.28 │
+│ AAAAAAAAFODHCAAA │ Systems may not happen too slowly little charges. Other police may stand instead. Different incidents give well about essential │           82.29 │
+│ AAAAAAAAFPCBCAAA │ Other forces resist historic, definite children. Even public classes may not cross too in a offic                               │           65.12 │
+│ AAAAAAAAHCKOBAAA │ Other potatoes stay                                                                                                             │           87.85 │
+│ AAAAAAAALIHCAAAA │ Clinical, labour aspects might sit enough like a problems. Remarkably mysterious experts shall learn to th                      │           86.90 │
+│ AAAAAAAAMOBEBAAA │ Even substantial readers go slightly lives. Skilled,                                                                            │           64.56 │
+│ AAAAAAAAOGKABAAA │ Players pay generally terrible lists. Suddenly educational others may need central elements. Different,                         │           86.69 │
+│ AAAAAAAAONLBCAAA │ Further big birds show more important powers. Great walls wil                                                                   │           62.68 │
+│ AAAAAAAAOPOICAAA │ European, local rights specify during a sentenc                                                                                 │           85.31 │
+├──────────────────┴─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴─────────────────┤
+│ 14 rows                                                                                                                                                    3 columns │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────┬─────────────┬────────────────────┬─────────────┬────────────────────┬─────────────┬────────────────────┬────────────────────┐
+│     item_id      │ sr_item_qty │       sr_dev       │ cr_item_qty │       cr_dev       │ wr_item_qty │       wr_dev       │      average       │
+│     varchar      │   int128    │       double       │   int128    │       double       │   int128    │       double       │       double       │
+├──────────────────┼─────────────┼────────────────────┼─────────────┼────────────────────┼─────────────┼────────────────────┼────────────────────┤
+│ AAAAAAAAAAAABAAA │          59 │ 16.954022988505745 │          36 │ 10.344827586206897 │          21 │ 6.0344827586206895 │ 38.666666666666664 │
+│ AAAAAAAAAAABAAAA │          14 │  3.357314148681055 │          94 │ 22.541966426858515 │          31 │  7.434052757793765 │ 46.333333333333336 │
+│ AAAAAAAAAAAIAAAA │          58 │  18.58974358974359 │          18 │  5.769230769230769 │          28 │  8.974358974358974 │ 34.666666666666664 │
+│ AAAAAAAAAAAMCAAA │         151 │  30.13972055888224 │           4 │ 0.7984031936127746 │          12 │  2.395209580838323 │ 55.666666666666664 │
+│ AAAAAAAAAAAOAAAA │           1 │ 2.2222222222222223 │           1 │ 2.2222222222222223 │          13 │ 28.888888888888893 │                5.0 │
+│ AAAAAAAAAAAPBAAA │          34 │  7.039337474120083 │          75 │ 15.527950310559005 │          52 │ 10.766045548654244 │ 53.666666666666664 │
+│ AAAAAAAAAAAPCAAA │          97 │ 18.063314711359403 │           6 │ 1.1173184357541899 │          76 │ 14.152700186219738 │ 59.666666666666664 │
+│ AAAAAAAAAABAAAAA │         120 │ 22.727272727272727 │          50 │   9.46969696969697 │           6 │ 1.1363636363636362 │ 58.666666666666664 │
+│ AAAAAAAAAABBAAAA │           6 │               NULL │          57 │               NULL │        NULL │               NULL │               NULL │
+│ AAAAAAAAAABCBAAA │          86 │ 18.494623655913976 │          52 │ 11.182795698924732 │          17 │  3.655913978494624 │ 51.666666666666664 │
+│ AAAAAAAAAABDAAAA │           8 │ 2.8673835125448033 │          47 │ 16.845878136200717 │          38 │ 13.620071684587815 │               31.0 │
+│ AAAAAAAAAABDBAAA │          55 │  9.499136442141625 │          28 │  4.835924006908463 │         110 │  18.99827288428325 │  64.33333333333333 │
+│ AAAAAAAAAABECAAA │         154 │ 20.615796519410978 │          71 │  9.504685408299867 │          24 │ 3.2128514056224904 │               83.0 │
+│ AAAAAAAAAABHCAAA │         182 │ 19.825708061002178 │          47 │  5.119825708061002 │          77 │  8.387799564270153 │              102.0 │
+│ AAAAAAAAAABJBAAA │          25 │ 14.124293785310735 │          22 │ 12.429378531073446 │          12 │  6.779661016949152 │ 19.666666666666668 │
+│ AAAAAAAAAABLBAAA │          82 │ 22.043010752688172 │          28 │  7.526881720430108 │          14 │  3.763440860215054 │ 41.333333333333336 │
+│ AAAAAAAAAABMBAAA │          50 │ 16.025641025641026 │          45 │ 14.423076923076925 │           9 │ 2.8846153846153846 │ 34.666666666666664 │
+│ AAAAAAAAAABPAAAA │          59 │ 20.274914089347078 │          37 │ 12.714776632302405 │           1 │ 0.3436426116838488 │ 32.333333333333336 │
+│ AAAAAAAAAACAAAAA │          36 │               12.5 │          56 │ 19.444444444444446 │           4 │ 1.3888888888888888 │               32.0 │
+│ AAAAAAAAAACBBAAA │          42 │  7.909604519774012 │          49 │  9.227871939736348 │          86 │ 16.195856873822976 │               59.0 │
+│        ·         │           · │          ·         │           · │          ·         │           · │           ·        │                 ·  │
+│        ·         │           · │          ·         │           · │          ·         │           · │           ·        │                 ·  │
+│        ·         │           · │          ·         │           · │          ·         │           · │           ·        │                 ·  │
+│ AAAAAAAAAAIEBAAA │         100 │ 15.220700152207002 │          91 │ 13.850837138508371 │          28 │   4.26179604261796 │               73.0 │
+│ AAAAAAAAAAIGAAAA │          66 │ 10.476190476190476 │         122 │ 19.365079365079367 │          22 │  3.492063492063492 │               70.0 │
+│ AAAAAAAAAAIIAAAA │          59 │ 15.128205128205128 │          64 │  16.41025641025641 │           7 │ 1.7948717948717952 │ 43.333333333333336 │
+│ AAAAAAAAAAIJCAAA │         181 │ 24.525745257452574 │          13 │  1.761517615176152 │          52 │  7.046070460704608 │               82.0 │
+│ AAAAAAAAAAIKBAAA │          61 │ 15.762273901808785 │          20 │  5.167958656330749 │          48 │   12.4031007751938 │               43.0 │
+│ AAAAAAAAAAINBAAA │           1 │ 2.5641025641025643 │           3 │ 7.6923076923076925 │           9 │ 23.076923076923077 │  4.333333333333333 │
+│ AAAAAAAAAAIOAAAA │          29 │  9.863945578231291 │          38 │ 12.925170068027212 │          31 │  10.54421768707483 │ 32.666666666666664 │
+│ AAAAAAAAAAIOBAAA │         132 │ 18.333333333333336 │          92 │  12.77777777777778 │          16 │ 2.2222222222222223 │               80.0 │
+│ AAAAAAAAAAJACAAA │          31 │  19.49685534591195 │          12 │  7.547169811320755 │          10 │  6.289308176100629 │ 17.666666666666668 │
+│ AAAAAAAAAAJBBAAA │         268 │ 22.333333333333336 │          66 │                5.5 │          66 │                5.5 │ 133.33333333333334 │
+│ AAAAAAAAAAJCAAAA │          57 │ 20.652173913043477 │          33 │ 11.956521739130434 │           2 │ 0.7246376811594203 │ 30.666666666666668 │
+│ AAAAAAAAAAJCCAAA │         167 │ 28.114478114478114 │          18 │ 3.0303030303030303 │          13 │ 2.1885521885521886 │               66.0 │
+│ AAAAAAAAAAJFAAAA │          82 │ 10.512820512820513 │         103 │ 13.205128205128206 │          75 │  9.615384615384615 │  86.66666666666667 │
+│ AAAAAAAAAAJFCAAA │           6 │ 7.6923076923076925 │           3 │ 3.8461538461538463 │          17 │ 21.794871794871796 │  8.666666666666666 │
+│ AAAAAAAAAAJHBAAA │           5 │   2.28310502283105 │          34 │  15.52511415525114 │          34 │  15.52511415525114 │ 24.333333333333332 │
+│ AAAAAAAAAAJJBAAA │         101 │ 15.880503144654087 │          57 │  8.962264150943396 │          54 │   8.49056603773585 │  70.66666666666667 │
+│ AAAAAAAAAAJKAAAA │          23 │  5.515587529976019 │          42 │ 10.071942446043165 │          74 │  17.74580335731415 │ 46.333333333333336 │
+│ AAAAAAAAAAJMBAAA │          51 │               NULL │           3 │               NULL │        NULL │               NULL │               NULL │
+│ AAAAAAAAAAJMCAAA │          98 │               NULL │        NULL │               NULL │          35 │               NULL │               NULL │
+│ AAAAAAAAAAJPCAAA │         163 │  26.76518883415435 │          15 │ 2.4630541871921183 │          25 │  4.105090311986864 │  67.66666666666667 │
+├──────────────────┴─────────────┴────────────────────┴─────────────┴────────────────────┴─────────────┴────────────────────┴────────────────────┤
+│ 100 rows (40 shown)                                                                                                                  8 columns │
+└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────┬───────────────┐
+│   customer_id    │ customername  │
+│     varchar      │    varchar    │
+├──────────────────┼───────────────┤
+│ AAAAAAAAAABHAAAA │ Nash, Joseph  │
+│ AAAAAAAAAABHAAAA │ Nash, Joseph  │
+│ AAAAAAAAAABHAAAA │ Nash, Joseph  │
+│ AAAAAAAAAABHAAAA │ Nash, Joseph  │
+│ AAAAAAAAAABHAAAA │ Nash, Joseph  │
+│ AAAAAAAAAABHAAAA │ Nash, Joseph  │
+│ AAAAAAAAAABHAAAA │ Nash, Joseph  │
+│ AAAAAAAAAABHAAAA │ Nash, Joseph  │
+│ AAAAAAAAAABHAAAA │ Nash, Joseph  │
+│ AAAAAAAAAABHAAAA │ Nash, Joseph  │
+│ AAAAAAAAAABHAAAA │ Nash, Joseph  │
+│ AAAAAAAAAABHAAAA │ Nash, Joseph  │
+│ AAAAAAAAAABHAAAA │ Nash, Joseph  │
+│ AAAAAAAAAABHAAAA │ Nash, Joseph  │
+│ AAAAAAAAAABHAAAA │ Nash, Joseph  │
+│ AAAAAAAAAABHAAAA │ Nash, Joseph  │
+│ AAAAAAAAAABHAAAA │ Nash, Joseph  │
+│ AAAAAAAAAABHAAAA │ Nash, Joseph  │
+│ AAAAAAAAAABHAAAA │ Nash, Joseph  │
+│ AAAAAAAAAABHAAAA │ Nash, Joseph  │
+│        ·         │      ·        │
+│        ·         │      ·        │
+│        ·         │      ·        │
+│ AAAAAAAAAADMFBAA │ Cruz, Diane   │
+│ AAAAAAAAAADMFBAA │ Cruz, Diane   │
+│ AAAAAAAAAADMFBAA │ Cruz, Diane   │
+│ AAAAAAAAAADMFBAA │ Cruz, Diane   │
+│ AAAAAAAAAAEFJBAA │ Farley, Bruce │
+│ AAAAAAAAAAEFJBAA │ Farley, Bruce │
+│ AAAAAAAAAAEFJBAA │ Farley, Bruce │
+│ AAAAAAAAAAEFJBAA │ Farley, Bruce │
+│ AAAAAAAAAAEFJBAA │ Farley, Bruce │
+│ AAAAAAAAAAEFJBAA │ Farley, Bruce │
+│ AAAAAAAAAAEFJBAA │ Farley, Bruce │
+│ AAAAAAAAAAEFJBAA │ Farley, Bruce │
+│ AAAAAAAAAAEFJBAA │ Farley, Bruce │
+│ AAAAAAAAAAEFJBAA │ Farley, Bruce │
+│ AAAAAAAAAAEFJBAA │ Farley, Bruce │
+│ AAAAAAAAAAKADBAA │ Gray, Rebecca │
+│ AAAAAAAAAAKADBAA │ Gray, Rebecca │
+│ AAAAAAAAAAKADBAA │ Gray, Rebecca │
+│ AAAAAAAAAAKADBAA │ Gray, Rebecca │
+│ AAAAAAAAAAKADBAA │ Gray, Rebecca │
+├──────────────────┴───────────────┤
+│ 100 rows (40 shown)    2 columns │
+└──────────────────────────────────┘
+┌────────────────────────────────────────┬────────────────────┬────────────────────┬────────────────────┐
+│ main."substring"(r_reason_desc, 1, 20) │        avg1        │        avg2        │    avg(wr_fee)     │
+│                varchar                 │       double       │       double       │       double       │
+├────────────────────────────────────────┼────────────────────┼────────────────────┼────────────────────┤
+│ Did not fit                            │              18.75 │             461.28 │            50.2575 │
+│ Did not get it on ti                   │                8.5 │             352.23 │             55.725 │
+│ Did not like the col                   │               76.5 │             142.82 │              76.44 │
+│ Did not like the mak                   │              24.25 │           959.6075 │             21.935 │
+│ Did not like the mod                   │               26.0 │              460.2 │ 57.123333333333335 │
+│ Did not like the war                   │               20.0 │            642.345 │             47.875 │
+│ Does not work with a                   │              20.75 │            923.215 │              37.29 │
+│ Found a better exten                   │                4.0 │             129.79 │              93.74 │
+│ Found a better price                   │ 24.833333333333332 │ 246.39666666666668 │  54.22666666666667 │
+│ Gift exchange                          │                5.0 │              22.29 │              91.44 │
+│ No service location                    │               25.4 │            339.022 │              60.39 │
+│ Not the product that                   │               16.5 │             177.27 │             45.675 │
+│ Not working any more                   │ 15.666666666666666 │             343.27 │  70.20666666666666 │
+│ Package was damaged                    │               17.0 │             74.125 │              51.02 │
+│ Parts missing                          │                8.0 │             142.63 │             62.695 │
+│ Stopped working                        │                5.5 │            255.145 │              83.59 │
+│ Wrong size                             │               37.0 │ 133.15333333333334 │              46.15 │
+│ duplicate purchase                     │               52.5 │            541.185 │              24.46 │
+│ it is a girl                           │              10.75 │           170.1225 │              70.88 │
+│ reason 23                              │               14.0 │             52.315 │              38.25 │
+│     ·                                  │                 ·  │                ·   │                ·   │
+│     ·                                  │                 ·  │                ·   │                ·   │
+│     ·                                  │                 ·  │                ·   │                ·   │
+│ reason 37                              │               46.5 │              26.79 │              51.45 │
+│ reason 38                              │  7.333333333333333 │ 181.62333333333333 │ 48.016666666666666 │
+│ reason 39                              │                8.0 │               52.7 │              69.11 │
+│ reason 40                              │ 24.333333333333332 │             600.99 │ 32.776666666666664 │
+│ reason 41                              │                6.0 │ 130.33666666666667 │              68.53 │
+│ reason 42                              │ 19.333333333333332 │  335.4866666666667 │  45.81333333333333 │
+│ reason 43                              │                5.0 │             250.93 │              56.87 │
+│ reason 44                              │              11.25 │            190.065 │            38.5725 │
+│ reason 45                              │ 21.333333333333332 │             215.62 │              58.44 │
+│ reason 46                              │               36.0 │  633.0233333333333 │ 30.016666666666666 │
+│ reason 47                              │               22.0 │             621.54 │             71.305 │
+│ reason 48                              │               21.0 │             517.78 │              45.52 │
+│ reason 49                              │ 27.666666666666668 │             285.09 │              19.77 │
+│ reason 50                              │                8.0 │             541.49 │              70.69 │
+│ reason 51                              │ 39.333333333333336 │             1991.1 │  78.03333333333333 │
+│ reason 52                              │               61.0 │            3505.22 │              14.34 │
+│ reason 53                              │                3.0 │             238.37 │             40.625 │
+│ reason 54                              │               28.0 │             784.61 │               19.3 │
+│ reason 55                              │              23.75 │             627.63 │             43.645 │
+│ unauthoized purchase                   │               40.0 │           1700.345 │               40.9 │
+├────────────────────────────────────────┴────────────────────┴────────────────────┴────────────────────┤
+│ 52 rows (40 shown)                                                                          4 columns │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌────────────────┬─────────────┬────────────────┬──────────────┬────────────────────┐
+│   total_sum    │ i_category  │    i_class     │ lochierarchy │ rank_within_parent │
+│ decimal(38,2)  │   varchar   │    varchar     │    int64     │       int64        │
+├────────────────┼─────────────┼────────────────┼──────────────┼────────────────────┤
+│ 33194464157.23 │ NULL        │ NULL           │            2 │                  1 │
+│  3365811001.89 │ Sports      │ NULL           │            1 │                  1 │
+│  3322229130.38 │ Children    │ NULL           │            1 │                  2 │
+│  3321025916.95 │ Music       │ NULL           │            1 │                  3 │
+│  3320689667.36 │ Women       │ NULL           │            1 │                  4 │
+│  3319380685.75 │ Electronics │ NULL           │            1 │                  5 │
+│  3306497526.32 │ Books       │ NULL           │            1 │                  6 │
+│  3299779892.77 │ Home        │ NULL           │            1 │                  7 │
+│  3290706353.30 │ Shoes       │ NULL           │            1 │                  8 │
+│  3286159783.18 │ Jewelry     │ NULL           │            1 │                  9 │
+│  3279412801.17 │ Men         │ NULL           │            1 │                 10 │
+│    82771398.16 │ NULL        │ NULL           │            1 │                 11 │
+│    42225132.78 │ NULL        │ NULL           │            0 │                  1 │
+│     2036691.62 │ NULL        │ dresses        │            0 │                  2 │
+│     1907820.39 │ NULL        │ swimwear       │            0 │                  3 │
+│     1604116.96 │ NULL        │ athletic       │            0 │                  4 │
+│     1584894.19 │ NULL        │ womens         │            0 │                  5 │
+│     1497537.50 │ NULL        │ fragrances     │            0 │                  6 │
+│     1438089.87 │ NULL        │ pants          │            0 │                  7 │
+│     1306873.23 │ NULL        │ toddlers       │            0 │                  8 │
+│           ·    │  ·          │   ·            │            · │                  · │
+│           ·    │  ·          │   ·            │            · │                  · │
+│           ·    │  ·          │   ·            │            · │                  · │
+│        8542.30 │ NULL        │ pools          │            0 │                 69 │
+│        1837.86 │ NULL        │ mattresses     │            0 │                 70 │
+│         931.45 │ NULL        │ furniture      │            0 │                 71 │
+│         209.95 │ NULL        │ bedding        │            0 │                 72 │
+│   219313957.59 │ Books       │ history        │            0 │                  1 │
+│   214640906.37 │ Books       │ reference      │            0 │                  2 │
+│   214469831.13 │ Books       │ entertainments │            0 │                  3 │
+│   212287620.81 │ Books       │ fiction        │            0 │                  4 │
+│   209951904.62 │ Books       │ travel         │            0 │                  5 │
+│   207879847.78 │ Books       │ romance        │            0 │                  6 │
+│   207668254.92 │ Books       │ sports         │            0 │                  7 │
+│   206879938.62 │ Books       │ home repair    │            0 │                  8 │
+│   206870495.32 │ Books       │ parenting      │            0 │                  9 │
+│   206058399.70 │ Books       │ self-help      │            0 │                 10 │
+│   206028725.93 │ Books       │ cooking        │            0 │                 11 │
+│   201699681.04 │ Books       │ arts           │            0 │                 12 │
+│   201335669.19 │ Books       │ science        │            0 │                 13 │
+│   199022858.98 │ Books       │ business       │            0 │                 14 │
+│   194759241.68 │ Books       │ computers      │            0 │                 15 │
+│   192336930.61 │ Books       │ mystery        │            0 │                 16 │
+├────────────────┴─────────────┴────────────────┴──────────────┴────────────────────┤
+│ 100 rows (40 shown)                                                     5 columns │
+└───────────────────────────────────────────────────────────────────────────────────┘
+┌──────────────┐
+│ count_star() │
+│    int64     │
+├──────────────┤
+│      4250952 │
+└──────────────┘
+┌────────────┬────────────┬─────────────┬──────────────┬──────────────┬──────────────┬──────────────┬──────────────┐
+│ h8_30_to_9 │ h9_to_9_30 │ h9_30_to_10 │ h10_to_10_30 │ h10_30_to_11 │ h11_to_11_30 │ h11_30_to_12 │ h12_to_12_30 │
+│   int64    │   int64    │    int64    │    int64     │    int64     │    int64     │    int64     │    int64     │
+├────────────┼────────────┼─────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
+│     188601 │     380196 │      379717 │       570516 │       571611 │       332841 │       333696 │       376566 │
+└────────────┴────────────┴─────────────┴──────────────┴──────────────┴──────────────┴──────────────┴──────────────┘
+┌────────────┬─────────┬───────────────────┬──────────────┬────────────────┬───────┬───────────────┬────────────────────┐
+│ i_category │ i_class │      i_brand      │ s_store_name │ s_company_name │ d_moy │   sum_sales   │ avg_monthly_sales  │
+│  varchar   │ varchar │      varchar      │   varchar    │    varchar     │ int32 │ decimal(38,2) │       double       │
+├────────────┼─────────┼───────────────────┼──────────────┼────────────────┼───────┼───────────────┼────────────────────┤
+│ Women      │ dresses │ amalgamalg #1     │ able         │ Unknown        │     2 │     190793.86 │        373497.4375 │
+│ Women      │ dresses │ amalgamalg #1     │ bar          │ Unknown        │     2 │     190801.94 │         371026.545 │
+│ Men        │ shirts  │ importoimporto #1 │ eing         │ Unknown        │     2 │     188232.13 │         362996.085 │
+│ Men        │ shirts  │ importoimporto #1 │ able         │ Unknown        │     2 │     193551.96 │         367266.565 │
+│ Women      │ dresses │ amalgamalg #1     │ ese          │ Unknown        │     2 │     197339.50 │        369837.0525 │
+│ Men        │ shirts  │ importoimporto #1 │ bar          │ Unknown        │     2 │     193352.04 │ 364325.50166666665 │
+│ Men        │ shirts  │ importoimporto #1 │ ese          │ Unknown        │     2 │     194170.82 │          363976.33 │
+│ Men        │ shirts  │ importoimporto #1 │ eing         │ Unknown        │     4 │     196504.68 │         362996.085 │
+│ Women      │ dresses │ amalgamalg #1     │ eing         │ Unknown        │     2 │     207249.07 │          371623.94 │
+│ Women      │ dresses │ amalgamalg #1     │ eing         │ Unknown        │     4 │     207828.22 │          371623.94 │
+│ Women      │ dresses │ amalgamalg #1     │ eing         │ Unknown        │     3 │     207847.23 │          371623.94 │
+│ Women      │ dresses │ amalgamalg #1     │ ese          │ Unknown        │     4 │     206236.70 │        369837.0525 │
+│ Women      │ dresses │ amalgamalg #1     │ bar          │ Unknown        │     4 │     208496.12 │         371026.545 │
+│ Men        │ shirts  │ importoimporto #1 │ bar          │ Unknown        │     6 │     202271.46 │ 364325.50166666665 │
+│ Men        │ shirts  │ importoimporto #1 │ eing         │ Unknown        │     3 │     201966.11 │         362996.085 │
+│ Women      │ dresses │ amalgamalg #1     │ ese          │ Unknown        │     3 │     209067.09 │        369837.0525 │
+│ Women      │ dresses │ amalgamalg #1     │ cally        │ Unknown        │     2 │     168230.12 │        328848.2575 │
+│ Men        │ shirts  │ importoimporto #1 │ ese          │ Unknown        │     4 │     203527.83 │          363976.33 │
+│ Women      │ dresses │ amalgamalg #1     │ able         │ Unknown        │     6 │     213830.72 │        373497.4375 │
+│ Women      │ dresses │ amalgamalg #1     │ able         │ Unknown        │     4 │     214332.47 │        373497.4375 │
+│   ·        │    ·    │       ·           │  ·           │    ·           │     · │         ·     │             ·      │
+│   ·        │    ·    │       ·           │  ·           │    ·           │     · │         ·     │             ·      │
+│   ·        │    ·    │       ·           │  ·           │    ·           │     · │         ·     │             ·      │
+│ Women      │ dresses │ amalgamalg #1     │ ought        │ Unknown        │     2 │     106166.19 │ 191989.55916666667 │
+│ Women      │ dresses │ amalgamalg #2     │ eing         │ Unknown        │     4 │     105462.90 │ 191081.30083333334 │
+│ Women      │ dresses │ amalgamalg #1     │ ation        │ Unknown        │     6 │     106537.92 │ 191417.98416666666 │
+│ Women      │ dresses │ amalgamalg #2     │ bar          │ Unknown        │     4 │     107253.74 │ 191895.67666666667 │
+│ Women      │ dresses │ amalgamalg #1     │ ation        │ Unknown        │     4 │     106812.04 │ 191417.98416666666 │
+│ Women      │ dresses │ amalgamalg #2     │ able         │ Unknown        │     3 │     106564.50 │        190966.5825 │
+│ Women      │ dresses │ amalgamalg #2     │ bar          │ Unknown        │     6 │     107852.59 │ 191895.67666666667 │
+│ Men        │ shirts  │ importoimporto #1 │ ation        │ Unknown        │     6 │     105582.53 │ 189579.64083333334 │
+│ Women      │ dresses │ amalgamalg #1     │ pri          │ Unknown        │     2 │      96238.15 │ 179520.12583333332 │
+│ Women      │ dresses │ amalgamalg #1     │ ought        │ Unknown        │     3 │     108816.12 │ 191989.55916666667 │
+│ Men        │ shirts  │ importoimporto #2 │ able         │ Unknown        │     2 │      92570.08 │ 175458.91916666666 │
+│ Men        │ shirts  │ importoimporto #1 │ pri          │ Unknown        │     2 │      93745.92 │         176566.045 │
+│ Women      │ dresses │ amalgamalg #1     │ n st         │ Unknown        │     6 │      96333.65 │ 179058.60583333333 │
+│ Men        │ shirts  │ importoimporto #2 │ bar          │ Unknown        │     2 │      92055.43 │         174404.015 │
+│ Women      │ dresses │ amalgamalg #1     │ n st         │ Unknown        │     3 │      96876.52 │ 179058.60583333333 │
+│ Women      │ dresses │ amalgamalg #1     │ ation        │ Unknown        │     7 │     109378.62 │ 191417.98416666666 │
+│ Men        │ shirts  │ importoimporto #2 │ ese          │ Unknown        │     2 │      92093.20 │        173888.6525 │
+│ Women      │ dresses │ amalgamalg #2     │ eing         │ Unknown        │     3 │     109322.06 │ 191081.30083333334 │
+│ Men        │ shirts  │ importoimporto #1 │ pri          │ Unknown        │     6 │      95148.12 │         176566.045 │
+│ Women      │ dresses │ amalgamalg #1     │ ation        │ Unknown        │     5 │     110025.17 │ 191417.98416666666 │
+├────────────┴─────────┴───────────────────┴──────────────┴────────────────┴───────┴───────────────┴────────────────────┤
+│ 100 rows (40 shown)                                                                                         8 columns │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌────────────────────┐
+│    am_pm_ratio     │
+│       double       │
+├────────────────────┤
+│ 0.6058665791057845 │
+└────────────────────┘
+┌──────────────────┬─────────────────────┬───────────────────┬───────────────┐
+│   Call_Center    │  Call_Center_Name   │      Manager      │ Returns_Loss  │
+│     varchar      │       varchar       │      varchar      │ decimal(38,2) │
+├──────────────────┼─────────────────────┼───────────────────┼───────────────┤
+│ AAAAAAAAKBAAAAAA │ Mid Atlantic_2      │ Rene Sampson      │      13044.47 │
+│ AAAAAAAADBAAAAAA │ Pacific Northwest_1 │ Roderick Walls    │      12131.84 │
+│ AAAAAAAAEBAAAAAA │ California_1        │ Jason Brito       │       8086.75 │
+│ AAAAAAAAJBAAAAAA │ NY Metro_2          │ Richard James     │       7253.32 │
+│ AAAAAAAAABAAAAAA │ North Midwest_1     │ Timothy Bourgeois │       7080.23 │
+│ AAAAAAAAGBAAAAAA │ Hawaii/Alaska_1     │ Travis Wilson     │       7069.54 │
+│ AAAAAAAAEAAAAAAA │ North Midwest       │ Larry Mccray      │       6539.72 │
+│ AAAAAAAAMBAAAAAA │ North Midwest_2     │ Ryan Burchett     │       5782.07 │
+│ AAAAAAAAKAAAAAAA │ Hawaii/Alaska       │ Gregory Altman    │       4041.71 │
+│ AAAAAAAADBAAAAAA │ Pacific Northwest_1 │ Roderick Walls    │       3988.26 │
+│ AAAAAAAAHAAAAAAA │ Pacific Northwest   │ Alden Snyder      │       3874.71 │
+│ AAAAAAAAEBAAAAAA │ California_1        │ Jason Brito       │       3600.88 │
+│ AAAAAAAAOAAAAAAA │ Mid Atlantic_1      │ Clyde Scott       │       3375.79 │
+│ AAAAAAAAABAAAAAA │ North Midwest_1     │ Timothy Bourgeois │       2992.04 │
+│ AAAAAAAABAAAAAAA │ NY Metro            │ Bob Belcher       │       2982.57 │
+│ AAAAAAAAEAAAAAAA │ North Midwest       │ Larry Mccray      │       2780.50 │
+│ AAAAAAAAOAAAAAAA │ Mid Atlantic_1      │ Clyde Scott       │       2737.39 │
+│ AAAAAAAAKAAAAAAA │ Hawaii/Alaska       │ Gregory Altman    │       2588.90 │
+│ AAAAAAAANAAAAAAA │ NY Metro_1          │ Jack Little       │       2212.43 │
+│ AAAAAAAABAAAAAAA │ NY Metro            │ Bob Belcher       │       1959.45 │
+│ AAAAAAAAKBAAAAAA │ Mid Atlantic_2      │ Rene Sampson      │       1732.63 │
+│ AAAAAAAAHAAAAAAA │ Pacific Northwest   │ Alden Snyder      │       1600.80 │
+│ AAAAAAAAMBAAAAAA │ North Midwest_2     │ Ryan Burchett     │       1491.32 │
+│ AAAAAAAAIAAAAAAA │ California          │ Wayne Ray         │       1468.66 │
+│ AAAAAAAACAAAAAAA │ Mid Atlantic        │ Felipe Perkins    │       1462.36 │
+│ AAAAAAAAGBAAAAAA │ Hawaii/Alaska_1     │ Travis Wilson     │       1455.30 │
+│ AAAAAAAAJBAAAAAA │ NY Metro_2          │ Richard James     │       1265.74 │
+│ AAAAAAAACAAAAAAA │ Mid Atlantic        │ Felipe Perkins    │       1210.54 │
+│ AAAAAAAAIAAAAAAA │ California          │ Wayne Ray         │        602.10 │
+│ AAAAAAAANAAAAAAA │ NY Metro_1          │ Jack Little       │        565.26 │
+├──────────────────┴─────────────────────┴───────────────────┴───────────────┤
+│ 30 rows                                                          4 columns │
+└────────────────────────────────────────────────────────────────────────────┘
+┌────────────────────────┐
+│ Excess Discount Amount │
+│     decimal(38,2)      │
+├────────────────────────┤
+│             2941207.68 │
+└────────────────────────┘
+┌────────────────┬───────────────┐
+│ ss_customer_sk │   sumsales    │
+│     int32      │ decimal(38,2) │
+├────────────────┼───────────────┤
+│             24 │          NULL │
+│             53 │          NULL │
+│            145 │          NULL │
+│            256 │          NULL │
+│            291 │          NULL │
+│            311 │          NULL │
+│            512 │          NULL │
+│            580 │          NULL │
+│            941 │          NULL │
+│           1037 │          NULL │
+│           1462 │          NULL │
+│           1731 │          NULL │
+│           1886 │          NULL │
+│           1995 │          NULL │
+│           2339 │          NULL │
+│           2507 │          NULL │
+│           2531 │          NULL │
+│           2823 │          NULL │
+│           3447 │          NULL │
+│           3691 │          NULL │
+│             ·  │            ·  │
+│             ·  │            ·  │
+│             ·  │            ·  │
+│          13597 │          NULL │
+│          13599 │          NULL │
+│          13793 │          NULL │
+│          13817 │          NULL │
+│          13836 │          NULL │
+│          13855 │          NULL │
+│          14129 │          NULL │
+│          14250 │          NULL │
+│          14473 │          NULL │
+│          14573 │          NULL │
+│          14592 │          NULL │
+│          14757 │          NULL │
+│          14758 │          NULL │
+│          14807 │          NULL │
+│          14880 │          NULL │
+│          14885 │          NULL │
+│          15040 │          NULL │
+│          15082 │          NULL │
+│          15127 │          NULL │
+│          15238 │          NULL │
+├────────────────┴───────────────┤
+│ 100 rows (40 shown)  2 columns │
+└────────────────────────────────┘
+┌─────────────┬─────────────────────┬──────────────────┐
+│ order count │ total shipping cost │ total net profit │
+│    int64    │    decimal(38,2)    │  decimal(38,2)   │
+├─────────────┼─────────────────────┼──────────────────┤
+│        1835 │          2935979.23 │       -341146.02 │
+└─────────────┴─────────────────────┴──────────────────┘
+┌─────────────┬─────────────────────┬──────────────────┐
+│ order count │ total shipping cost │ total net profit │
+│    int64    │    decimal(38,2)    │  decimal(38,2)   │
+├─────────────┼─────────────────────┼──────────────────┤
+│        4712 │          7281597.46 │      -1368681.20 │
+└─────────────┴─────────────────────┴──────────────────┘
+┌──────────────┐
+│ count_star() │
+│    int64     │
+├──────────────┤
+│        70344 │
+└──────────────┘
+┌────────────┬──────────────┬───────────────────┐
+│ store_only │ catalog_only │ store_and_catalog │
+│   int128   │    int128    │      int128       │
+├────────────┼──────────────┼───────────────────┤
+│   53984288 │     28579823 │              7474 │
+└────────────┴──────────────┴───────────────────┘
+┌──────────────────┬───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬────────────┬─────────┬─────────────────┬───────────────┬─────────────────────┐
+│    i_item_id     │                                                                                            i_item_desc                                                                                            │ i_category │ i_class │ i_current_price │  itemrevenue  │    revenueratio     │
+│     varchar      │                                                                                              varchar                                                                                              │  varchar   │ varchar │  decimal(7,2)   │ decimal(38,2) │       double        │
+├──────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────┼─────────────────┼───────────────┼─────────────────────┤
+│ AAAAAAAACAKPBAAA │ NULL                                                                                                                                                                                              │ Books      │ NULL    │            2.71 │      40007.44 │  1.9828044320442653 │
+│ AAAAAAAAFAFECAAA │ NULL                                                                                                                                                                                              │ Books      │ NULL    │            NULL │      50463.77 │   2.501029478858493 │
+│ AAAAAAAAFKOHBAAA │ Chemical controls pass civil, true firms. Years get just about in a books. Words will imagine as a sites. Difficult r                                                                             │ Books      │ NULL    │            NULL │      54615.11 │  2.7067735942261004 │
+│ AAAAAAAAGJDOCAAA │ Free workers could keep with a services. Participants sponsor children; poor, black inhabitants give too men. Creative wom                                                                        │ Books      │ NULL    │            4.06 │      40331.08 │  1.9988443192849086 │
+│ AAAAAAAAHLGEAAAA │ Hard terms used to give resources. Certainly adequate rights would not go. Social, black elections shall use. Surely usual merchants may seduce ever dollars. Early things con                    │ Books      │ NULL    │            NULL │      46427.28 │  2.3009774319916514 │
+│ AAAAAAAAILPJBAAA │ NULL                                                                                                                                                                                              │ Books      │ NULL    │            0.82 │      39828.20 │  1.9739211376770271 │
+│ AAAAAAAAJILPAAAA │ NULL                                                                                                                                                                                              │ Books      │ NULL    │            NULL │      27684.44 │  1.3720655540735307 │
+│ AAAAAAAALJOECAAA │ Drugs pull sometim                                                                                                                                                                                │ Books      │ NULL    │            0.89 │      32720.05 │  1.6216348798301006 │
+│ AAAAAAAAMHHPCAAA │ NULL                                                                                                                                                                                              │ Books      │ NULL    │            8.51 │      67883.90 │   3.364386668690866 │
+│ AAAAAAAAMMPGCAAA │ NULL                                                                                                                                                                                              │ Books      │ NULL    │            NULL │      41144.78 │  2.0391720174919024 │
+│ AAAAAAAANFJNAAAA │ Just brigh                                                                                                                                                                                        │ Books      │ NULL    │            4.17 │     102095.55 │   5.059946575736835 │
+│ AAAAAAAAOJGAAAAA │ NULL                                                                                                                                                                                              │ Books      │ NULL    │            NULL │      41454.81 │  2.0545373809859595 │
+│ AAAAAAAAPHPCBAAA │ NULL                                                                                                                                                                                              │ Books      │ NULL    │            NULL │      47165.21 │  2.3375499013758065 │
+│ AAAAAAAAAACGCAAA │ National needs shall not continue locations; pretty international pupils may not maintain after a properties. Patients can study definitely active forms. Loc                                     │ Books      │ arts    │            3.37 │      38942.38 │ 0.12434727200059946 │
+│ AAAAAAAAAADNAAAA │ Safe, english beings ke                                                                                                                                                                           │ Books      │ arts    │            3.38 │      41017.79 │  0.1309742827735097 │
+│ AAAAAAAAAAHLBAAA │ Responsible rules might write therefore lost years. Besides romantic doors can prove now new able signs. Aware, average chains prove old, old others; small, international evenings know          │ Books      │ arts    │            6.26 │      41157.72 │  0.1314210945444144 │
+│ AAAAAAAAAAKAAAAA │ Systematic, good contracts can hear to a leaves; social women seem at a books. Judicial products enable ever old leaders. Aside modest sons extend wome                                           │ Books      │ arts    │            2.42 │      46274.00 │  0.1477579353022527 │
+│ AAAAAAAAAALKCAAA │ Probably wooden years cannot like only away original dogs. Educational surfaces shall not gain then. Common, long options help easily. Costly, ty                                                 │ Books      │ arts    │            6.61 │      30744.30 │  0.0981699072981166 │
+│ AAAAAAAAAANGBAAA │ Arms sleep like a roles. Limited hands commit too with the patterns. Personal eyes could make true                                                                                                │ Books      │ arts    │            2.66 │      74809.62 │ 0.23887528616385248 │
+│ AAAAAAAAABFACAAA │ Relatively private consequences could not rema                                                                                                                                                    │ Books      │ arts    │            4.93 │      32191.78 │ 0.10279186900860855 │
+│        ·         │                       ·                                                                                                                                                                           │   ·        │  ·      │              ·  │          ·    │           ·         │
+│        ·         │                       ·                                                                                                                                                                           │   ·        │  ·      │              ·  │          ·    │           ·         │
+│        ·         │                       ·                                                                                                                                                                           │   ·        │  ·      │              ·  │          ·    │           ·         │
+│ AAAAAAAAPFEFCAAA │ So military resources join usual, mere cases. National, stupid thousands carry earlier collectivel                                                                                                │ Sports     │ tennis  │            6.93 │      46431.15 │   0.145668625691637 │
+│ AAAAAAAAPFLOBAAA │ Chief, new models restart hopefully fun, positive changes. Appropriate, good items exploit impressive dogs. As complete studies will not l                                                        │ Sports     │ tennis  │            1.97 │      60708.49 │ 0.19046097945268398 │
+│ AAAAAAAAPGBCBAAA │ Still lost babies ought to know personal, particular weaknesses.                                                                                                                                  │ Sports     │ tennis  │            8.68 │      58208.06 │ 0.18261637078505158 │
+│ AAAAAAAAPHELAAAA │ Objects reinforce there needs; running, main countries should give. Estimated employees could not roll old children. Particular mo                                                                │ Sports     │ tennis  │            1.46 │      56491.48 │  0.1772309377408614 │
+│ AAAAAAAAPHIBDAAA │ Existing, good abilities might add changing, actual records. New, specialist days may p                                                                                                           │ Sports     │ tennis  │            1.52 │      33146.54 │ 0.10399076758238539 │
+│ AAAAAAAAPHKEBAAA │ Final, leading shapes might cut expenses. Minutes used to think even big numbers. Clinical jobs drop whole years. Servic                                                                          │ Sports     │ tennis  │            7.02 │      35791.04 │ 0.11228736761580119 │
+│ AAAAAAAAPIAACAAA │ Enough soft men could alleviate. As unable eyes should reach about; normal, isolated pictures hear presently nervous                                                                              │ Sports     │ tennis  │            1.44 │      21275.39 │ 0.06674736297407229 │
+│ AAAAAAAAPIBHAAAA │ In addition external pieces help quite warm activities. Outer, left samples would not like soft records. Suitable plans smile by a studies. Royal proposals should not find f                     │ Sports     │ tennis  │            7.87 │      47900.76 │  0.1502792388037974 │
+│ AAAAAAAAPIGLAAAA │ Wise, ready eyes gr                                                                                                                                                                               │ Sports     │ tennis  │            0.65 │      28580.95 │ 0.08966712449425422 │
+│ AAAAAAAAPJAKAAAA │ Over small eyebrows                                                                                                                                                                               │ Sports     │ tennis  │           75.25 │      57055.58 │  0.1790006908430924 │
+│ AAAAAAAAPJDKAAAA │ Parents can display adverse reasons. Researchers would not                                                                                                                                        │ Sports     │ tennis  │           54.89 │      50625.56 │ 0.15882776433643167 │
+│ AAAAAAAAPJMDBAAA │ Resources should help separately hard elderly resources; rules ought to cut more present systems. Unc                                                                                             │ Sports     │ tennis  │            2.31 │      57911.47 │  0.1816858778359456 │
+│ AAAAAAAAPJNJAAAA │ Easy warm unions might not talk now drugs. Elderly, fundamental shows might break easy amounts. Behind similar conditions speak somehow cultural branches; small lines hope then high cars. Worth │ Sports     │ tennis  │            4.25 │      44762.11 │  0.1404323400725134 │
+│ AAAAAAAAPKGCBAAA │ Major measures inv                                                                                                                                                                                │ Sports     │ tennis  │            7.30 │      61811.63 │ 0.19392186482264515 │
+│ AAAAAAAAPKKFAAAA │ Quietly difficult cases will determine changes. Electric figures could prove quickly with a steps. Objec                                                                                          │ Sports     │ tennis  │           95.20 │      26077.96 │ 0.08181448432876381 │
+│ AAAAAAAAPLGNBAAA │ Possible, whole families drop sharply                                                                                                                                                             │ Sports     │ tennis  │            3.42 │      43404.11 │ 0.13617188144313974 │
+│ AAAAAAAAPMGABAAA │ Necessarily wide numbers might imagine simply. Extensive discussions retain alongside at a calculations. Also thin areas crumble by                                                               │ Sports     │ tennis  │            9.29 │      70628.95 │ 0.22158447681229831 │
+│ AAAAAAAAPNCCCAAA │ Reasonable views would not form. Only black requirements control on a schemes. Now future hearts flash. Related, appropriate windows accommodate personal areas. Common, hot appearan             │ Sports     │ tennis  │            1.92 │      35416.41 │  0.1111120394741795 │
+│ AAAAAAAAPNDCBAAA │ All random studies express elements. Only, big prisoners offer years; true ways should fall usually. Only old networks know                                                                       │ Sports     │ tennis  │            0.80 │      57612.67 │ 0.18074845144532933 │
+│ AAAAAAAAPPNPAAAA │ Too reasonable relations should produce well by a girls. Early districts could not consolidate of course. Late, hungry members must operate close, indi                                           │ Sports     │ tennis  │            6.79 │      13995.74 │ 0.04390888899666434 │
+├──────────────────┴───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴────────────┴─────────┴─────────────────┴───────────────┴─────────────────────┤
+│ 30579 rows (40 shown)                                                                                                                                                                                                                                                                     7 columns │
+└─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌────────────────┬─────────┬─────────────────────┬─────────┬────────────┬────────────┬─────────────┬───────────┐
+│    w_substr    │ sm_type │    cc_name_lower    │ 30 days │ 31-60 days │ 61-90 days │ 91-120 days │ >120 days │
+│    varchar     │ varchar │       varchar       │ int128  │   int128   │   int128   │   int128    │  int128   │
+├────────────────┼─────────┼─────────────────────┼─────────┼────────────┼────────────┼─────────────┼───────────┤
+│ NULL           │ EXPRESS │ california          │    8385 │       8608 │       8434 │           0 │         0 │
+│ NULL           │ EXPRESS │ california_1        │    8419 │       8552 │       8501 │           0 │         0 │
+│ NULL           │ EXPRESS │ hawaii/alaska       │    8224 │       8388 │       8529 │           0 │         0 │
+│ NULL           │ EXPRESS │ hawaii/alaska_1     │    8238 │       8681 │       8560 │           0 │         0 │
+│ NULL           │ EXPRESS │ mid atlantic        │    8317 │       8486 │       8636 │           0 │         0 │
+│ NULL           │ EXPRESS │ mid atlantic_1      │    8432 │       8572 │       8609 │           0 │         0 │
+│ NULL           │ EXPRESS │ mid atlantic_2      │    8320 │       8512 │       8395 │           0 │         0 │
+│ NULL           │ EXPRESS │ north midwest       │    8357 │       8515 │       8414 │           0 │         0 │
+│ NULL           │ EXPRESS │ north midwest_1     │    8319 │       8620 │       8623 │           0 │         0 │
+│ NULL           │ EXPRESS │ north midwest_2     │    8255 │       8487 │       8461 │           0 │         0 │
+│ NULL           │ EXPRESS │ ny metro            │    8396 │       8505 │       8409 │           0 │         0 │
+│ NULL           │ EXPRESS │ ny metro_1          │    8366 │       8420 │       8437 │           0 │         0 │
+│ NULL           │ EXPRESS │ ny metro_2          │    8131 │       8582 │       8385 │           0 │         0 │
+│ NULL           │ EXPRESS │ pacific northwest   │    8309 │       8524 │       8468 │           0 │         0 │
+│ NULL           │ EXPRESS │ pacific northwest_1 │    8204 │       8543 │       8240 │           0 │         0 │
+│ NULL           │ LIBRARY │ california          │    6256 │       6330 │       6393 │           0 │         0 │
+│ NULL           │ LIBRARY │ california_1        │    6156 │       6447 │       6483 │           0 │         0 │
+│ NULL           │ LIBRARY │ hawaii/alaska       │    6183 │       6413 │       6452 │           0 │         0 │
+│ NULL           │ LIBRARY │ hawaii/alaska_1     │    6296 │       6397 │       6391 │           0 │         0 │
+│ NULL           │ LIBRARY │ mid atlantic        │    6270 │       6341 │       6297 │           0 │         0 │
+│  ·             │    ·    │      ·              │      ·  │         ·  │         ·  │           · │         · │
+│  ·             │    ·    │      ·              │      ·  │         ·  │         ·  │           · │         · │
+│  ·             │    ·    │      ·              │      ·  │         ·  │         ·  │           · │         · │
+│ NULL           │ TWO DAY │ mid atlantic_1      │    6162 │       6434 │       6521 │           0 │         0 │
+│ NULL           │ TWO DAY │ mid atlantic_2      │    6133 │       6439 │       6267 │           0 │         0 │
+│ NULL           │ TWO DAY │ north midwest       │    6224 │       6520 │       6267 │           0 │         0 │
+│ NULL           │ TWO DAY │ north midwest_1     │    6204 │       6452 │       6389 │           0 │         0 │
+│ NULL           │ TWO DAY │ north midwest_2     │    6240 │       6490 │       6363 │           0 │         0 │
+│ NULL           │ TWO DAY │ ny metro            │    6096 │       6451 │       6476 │           0 │         0 │
+│ NULL           │ TWO DAY │ ny metro_1          │    6215 │       6425 │       6422 │           0 │         0 │
+│ NULL           │ TWO DAY │ ny metro_2          │    6218 │       6445 │       6279 │           0 │         0 │
+│ NULL           │ TWO DAY │ pacific northwest   │    6282 │       6329 │       6490 │           0 │         0 │
+│ NULL           │ TWO DAY │ pacific northwest_1 │    6241 │       6335 │       6327 │           0 │         0 │
+│ Certainly fede │ EXPRESS │ california          │    8143 │       8528 │       8497 │           0 │         0 │
+│ Certainly fede │ EXPRESS │ california_1        │    8275 │       8578 │       8628 │           0 │         0 │
+│ Certainly fede │ EXPRESS │ hawaii/alaska       │    8306 │       8520 │       8577 │           0 │         0 │
+│ Certainly fede │ EXPRESS │ hawaii/alaska_1     │    8261 │       8580 │       8647 │           0 │         0 │
+│ Certainly fede │ EXPRESS │ mid atlantic        │    8190 │       8654 │       8498 │           0 │         0 │
+│ Certainly fede │ EXPRESS │ mid atlantic_1      │    8374 │       8559 │       8606 │           0 │         0 │
+│ Certainly fede │ EXPRESS │ mid atlantic_2      │    8266 │       8601 │       8632 │           0 │         0 │
+│ Certainly fede │ EXPRESS │ north midwest       │    8289 │       8729 │       8707 │           0 │         0 │
+│ Certainly fede │ EXPRESS │ north midwest_1     │    8124 │       8465 │       8542 │           0 │         0 │
+│ Certainly fede │ EXPRESS │ north midwest_2     │    8339 │       8634 │       8702 │           0 │         0 │
+├────────────────┴─────────┴─────────────────────┴─────────┴────────────┴────────────┴─────────────┴───────────┤
+│ 100 rows (40 shown)                                                                                8 columns │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────┘

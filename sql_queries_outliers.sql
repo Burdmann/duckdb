@@ -1,5 +1,5 @@
 SET threads TO 1;
-ATTACH 'test.db';
+ATTACH 'test.db' (ROW_GROUP_SIZE 8192);
 USE test;
 CREATE TABLE tbl(time UBIGINT NOT NULL,data INT NOT NULL);;
 COPY tbl FROM 'outliers.csv' (FORMAT 'csv', force_not_null ('time','data'), delimiter ',', header 1);
