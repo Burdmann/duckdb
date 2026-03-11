@@ -51,7 +51,7 @@ for i in range(NUM_QUERIES):
     for j in range(NUM_ITERATIONS):
         idx = i*NUM_ITERATIONS+j
         duckdb.execute(f"INSERT INTO Result_time VALUES ('Time','s',{i+1},{",".join([str(time[idx]) for time in times])});")
-    duckdb.execute(f"INSERT INTO Result_pruning VALUES ('Partitions scanned',NULL,{i+1},{",".join([str(scanned[i]) for scanned in rows_scanned])});")
+    duckdb.execute(f"INSERT INTO Result_pruning VALUES ('Partitions scanned',NULL,{i+1},{",".join([str(scanned[i]) if scanned[i] != None else "NULL" for scanned in rows_scanned])});")
 for i in range(NUM_TABLES):
     if (len(set([tables[j][i] for j in range(NUM_STATS)]))) != 1:
         raise "tables are not in the same order in given input files"

@@ -1,0 +1,3 @@
+./run_microbench_unsorted_performance.sh
+./run_microbench_sorted_performance.sh
+./run_microbench_outliers_performance.sh
