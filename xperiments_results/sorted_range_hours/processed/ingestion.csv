@@ -1,2 +1,2 @@
 Name,Unit,Table_name,Min/max,Min/max clusters,Min/max clusters (1000x)
-Ingestion,s,sensor_records,98.31564,237.5738,239.00175
+Ingestion,s,sensor_records,107.41852,264.12326,266.72516
