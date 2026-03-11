@@ -11,27 +11,24 @@
 #include <functional>
 #include "duckdb/storage/statistics/additional/additional_stats.hpp"
 #include "duckdb/common/enums/filter_propagate_result.hpp"
+#include "duckdb/common/operator/comparison_operators.hpp"
+#include "duckdb/storage/statistics/base_statistics.hpp"
+#include "duckdb/common/enums/expression_type.hpp"
+
+#include "duckdb/common/serializer/serializer.hpp"
+#include "duckdb/common/serializer/deserializer.hpp"
 
 namespace duckdb {
 
-template <class T>
-class BloomAdditionalStats : public AdditionalStats<T> {
-private:
-	// following numbers are chosen based on https://www.vldb.org/pvldb/vol12/p502-lang.pdf
+// following numbers are chosen based on https://www.vldb.org/pvldb/vol12/p502-lang.pdf
+// for register-sized blocks
+constexpr static uint32_t K = 1;
+constexpr static uint32_t BLOCK_COUNT = 1;
+// constexpr static uint32_t BLOCK_SIZE = 200; // the unit here is word lengths (64 bits)
+constexpr static uint32_t BLOCK_SIZE = LARGE_ADDITIONAL_STATS ? 2000 : 200; // the unit here is word lengths (64 bits)
 
-	// for cache-sized blocks
-	// constexpr static uint32_t K = 7;
-	// constexpr static uint32_t BLOCK_COUNT = 625;
-	// constexpr static uint32_t BLOCK_SIZE = 8; // the unit here is word lengths (64 bits)
-
-	// for register-sized blocks
-	constexpr static uint32_t K = 1;
-	constexpr static uint32_t BLOCK_COUNT = 1;
-	// constexpr static uint32_t BLOCK_SIZE = 200; // the unit here is word lengths (64 bits)
-	constexpr static uint32_t BLOCK_SIZE =
-	    LARGE_ADDITIONAL_STATS ? 2000 : 200; // the unit here is word lengths (64 bits)
-	uint64_t bit_array[BLOCK_COUNT * BLOCK_SIZE];
-
+class BloomUtil {
+public:
 	// https://github.com/PeterScott/murmur3
 	static inline uint64_t rotl64(uint64_t x, int8_t r) {
 		return (x << r) | (x >> (64 - r));
@@ -151,7 +148,7 @@ private:
 
 		return h1;
 	}
-
+	template <class T>
 	static inline size_t hash(T value) {
 		size_t h = std::hash<T> {}(value);
 		return MurmurHash3_x64_128(&h, sizeof(size_t), 1);
@@ -162,6 +159,7 @@ private:
 		uint32_t byte_idx = block_idx * BLOCK_SIZE;
 		return bit_array + byte_idx;
 	}
+	template <class T>
 	static inline bool QueryUtil(T value, uint64_t *bit_array) {
 		size_t h = hash(value);
 		uint32_t h1 = h & ((1ull << 32) - 1);
@@ -177,6 +175,7 @@ private:
 		}
 		return result;
 	}
+	template <class T>
 	static inline void Insert(T new_value, uint64_t *bit_array) {
 		size_t h = hash(new_value);
 		uint32_t h1 = h & ((1ull << 32) - 1);
@@ -193,6 +192,12 @@ private:
 			block[byte_idx] |= (1ull << bit_idx);
 		}
 	}
+};
+
+template <class T>
+class BloomAdditionalStats : public AdditionalStats<T> {
+private:
+	uint64_t bit_array[BLOCK_COUNT * BLOCK_SIZE];
 
 public:
 	static inline const char *GetStaticName() {
@@ -214,18 +219,26 @@ public:
 		BloomAdditionalStats<T> *nstats = (BloomAdditionalStats<T> *)stats;
 		std::fill(nstats->bit_array, nstats->bit_array + (BLOCK_COUNT * BLOCK_SIZE), 0);
 		for (T element : data) {
-			Insert(element, nstats->bit_array);
+			// if (*(uint64_t *)&element == 1768979491171) {
+			// 	printf("INSERTED 1768979491171 INTO %p\n", stats);
+			// }
+			// std::cout << "INSERTED " << *(uint64_t *)((void *)(&element)) << std::endl;
+			BloomUtil::Insert(element, nstats->bit_array);
 		}
 	}
 
-	inline static FilterPropagateResult Query_implementation(AdditionalStats<T> *stats, ExpressionType comparison_type,
-	                                                         T constant) {
+	inline static FilterPropagateResult Query_implementation(AdditionalStats<T> *stats, ExpressionType &comparison_type,
+	                                                         const T &constant) {
 		switch (comparison_type) {
 		case ExpressionType::COMPARE_EQUAL:
 		case ExpressionType::COMPARE_NOT_DISTINCT_FROM: {
 			BloomAdditionalStats<T> *nstats = (BloomAdditionalStats<T> *)stats;
-			if (QueryUtil(constant, nstats->bit_array))
+			if (BloomUtil::QueryUtil(constant, nstats->bit_array)) {
+				// if (*(uint64_t *)&constant == 1768979491171) {
+				// 	printf("POSITIVE FOR 1768979491171 FROM %p\n", stats);
+				// }
 				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+			}
 
 			return FilterPropagateResult::FILTER_ALWAYS_FALSE;
 		}
@@ -234,7 +247,8 @@ public:
 		}
 	}
 
-	inline static FilterPropagateResult QueryRange_implementation(AdditionalStats<T> *stats, T start, T end) {
+	inline static FilterPropagateResult QueryRange_implementation(AdditionalStats<T> *stats, const T &start,
+	                                                              const T &end) {
 		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 	}
 

@@ -33,11 +33,12 @@ public:
 	}
 	inline static void Initialise_implementation(std::vector<T> &data, AdditionalStats<T> *stats) {
 	}
-	inline static FilterPropagateResult Query_implementation(AdditionalStats<T> *stats, ExpressionType comparison_type,
-	                                                         T constant) {
+	inline static FilterPropagateResult Query_implementation(AdditionalStats<T> *stats, ExpressionType &comparison_type,
+	                                                         const T &constant) {
 		return FilterPropagateResult::FILTER_ALWAYS_FALSE;
 	}
-	inline static FilterPropagateResult QueryRange_implementation(AdditionalStats<T> *stats, T start, T end) {
+	inline static FilterPropagateResult QueryRange_implementation(AdditionalStats<T> *stats, const T &start,
+	                                                              const T &end) {
 		return FilterPropagateResult::FILTER_ALWAYS_FALSE;
 	}
 	inline static size_t Size_implementation(AdditionalStats<T> *stats) {

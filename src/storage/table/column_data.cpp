@@ -34,7 +34,7 @@ std::unordered_map<void *, std::vector<hugeint_t>> ColumnData::hugeint_temp_vect
 std::unordered_map<void *, std::vector<uhugeint_t>> ColumnData::uhugeint_temp_vectors;
 std::unordered_map<void *, std::vector<float>> ColumnData::float_temp_vectors;
 std::unordered_map<void *, std::vector<double>> ColumnData::double_temp_vectors;
-std::unordered_map<void *, std::vector<string_t>> ColumnData::string_temp_vectors;
+std::unordered_map<void *, std::vector<std::string>> ColumnData::string_temp_vectors;
 std::mutex ColumnData::map_mutex;
 
 ColumnData::ColumnData(BlockManager &block_manager, DataTableInfo &info, idx_t column_index, idx_t start_row,
@@ -511,11 +511,14 @@ void ColumnData::InitializeAppend(ColumnAppendState &state) {
 void ColumnData::AppendDataWriteTemp(BaseStatistics &append_stats, ColumnAppendState &state, UnifiedVectorFormat &vdata,
                                      idx_t append_count) {
 	idx_t offset = 0;
-	this->count += append_count;
+	// const uint64_t *raw_data = vdata.GetData<uint64_t>();
+	// for (int i = offset; i < offset + append_count; i++) {
+	// 	std::cout << "INSERTED " << *(uint64_t *)((void *)(&raw_data[i])) << std::endl;
+	// }
 	while (true) {
 		// append the data from the vector
-		uint64_t start_time = Util::GetTime();
 		idx_t copied_elements = state.current->Append(state, vdata, offset, append_count);
+		this->count += copied_elements;
 		append_stats.Merge(state.current->stats.statistics);
 		AppendTemp(vdata, offset, copied_elements, stats->statistics);
 		if (copied_elements == append_count) {
@@ -538,6 +541,10 @@ void ColumnData::AppendDataWriteTemp(BaseStatistics &append_stats, ColumnAppendS
 void ColumnData::AppendData(BaseStatistics &append_stats, ColumnAppendState &state, UnifiedVectorFormat &vdata,
                             idx_t append_count) {
 	idx_t offset = 0;
+	// const uint64_t *raw_data = vdata.GetData<uint64_t>();
+	// for (int i = offset; i < offset + append_count; i++) {
+	// 	std::cout << "INSERTED " << *(uint64_t *)((void *)(&raw_data[i])) << std::endl;
+	// }
 	while (true) {
 		// append the data from the vector
 		idx_t copied_elements = state.current->Append(state, vdata, offset, append_count);

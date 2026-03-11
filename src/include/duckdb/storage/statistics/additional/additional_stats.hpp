@@ -38,8 +38,8 @@ template <class T>
 class AdditionalStats {
 public:
 	std::function<void(std::vector<T> &, AdditionalStats<T> *)> Initialise;
-	std::function<FilterPropagateResult(AdditionalStats<T> *, ExpressionType, T)> Query;
-	std::function<FilterPropagateResult(AdditionalStats<T> *, T, T)> QueryRange;
+	std::function<FilterPropagateResult(AdditionalStats<T> *, ExpressionType &, const T &)> Query;
+	std::function<FilterPropagateResult(AdditionalStats<T> *, const T &, const T &)> QueryRange;
 	std::function<size_t(AdditionalStats<T> *)> Size;
 	std::function<void(AdditionalStats<T> *, Serializer &)> Serialise;
 	std::function<void(AdditionalStats<T> *, Deserializer &)> Deserialise;

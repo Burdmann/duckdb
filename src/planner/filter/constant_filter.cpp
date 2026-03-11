@@ -80,6 +80,8 @@ FilterPropagateResult ConstantFilter::CheckStatistics(BaseStatistics &stats) con
 		new_result =
 		    ColumnData::QueryAdditionalStats(stats, comparison_type, constant.type().InternalType(), &constant);
 
+	// printf("%p: %d\n", &stats, (int)new_result);
+
 	// if (stats.is_rowgroup && new_result != FilterPropagateResult::FILTER_ALWAYS_FALSE) {
 	// 	scanned_partitions.insert(stats.id);
 	// 	// std::cout << "CHECK " << stats.id << " min: " << stats.stats_union.numeric_data.min.value_.integer

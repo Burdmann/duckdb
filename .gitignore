@@ -449,3 +449,4 @@ cardinality_1000.csv
 cardinality_10000.csv
 cardinality_100000.csv
 cardinality_1000000.csv
+test.db.wal

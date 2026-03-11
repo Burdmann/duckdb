@@ -67,15 +67,23 @@ public:
 		// }
 		// printf("END OF DICTIONARY\n");
 	}
-	inline static FilterPropagateResult Query_implementation(AdditionalStats<T> *stats, ExpressionType comparison_type,
-	                                                         T constant) {
+	inline static FilterPropagateResult Query_implementation(AdditionalStats<T> *stats, ExpressionType &comparison_type,
+	                                                         const T &constant) {
 		DictionaryAdditionalStats<T> *nstats = (DictionaryAdditionalStats<T> *)stats;
-		// std::cout << "QUERIED FOR " << (int64_t)constant << std::endl;
-		if (!nstats->valid || nstats->dictionary.count(constant) > 0)
+
+		switch (comparison_type) {
+		case ExpressionType::COMPARE_EQUAL:
+		case ExpressionType::COMPARE_NOT_DISTINCT_FROM:
+			// std::cout << "QUERIED FOR " << (int64_t)constant << std::endl;
+			if (!nstats->valid || nstats->dictionary.count(constant) > 0)
+				return FilterPropagateResult::NO_PRUNING_POSSIBLE;
+			return FilterPropagateResult::FILTER_ALWAYS_FALSE;
+		default:
 			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
-		return FilterPropagateResult::FILTER_ALWAYS_FALSE;
+		}
 	}
-	inline static FilterPropagateResult QueryRange_implementation(AdditionalStats<T> *stats, T start, T end) {
+	inline static FilterPropagateResult QueryRange_implementation(AdditionalStats<T> *stats, const T &start,
+	                                                              const T &end) {
 		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
 	}
 	inline static size_t Size_implementation(AdditionalStats<T> *stats) {
@@ -99,71 +107,6 @@ public:
 			auto item = deserializer.template ReadProperty<T>(1003, "dictionary:item");
 			nstats->dictionary.insert(item);
 		}
-	}
-};
-
-template <>
-class DictionaryAdditionalStats<string_t> : public AdditionalStats<string_t> {
-private:
-	bool valid = true;
-	std::unordered_set<string_t> dictionary;
-
-public:
-	static inline const char *GetStaticName() {
-		return "dictionary";
-	}
-	inline DictionaryAdditionalStats(std::vector<string_t> &data) {
-		this->name = GetStaticName();
-		this->Initialise = &Initialise_implementation;
-		this->Query = &Query_implementation;
-		this->QueryRange = &QueryRange_implementation;
-		this->Size = &Size_implementation;
-		this->Serialise = &Serialise_implementation;
-		this->Deserialise = &Deserialise_implementation;
-		this->Initialise(data, this);
-		this->type = ADDITIONAL_STATS_TYPE::DICTIONARY;
-	}
-	inline static void Initialise_implementation(std::vector<string_t> &data, AdditionalStats<string_t> *stats) {
-		DictionaryAdditionalStats<string_t> *nstats = (DictionaryAdditionalStats<string_t> *)stats;
-		for (string_t item : data) {
-			nstats->dictionary.insert(item.GetString());
-			if (nstats->dictionary.size() > MAX_NUMBER_OF_ITEMS)
-				break;
-		}
-		if (nstats->dictionary.size() > MAX_NUMBER_OF_ITEMS) {
-			nstats->valid = false;
-			nstats->dictionary.clear();
-			nstats->dictionary.rehash(1);
-			// printf("DISCARDED DICTIONARY\n");
-		} else {
-			// printf("DID NOT DISCARD DICTIONARY\n");
-		}
-		// for (string_t item : nstats->dictionary) {
-		// 	std::cout << "ITEM " << item.GetString() << " IS IN DICTIONARY " << stats << std::endl;
-		// }
-		// printf("END OF DICTIONARY\n");
-	}
-	inline static FilterPropagateResult Query_implementation(AdditionalStats<string_t> *stats,
-	                                                         ExpressionType comparison_type, string_t constant) {
-		DictionaryAdditionalStats<string_t> *nstats = (DictionaryAdditionalStats<string_t> *)stats;
-		if (!nstats->valid || nstats->dictionary.count(constant.GetString()) > 0)
-			return FilterPropagateResult::NO_PRUNING_POSSIBLE;
-		return FilterPropagateResult::FILTER_ALWAYS_FALSE;
-	}
-	inline static FilterPropagateResult QueryRange_implementation(AdditionalStats<string_t> *stats, string_t start,
-	                                                              string_t end) {
-		return FilterPropagateResult::NO_PRUNING_POSSIBLE;
-	}
-	inline static size_t Size_implementation(AdditionalStats<string_t> *stats) {
-		DictionaryAdditionalStats<string_t> *nstats = (DictionaryAdditionalStats<string_t> *)stats;
-		return sizeof(*nstats) + nstats->dictionary.bucket_count() * (sizeof(void *)) +
-		       nstats->dictionary.size() * sizeof(string_t);
-	}
-	inline static void Serialise_implementation(AdditionalStats<string_t> *stats, Serializer &serializer) {
-		DictionaryAdditionalStats<string_t> *nstats = (DictionaryAdditionalStats<string_t> *)stats;
-	}
-	inline static void Deserialise_implementation(AdditionalStats<string_t> *stats, Deserializer &deserializer) {
-		DictionaryAdditionalStats<string_t> *nstats = (DictionaryAdditionalStats<string_t> *)stats;
 	}
 };
 
