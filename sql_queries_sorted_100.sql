@@ -1,7 +1,7 @@
 SET threads TO 1;
 ATTACH 'test.db' (ROW_GROUP_SIZE 8192);
 USE test;
-CREATE TABLE tbl(time UBIGINT NOT NULL,data INT NOT NULL);;
+CREATE TABLE tbl(timestamp_ms UBIGINT NOT NULL, user_id UBIGINT NOT NULL);;
 COPY tbl FROM 'sorted.csv' (FORMAT 'csv', force_not_null ('time','data'), delimiter ',', header 1);
 SELECT * FROM tbl WHERE time = 1769545723552;
 SELECT * FROM tbl WHERE time = 1768445968558;
