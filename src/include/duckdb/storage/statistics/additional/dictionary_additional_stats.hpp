@@ -92,21 +92,21 @@ public:
 		       nstats->dictionary.size() * sizeof(T);
 	}
 	inline static void Serialise_implementation(AdditionalStats<T> *stats, Serializer &serializer) {
-		DictionaryAdditionalStats<T> *nstats = (DictionaryAdditionalStats<T> *)stats;
-		serializer.WriteProperty(1001, "dictionary:valid", nstats->valid);
-		serializer.WriteProperty(1002, "dictionary:size", nstats->dictionary.size());
-		for (T item : nstats->dictionary) {
-			serializer.WriteProperty(1003, "dictionary:item", item);
-		}
+		// DictionaryAdditionalStats<T> *nstats = (DictionaryAdditionalStats<T> *)stats;
+		// serializer.WriteProperty(1001, "dictionary:valid", nstats->valid);
+		// serializer.WriteProperty(1002, "dictionary:size", nstats->dictionary.size());
+		// for (T item : nstats->dictionary) {
+		// 	serializer.WriteProperty(1003, "dictionary:item", item);
+		// }
 	}
 	inline static void Deserialise_implementation(AdditionalStats<T> *stats, Deserializer &deserializer) {
-		DictionaryAdditionalStats<T> *nstats = (DictionaryAdditionalStats<T> *)stats;
-		nstats->valid = deserializer.template ReadProperty<bool>(1001, "dictionary:valid");
-		auto size = deserializer.template ReadProperty<unsigned int>(1002, "dictionary:size");
-		for (int i = 0; i < size; i++) {
-			auto item = deserializer.template ReadProperty<T>(1003, "dictionary:item");
-			nstats->dictionary.insert(item);
-		}
+		// DictionaryAdditionalStats<T> *nstats = (DictionaryAdditionalStats<T> *)stats;
+		// nstats->valid = deserializer.template ReadProperty<bool>(1001, "dictionary:valid");
+		// auto size = deserializer.template ReadProperty<unsigned int>(1002, "dictionary:size");
+		// for (int i = 0; i < size; i++) {
+		// 	auto item = deserializer.template ReadProperty<T>(1003, "dictionary:item");
+		// 	nstats->dictionary.insert(item);
+		// }
 	}
 };
 
