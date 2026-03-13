@@ -1,0 +1,4 @@
+./run_microbench_cardinality_100_10.sh
+./run_microbench_cardinality_1000_10.sh
+./run_microbench_cardinality_10000_10.sh
+./run_microbench_cardinality_100000_10.sh

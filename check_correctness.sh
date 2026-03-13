@@ -1,5 +1,11 @@
 echo "min/max"
 diff $1/output_correct.txt $1/output_min_max.txt
+echo "cluster_10"
+diff $1/output_correct.txt $1/output_cluster_10.txt
+echo "bloom_10"
+diff $1/output_correct.txt $1/output_bloom_10.txt
+echo "dictionary_10"
+diff $1/output_correct.txt $1/output_dictionary_10.txt
 echo "cluster"
 diff $1/output_correct.txt $1/output_cluster.txt
 echo "bloom"
