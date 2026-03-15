@@ -450,3 +450,9 @@ cardinality_10000.csv
 cardinality_100000.csv
 cardinality_1000000.csv
 test.db.wal
+err_clickbench.csv
+err_tpcds.csv
+err_tpch.csv
+out_clickbench.txt
+out_tpcds.txt
+out_tpch.txt

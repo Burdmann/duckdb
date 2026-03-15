@@ -1,4 +1,4 @@
-Name,Unit,Query,Min/max,Min/max clusters,Bloom filter,Dictionary,Min/max clusters (1000x),Bloom filter (1000x),Dictionary (1000x)
+Name,Unit,Query,Min/max,Min/max clusters (100x),Bloom filter (100x),Dictionary (100x),Min/max clusters (1000x),Bloom filter (1000x),Dictionary (1000x)
 Partitions scanned,,1,12207,12207,12207,12207,12207,12207,12207
 Partitions scanned,,2,5861,5861,5861,5861,5861,5861,5861
 Partitions scanned,,3,12207,12207,12207,12207,12207,12207,12207

@@ -1,4 +1,4 @@
-Name,Unit,Table_name,Min/max,Min/max clusters,Bloom filter,Dictionary,Min/max clusters (1000x),Bloom filter (1000x),Dictionary (1000x)
+Name,Unit,Table_name,Min/max,Min/max clusters (100x),Bloom filter (100x),Dictionary (100x),Min/max clusters (1000x),Bloom filter (1000x),Dictionary (1000x)
 Size,B,customer,3046784,69299688,26483584,5134124,649360488,237414784,5134124
 Max Size,B,customer,208,8256,1808,596,80256,16208,596
 Size,B,lineitem,243762688,1714542368,2118860288,489283280,12789337568,18994738688,489283280

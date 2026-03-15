@@ -704,6 +704,9 @@ void RowGroup::TemplatedScan(TransactionData transaction, CollectionScanState &s
 			D_ASSERT(approved_tuple_count > 0);
 			count = approved_tuple_count;
 		}
+		if (count > 0) {
+			ConstantFilter::necessarily_scanned_partitions.insert(GetColumn(0).stats->statistics.id);
+		}
 		result.SetCardinality(count);
 		state.vector_index++;
 		break;
