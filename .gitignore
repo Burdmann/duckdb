@@ -456,3 +456,12 @@ err_tpch.csv
 out_clickbench.txt
 out_tpcds.txt
 out_tpch.txt
+optimal/outliers_range_hours.csv
+optimal/outliers_range_minutes.csv
+optimal/outliers_range_seconds.csv
+optimal/sorted_range_hours.csv
+optimal/sorted_range_minutes.csv
+optimal/sorted_range_seconds.csv
+optimal/unsorted_range_hours.csv
+optimal/unsorted_range_minutes.csv
+optimal/unsorted_range_seconds.csv

@@ -12,6 +12,7 @@
 namespace duckdb {
 
 std::unordered_set<uint64_t> ConstantFilter::scanned_partitions;
+std::unordered_set<uint64_t> ConstantFilter::necessarily_scanned_partitions;
 
 ConstantFilter::ConstantFilter(ExpressionType comparison_type_p, Value constant_p)
     : TableFilter(TableFilterType::CONSTANT_COMPARISON), comparison_type(comparison_type_p),
