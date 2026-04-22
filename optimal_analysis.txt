@@ -1,0 +1,2 @@
+CREATE OR REPLACE TABLE tbl AS SELECT * FROM read_csv('raw_data_unsorted.csv',max_line_size=100000000);
+COPY (SELECT CommandID - 4 as Query, SUM(CAST(Data->'count' AS HUGEINT)) AS scanned FROM tbl WHERE type = 'NECESSARILY_SCANNED_PARTITIONS' and CommandID >= 5 GROUP BY CommandID) TO 'unsorted.csv';
